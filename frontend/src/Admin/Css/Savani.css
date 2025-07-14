@@ -1,0 +1,817 @@
+/* ***************** Login Page ****************** */
+.ds_cursor{
+    cursor: pointer;
+}
+.ds_600{
+    font-weight: 600;
+}
+.ds_font{
+    font-size: 15px;
+}
+.ds_login_img{
+    background-image: url(../Image/Savani/login_img.png);
+    background-size: cover;
+    height: 100%;
+}
+.ds_login_box{
+    position: absolute;
+    right: -120px;
+    width: 500px;
+    background: #F7F9FB;
+    padding: 40px;
+    border-radius: 20px;
+}
+.ds_text{
+    color: rgba(20, 20, 20, 0.6) !important;
+}
+.ds_login_text{
+    font-size: 14px;
+}
+.ds_login_label{
+    font-size: 13px;
+    color:rgba(30, 33, 49, 1);
+    font-weight: 600;
+}
+.ds_popup_label{
+    font-size: 15px;
+    color:rgba(30, 33, 49, 1);
+    font-weight: 600;
+}
+.ds_login_input{
+    background: rgba(20, 20, 20, 0.06);
+    font-size: 13px;
+    padding: 9px 12px;
+}
+.ds_popup_input{
+    background: rgba(20, 20, 20, 0.06);
+    font-size: 14px;
+    padding: 9px 12px;
+    border: none;
+}
+.ds_login_input:focus{
+    background: rgba(20, 20, 20, 0.06) !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+}
+.ds_popup_input:focus{
+    background: rgba(20, 20, 20, 0.06) !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+}
+.ds_forget{
+    color: #F93A3A;
+    font-size: 13px;
+}
+.ds_login_submit{
+   padding: 8px 10px;
+   width: 100%;
+   border: 1px solid #1E2131 !important;
+   border-radius: 5px;
+   color: white;
+   background-color: #1E2131;
+   font-size: 15px;
+   transition: 0.3s ease-in-out;
+} 
+.ds_login_submit:hover{
+    background-color: transparent;
+    border: 1px solid #1E2131 !important;
+    color: #1E2131;
+}
+.ds_login_check{
+    background-color: transparent;
+    border: 1px solid rgba(20, 20, 20, 0.6)!important;
+}
+.ds_login_check:focus{
+    box-shadow: none !important;
+}
+.ds_login_check:checked{
+   background-color: #1E2131 !important;
+}
+.ds_login_eye{
+    position: absolute;
+    top: 38px;
+    right: 8px;
+    color: rgba(20, 20, 20, 0.6);
+    font-size: 19px;
+    cursor: pointer;
+}
+.ds_login_title{
+    font-weight: 300 !important;
+}
+.ds_login_para{
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 15px;
+}
+.ds_otp_input{
+    height: 50px;
+    width: 50px;
+    border: 0.8px solid rgba(20, 20, 20, 0.6);
+    background-color: transparent;
+    text-align: center;
+}
+
+
+/* ************** User *************** */
+.ds_user_box{
+    background-color: rgba(247, 249, 251, 1);
+    border-radius: 10px;
+    padding: 5px 25px;
+}
+.ds_user_select{
+    background: rgba(20, 20, 20, 0.06);
+    font-size: 13px;
+    padding: 0px 12px;
+    height: 39.5px;
+    border: none;
+    border-radius: 4px;
+}
+.ds_user_select:focus-visible {
+    outline: none;
+}
+.ds_user_select{
+    appearance: none;
+    background-image: url(../Image/Savani/arrow.svg);
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 1.2rem auto;
+}
+
+.ds_user_browse{
+    position: absolute;
+    top: 37px;
+    right: 13px;
+    background: rgba(30, 33, 49, 1);
+    color: white;
+    font-size: 12px;
+    padding: 1px 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(30, 33, 49, 1);
+    transition: 0.3s ease-in-out;
+}
+.ds_user_browse:hover{
+    border: 1px solid rgba(30, 33, 49, 1);
+    /* background-color: transparent; */
+    /* color: rgba(30, 33, 49, 1); */
+}
+.ds_user_cancel{
+    border: 1px solid rgba(30, 33, 49, 1);
+    height: 45px;
+    width: 160px;
+    background-color: transparent;
+    border-radius: 6px;
+    margin-right: 30px;
+    transition: 0.3s ease-in-out;
+}
+.ds_user_cancel:hover{
+    background-color: rgba(30, 33, 49, 1);
+    color: white;
+    border: 1px solid rgba(30, 33, 49, 1);
+}
+.ds_user_add{
+    border: 1px solid rgba(30, 33, 49, 1);
+    height: 45px;
+    width: 160px;
+    background-color: rgba(30, 33, 49, 1);
+    border-radius: 6px;
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+.ds_user_add:hover{
+    border: 1px solid rgba(30, 33, 49, 1);
+    background-color: transparent;
+    color: rgba(20, 20, 20, 1);
+}
+.ds_customer_table{
+    background-color: rgba(247, 249, 251, 1);
+    border-radius: 4px;
+    padding: 0px 10px;
+}
+
+/* ************** Customer *************** */
+.ds_customer_table table thead tr th{
+    padding: 15px 20px 20px 20px;
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(20, 20, 20, 0.2)
+}
+
+.ds_customer_table table tbody tr td{
+    padding: 13px 20px;
+    white-space: nowrap;
+}
+
+
+/* ************** Category *************** */
+.ds_category_filter{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    color: rgba(30, 33, 49, 1);
+    width: 130px;
+    height: 44px;
+    margin-right: 20px;
+    border-radius: 6px;
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+}
+.ds_category_filter:hover{
+    background-color: #1E2131;
+    border: 1px solid #1E2131;
+    color: white;
+}
+.ds_offcanvas{
+    width: 410px !important;
+}
+.ds_off_cancel{
+    width: 150px;
+    height: 44px;
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    background-color: transparent;
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+}
+.ds_off_cancel:hover{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    background-color: rgba(30, 33, 49, 1);
+    color: white;
+}
+.ds_off_apply{
+    width: 150px;
+    height: 44px;
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    background-color: rgba(30, 33, 49, 1);
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+    color: white;
+}
+.ds_off_apply:hover{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    background-color: transparent;
+    color: rgba(30, 33, 49, 1);
+}
+
+/* ***************** Product ****************** */
+.ds_pro_img{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+.ds_range{
+    background: rgba(20, 20, 20, 0.4);
+}
+.ds_range .range-slider__thumb {
+    background: rgba(30, 33, 49, 1) !important;
+    width: 7px !important;
+    border-radius: 10px !important;
+}
+.ds_range .range-slider__range {
+    background: rgba(30, 33, 49, 1) !important;
+}
+.ds_addmore_btn{
+    width: 140px;
+    height: 44px;
+    background: rgba(30, 33, 49, 1);
+    color: white;
+    border-radius: 6px;
+    font-size: 15px;
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    transition: 0.3s ease-in-out;
+}
+.ds_addmore_btn:hover{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    background-color: transparent;
+    color: rgba(30, 33, 49, 1);
+}
+
+/* ***************** View Product ****************** */
+.ds_view_main{
+    background: rgba(247, 249, 251, 1);
+    padding: 23px 40px 40px 40px;
+    border-radius: 10px;
+}
+.ds_view_img{
+    height: 320px;
+    object-fit: cover;
+    border-radius: 6px;
+    object-fit: contain;
+}
+.ds_view_mini_img{
+    width: 65px;
+    height: 65px;
+    border-radius: 4px;
+    object-fit: contain;
+}
+
+.ds_viewWare_table{
+    border: 1px solid #36454F;
+    border-spacing:0 ;
+    border-collapse: separate;
+    border-radius: 10px;
+}
+.ds_viewWare_table tbody tr td{
+    /* white-space: nowrap; */
+    padding: 15px 10px;
+    /* border: 0.1px solid rgba(20, 20, 20, 0.4) */
+}
+.ds_first_td{
+    border-right: 0.1px solid rgba(20, 20, 20, 0.4);
+    border-bottom: 0.1px solid rgba(20, 20, 20, 0.4);
+    color: rgba(20, 20, 20, 0.6);
+    white-space: nowrap;
+}
+.ds_second_td{
+    border-bottom: 0.1px solid rgba(20, 20, 20, 0.4);
+    color: rgba(20, 20, 20, 1);
+    font-weight: 500;
+}
+
+/* *************** Order ************** */
+.ds_order_calender{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    color: rgba(30, 33, 49, 1);
+    width: 145px;
+    height: 44px;
+    margin-right: 20px;
+    border-radius: 6px;
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+    padding: 10px 10px 10px 35px;
+}
+.ds_order_deli{
+    color: #388E3C;
+    background: #388E3C1A;
+    width: 150px;
+    height: 27px;
+    text-align: center;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ds_order_pen{
+    color: #ED751E;
+    background: #FFE6D4;
+    width: 150px;
+    height: 27px;
+    text-align: center;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ds_order_can{
+    color:#F93A3A;
+    background: #F93A3A33;
+    max-width: 150px;
+    height: 27px;
+    text-align: center;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+input[type="date"]:focus-visible{
+    border: none !important;
+}
+.ds_order_icon{
+    position: absolute;
+    top: 12px;
+    left: 9px;
+    font-size: 17px;
+}
+.ds_view_box{
+    background: rgba(247, 249, 251, 1);
+    padding: 15px 25px;
+    border-radius: 10px;
+}
+.ds_view_border{
+   background-color:rgba(20, 20, 20, 0.4);
+   height: 22px;
+   width: 1px;
+   display: block;
+   margin-left: 10px;
+}
+.ds_vieworder_img{
+    width: 80px;
+    height: 80px;
+}
+.ds_vieworder_table thead tr th{
+    padding: 0px 0px 5px 0px;
+}
+.ds_vieworder_table tbody tr td{
+    padding: 15px 0px 20px 0px;
+}
+.ds_vieworder_table tbody tr {
+    border-bottom: 0.6px solid rgba(20, 20, 20, 0.2);
+}
+.ds_vieworder_title{
+    font-size: 18px;
+}
+
+
+/* *************** review ************** */
+.ds_review_star{
+    font-size: 18px;
+    margin: 0px 2px;
+    color: #14141480;
+
+}
+.ds_review_color{
+    color: #FDC040 !important;
+}
+.ds_viewreview_img{
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+.ds_viewprofile{
+    width: 40px;
+    height: 40px;
+}
+
+/* *************** Return Order ************** */
+.ds_returnorder_btn{
+    background: #388E3C1A;
+    color: #388E3C;
+    font-weight: 600;
+    width: 100px;
+    height: 30px;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+.ds_returnorder_btn2{
+    background: #F93A3A33;
+    color: #F93A3A;
+    font-weight: 600;
+    width: 100px;
+    height: 30px;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+}
+.ds_view_cal{
+    position: absolute;
+    top: 40px;
+    right: 13px;
+    font-size: 18px;
+    color: #14141499;
+}
+
+
+/* *************** Header  ************** */
+.ds_profile_manage{
+    position: absolute;
+    top: 50px;
+    left: -10px;
+    box-shadow: 1px 1px 20px 0.5px #0000000F;
+    background-color: white;
+    border-radius: 4px;
+    z-index:100;
+    width: 130px;
+    padding: 10px;
+}
+
+.ds_profile_manage2{
+    position: absolute;
+    top: 50px;
+    left: -10px;
+    box-shadow: 1px 1px 20px 0.5px #0000000F;
+    background-color: white;
+    border-radius: 4px;
+    z-index:100;
+    width: 150px;
+    padding: 10px;
+}
+.ds_header_profile{
+    height: 25px !important;
+    width: 25px !important;
+}
+
+
+/* ************** User ***************  */
+
+.ds_viewuser_modal .modal-dialog{
+    width: 690px !important;
+}
+.ds_viewuser_modal .modal-content {
+    border-radius:4px !important;
+
+}
+.ds_viewprofile_img{
+    height: 130px;
+    width: 130px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* ************** Search Bar ***************  */
+.ds_page_input{
+   width: 280px;
+   height: 44px;
+   border: none;
+   background: #1414140F;
+   padding: 0px 20px 0px 30px;
+   font-size: 14px;
+   border-radius: 4px;
+}
+.ds_page_icon{
+    position: absolute;
+    top: 14px;
+    left: 7px;
+}
+
+
+
+@media (max-width:1600px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        right: -160px;
+        width: 500px;
+    }
+/* ***************** View Product ****************** */
+    .ds_view_img{
+        height: 280px;
+
+    }
+}
+
+@media (max-width:1441px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        right: -160px;
+        width: 450px;
+    }
+    /* ***************** View Product ****************** */
+    .ds_view_img{
+        height: 260px;
+    }
+    /* ***************** View Order ****************** */
+    .ds_vieworder_manage{
+        min-width: 700px;
+    }
+}
+
+@media (max-width:1200px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        right: -100px;
+        width: 450px;
+    }
+    .ds_customer_table{
+        overflow-x: auto; 
+      display: block; 
+      white-space: nowrap; 
+      width: 100%;
+    }
+    .ds_customer_manage{
+        min-width:700px;
+    }
+    /* ***************** View Product ****************** */
+    .ds_view_img{
+        height: 280px;
+    }
+    .ds_viewWare_table{
+        min-width: 700px;
+    }
+
+/* ************** User ***************  */
+.ds_viewprofile_img{
+    height: 110px;
+    width: 110px;
+}
+}
+
+@media (max-width:1100px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        right: -130px;
+        width: 450px;
+    }
+}
+
+@media (max-width:992px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        position: inherit;
+        width: 450px;
+    }
+}
+
+@media (max-width:768px) {
+    /* ***************** Category ****************** */
+    .ds_offcanvas{
+        width: 375px !important;
+    }
+    /* ***************** Header ****************** */
+    .ds_profile_manage{
+        top: 50px;
+        left: -70px;
+    }
+}
+
+@media (max-width:576px) {
+/* ************** User *************** */
+   .ds_user_box{
+     padding: 5px 15px;
+   }
+   .ds_user_cancel{
+    height: 40px;
+    width: 120px;
+    margin-right: 30px;
+    font-size: 14px;
+}
+.ds_user_add{
+    height: 40px;
+    width: 120px;
+    font-size: 14px;
+}
+.ds_btn_manage{
+    width: 134px !important;
+}
+/* ***************** Category ****************** */
+.ds_off_cancel{
+    height: 40px;
+    width: 120px;
+}
+.ds_off_apply{
+    height: 40px;
+    width: 120px;
+}
+.ds_offcanvas{
+    width: 325px !important;
+}
+
+/* ***************** Products ****************** */
+.ds_addmore_btn{
+    height: 40px;
+    width: 120px;
+    font-size: 14px;
+}
+
+/* ***************** Header ****************** */
+.ds_header_text{
+    font-size: 14px;
+}
+.ds_header_profile{
+    height: 20px !important;
+    width: 20px !important;
+}
+
+/* ************** User ***************  */
+
+.ds_viewuser_modal .modal-dialog{
+    width: 400px !important;
+}
+.ds_viewprofile_img{
+    height: 90px;
+    width: 90px;
+}
+}
+@media (max-width:500px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        position: inherit;
+        width: 400px;
+    }
+    .ds_otp_input{
+        height: 37px;
+        width: 37px;
+    }
+    
+     /* ***************** View Product ****************** */
+     .ds_view_img{
+        height: 260px;
+    }
+    .ds_view_main{
+        padding: 15px 20px 20px 20px;
+    }
+}
+
+@media (max-width:426px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        position: inherit;
+        width: 360px;
+    }
+
+    .ds_off_cancel{
+        height: 40px;
+        width: 100px;
+    }
+    .ds_off_apply{
+        height: 40px;
+        width: 100px;
+    }
+/* ***************** View Product ****************** */
+    .ds_view_main{
+        padding: 15px 10px 20px 10px;
+    }
+    /* ***************** Header ****************** */
+    .ds_profile_manage{
+        top: 50px;
+        left: -75px;
+    }
+
+.ds_viewuser_modal .modal-dialog{
+    width: 360px !important;
+}
+
+/* ************** Search Bar ***************  */
+.ds_page_input{
+   width: 180px;
+
+}
+}
+
+@media (max-width:376px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        position: inherit;
+        width: 320px;
+        padding: 30px;
+    }
+    .ds_user_cancel{
+        height: 40px;
+        width: 100px;
+        margin-right: 30px;
+        font-size: 14px;
+    }
+    .ds_user_add{
+        height: 40px;
+        width: 100px;
+        font-size: 14px;
+    }
+
+    /* ***************** Products ****************** */
+    .ds_addmore_btn{
+        height: 40px;
+        width: 100px;
+        font-size: 14px;
+    }
+ /* ***************** View Product ****************** */
+     .ds_view_img{
+        height: 240px;
+    }
+    .ds_view_mini_img{
+        width: 60px;
+        height: 60px;
+    }
+
+
+/* ***************** Category ****************** */
+.ds_offcanvas{
+    width: 300px !important;
+}
+.ds_off_cancel{
+    height: 40px;
+    width: 100px;
+    font-size: 14px;
+}
+.ds_off_apply{
+    height: 40px;
+    width: 100px;
+    font-size: 14px;
+}
+    /* ************** User ***************  */
+    .ds_viewuser_modal .modal-dialog{
+        width: 310px !important;
+    }
+}
+
+@media (max-width:321px) {
+/* ***************** Login Page ****************** */
+    .ds_login_box{
+        position: inherit;
+        width: 290px;
+        padding: 20px;  
+    }
+    .ds_otp_input{
+        height: 36px;
+        width: 36px;
+    }
+/* ***************** Category ****************** */
+.ds_offcanvas{
+    width: 270px !important;
+}
+ /* ***************** View Product ****************** */
+ .ds_view_img{
+    height: 200px;
+}
+.ds_view_mini_img{
+    width: 48px;
+    height: 48px;
+}
+/* ************** User ***************  */
+.ds_viewuser_modal .modal-dialog{
+    width: 290px !important;
+}
+}

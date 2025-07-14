@@ -1,0 +1,629 @@
+.sp_main {
+    padding: 24px 40px;
+    height: calc(100vh - 64px);
+    /* width: 100%; */
+    overflow: auto;
+    padding-bottom: 0px;
+}
+
+.sp_main h4 {
+    margin-bottom: 0px;
+    font-weight: 600;
+}
+
+.sp_height {
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+}
+
+.sp_height::-webkit-scrollbar {
+    width: 2px;
+    display: none;
+}
+
+.sp_height:hover::-webkit-scrollbar {
+    display: block;
+}
+
+
+/* Track */
+.sp_height::-webkit-scrollbar-track {
+    background: white;
+}
+
+/* Handle */
+.sp_height::-webkit-scrollbar-thumb {
+    background: #14141433;
+}
+
+
+.sp_main a {
+    text-decoration: none;
+}
+
+.sp_text_gray {
+    color: #14141499;
+}
+
+.sp_Add_btn {
+    width: 150px;
+    min-width: 150px;
+    background-color: #1E2131;
+    color: white;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 5px;
+    border: 1px solid #1E2131;
+    transition: 0.2s;
+}
+
+.sp_Add_btn:hover {
+    background-color: transparent;
+    color: #1E2131;
+}
+
+.sp_View_btn {
+    width: 150px;
+    min-width: 150px;
+    background-color: transparent;
+    color: #1E2131;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    border-radius: 5px;
+    border: 1px solid #14141480;
+    transition: 0.2s;
+}
+
+.sp_View_btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sp_special_btn {
+    margin-left: auto;
+}
+
+/* table css */
+.sp_table {
+    background-color: #F7F9FB;
+    padding: 20px;
+    margin: 1.5rem 0px 1rem;
+    width: 100%;
+    /* min-height: 100%; */
+    max-width: 100%;
+    text-wrap: nowrap;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+
+.sp_table thead {
+    border-bottom: 1px solid #14141433;
+
+}
+
+.sp_table td {
+    padding: 10px 10px;
+}
+
+.sp_table th {
+    padding: 0px 10px 10px;
+}
+
+.sp_table_img img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+}
+
+.sp_th_action {
+    width: 120px;
+}
+
+.sp_table_action div {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border: 1px solid #1E213180;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.sp_table_action div:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* add modal css */
+.sp_add_modal .modal-dialog {
+    max-width: 540px;
+}
+
+.sp_add_modal .modal-content {
+    border-radius: 4px !important;
+    border: none !important;
+    box-shadow: none !important;
+
+}
+
+.sp_add_modal .modal-header {
+    border-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.spmodal_main_div {
+    padding: 20px;
+}
+
+.spmodal_main_div small {
+    font-weight: 500;
+}
+
+.spmodal_main_div input {
+    width: 100%;
+    height: 40px;
+    margin: 10px 0px;
+    background-color: #1414140F;
+    border: none;
+    box-shadow: none;
+    border-radius: 4px;
+    padding: 0px 10px;
+}
+
+.spmodal_main_div textarea {
+    width: 100%;
+    height: 80px;
+    margin: 10px 0px;
+    background-color: #1414140F;
+    border: none;
+    box-shadow: none;
+    border-radius: 4px;
+    padding: 10px 10px;
+}
+
+.spmodal_main_div ::placeholder {
+    font-size: 14px;
+}
+
+.spmodal_main_div input:focus-visible {
+    outline-color: #1E2131;
+}
+
+.sp_cancle_btn {
+    width: 180px;
+    height: 50px;
+    background-color: transparent;
+    border: 1px solid #14141480;
+    box-shadow: none;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.sp_cancle_btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sp_add_btn {
+    width: 180px;
+    height: 50px;
+    background-color: #1E2131;
+    border: 1px solid #1E2131;
+    box-shadow: none;
+    border-radius: 4px;
+    color: white;
+    transition: 0.2s;
+}
+
+.sp_add_btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #1E2131;
+}
+
+
+/* sp_pagination */
+.sp_pagination {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: 1px solid #1E2131;
+    color: #14141480;
+    border-radius: 4px;
+    margin-right: 8px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.sp_pagination:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sp_pagination.disabled {
+    opacity: 0.1;
+}
+
+.sp_pagination1 {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: 1px solid #1E2131;
+    color: white;
+    border-radius: 4px;
+    margin-right: 8px;
+    line-height: 30px;
+    background-color: #1E2131;
+    cursor: pointer;
+}
+
+/* CUSTUM TOGGLE SIWTCH */
+/* The switch - the box around the slider */
+.sp_switch {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+}
+
+/* Hide default HTML checkbox */
+.sp_switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.sp_slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.sp_slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.sp_slider {
+    background-color: #1E2131;
+}
+
+input:focus+.sp_slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.sp_slider:before {
+    -webkit-transform: translateX(14px);
+    -ms-transform: translateX(14px);
+    transform: translateX(14px);
+}
+
+/* Rounded sliders */
+.sp_slider.sp_round {
+    border-radius: 40px;
+}
+
+.sp_slider.sp_round:before {
+    border-radius: 50%;
+}
+
+
+/* view tandc  */
+.sp_view {
+    background-color: #F7F9FB;
+    padding: 30px;
+    margin: 20px 0px;
+    width: 100%;
+    /* min-height: 100%; */
+    max-width: 100%;
+    border-radius: 4px;
+    overflow: auto;
+    color: #141414CC;
+}
+
+.sp_view h5 {
+    color: black;
+    font-weight: 500;
+    padding: 5px 0px;
+}
+
+
+.sp_spec_view {
+    background-color: #F7F9FB;
+    padding: 30px;
+    margin: 20px 0px;
+    width: 600px;
+    /* min-height: 100%; */
+    text-wrap: nowrap;
+    border-radius: 4px;
+    overflow: auto;
+    color: black;
+}
+
+.sp_spec_view h5 {
+    color: black;
+    font-weight: 500;
+    padding: 0px 0px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+}
+
+@media(max-width:576px) {
+    .sp_add_modal .modal-dialog {
+        max-width: 90%;
+    }
+
+    .sp_cancle_btn {
+        width: 120px;
+        height: 45px;
+    }
+
+    .sp_add_btn {
+        width: 120px;
+        height: 45px;
+    }
+
+    .sp_main {
+        padding: 16px;
+    }
+
+    .spmodal_main_div {
+        padding: 10px;
+    }
+
+    .sp_Add_btn {
+        min-width: 100px;
+        width: 100px;
+    }
+
+    .sp_View_btn {
+        min-width: 100px;
+        width: 100px;
+    }
+
+    .sp_pagination1 {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        line-height: 26px;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .sp_pagination {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        line-height: 26px;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .sp_special_btn {
+        margin: 10px auto;
+    }
+
+    .sp_spec_view {
+        width: 100%;
+        overflow: auto;
+    }
+}
+
+@media (max-width:374px) {
+    .sp_cancle_btn {
+        width: 100px;
+        height: 40px;
+    }
+
+    .sp_add_btn {
+        width: 100px;
+        height: 40px;
+    }
+}
+
+
+
+/* sidebaar css */
+
+
+
+.sp_sidebar .umenu_item {
+    padding-right: 0px;
+    border-radius: 5px;
+    color: black;
+    text-decoration: none;
+}
+
+.sp_activeSidebar {
+    width: 84px;
+    border-right: 1px solid #14141433;
+    height: 100vh;
+    min-height: 100%;
+    overflow-y: auto;
+    transition: 0.4s ease-in-out;
+}
+ 
+
+.sp_activeSidebar .umenu_item {
+    /* padding-left: 10px; */
+    width: 50px;
+    aspect-ratio: 1 / 1;
+    padding-left: 0px;
+    padding-right: 0px;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    margin: 10px auto;
+}
+
+.sp_activeSidebar .umenu_item img {
+    margin: 0px;
+}
+
+.sp_activeSidebar .umenu_item span {
+    display: none;
+}
+
+.sp_activeMainsec {
+    width: calc(100% - 84px);
+}
+
+.usidebar_header {
+    padding: 20px 10px !important;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: white;
+
+}
+
+.sp_sidebar {
+    width: 17%;
+    border-right: 1px solid #14141433;
+    height: 100vh;
+    min-height: 100%;  
+    overflow-y: auto;
+    transition: 0.4s ease-in-out;
+}
+.sp_mainsec {
+    width: 83%;
+}
+
+@media (max-width:1700px) {
+    .sp_sidebar {
+        width: 18%;
+    }
+
+    .sp_mainsec {
+        width: 82%;
+    }
+
+    .sp_sidebar .umenu_item {
+        padding-left: 20px;
+    }
+}
+
+@media (max-width:1440px) {
+    .sp_sidebar {
+        width: 22%;
+    }
+
+    .sp_mainsec {
+        width: 78%;
+    }
+}
+
+@media (max-width:1200px) {
+    .sp_sidebar {
+        width: 28%;
+    }
+
+    .sp_mainsec {
+        width: 72%;
+    }
+}
+
+@media (max-width:991px) {
+    .sp_sidebar {
+        width: 32%;
+    }
+
+    .sp_mainsec {
+        width: 68%;
+    }
+}
+
+@media (max-width:768px) {
+    .sp_sidebar {
+        display: none;
+    }
+
+    .sp_mainsec {
+        width: 100%;
+    }
+}
+
+@media (max-width:575px) {
+    .sp_activeSidebar {
+        display: none;
+    }
+
+    .sp_activeMainsec {
+        width: 100%;
+    }
+}
+
+/* sidebar scrollbar css */
+/* width */
+.sp_sidebar::-webkit-scrollbar {
+    width: 2px;
+    display: none;
+}
+
+.sp_sidebar:hover::-webkit-scrollbar {
+    display: block;
+}
+
+
+/* Track */
+.sp_sidebar::-webkit-scrollbar-track {
+    background: white;
+}
+
+/* Handle */
+.sp_sidebar::-webkit-scrollbar-thumb {
+    background: #14141433;
+}
+
+
+
+
+.sp_activeSidebar::-webkit-scrollbar {
+    width: 2px;
+    display: none;   
+
+}
+
+.sp_activeSidebar:hover::-webkit-scrollbar {
+    display: block;
+
+}
+
+/* Track */
+.sp_activeSidebar::-webkit-scrollbar-track {
+    background: white;
+
+}
+
+/* Handle */
+.sp_activeSidebar::-webkit-scrollbar-thumb {
+    background: #14141433;
+
+}
+
+@media(max-width:576px) {
+    .sp_offcanvas {
+        max-width: 300px;
+    }
+}
+
+@media(max-width:374px) {
+    .sp_offcanvas {
+        max-width: 280px;
+    }
+}

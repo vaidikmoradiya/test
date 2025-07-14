@@ -1,0 +1,744 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* sidebar css */
+
+
+
+.usidebar {
+  width: 310px;
+  height: 100vh;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+}
+
+.usidebar_header {
+  padding: 20px 15px;
+  text-align: center;
+}
+
+.ulogo {
+  font-weight: bold;
+  font-size: 24px;
+  color: #333;
+}
+
+.umenu_items {
+  padding: 10px 0;
+}
+
+.umenu_item {
+  display: flex;
+  align-items: center;
+  padding: 12px 10px 12px 35px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 10px;
+  color: black;
+  text-decoration: none;
+}
+
+.umenu_item:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.umenu_item.uactive {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.umenu_item img {
+  margin-right: 15px;
+  width: 27px;
+  text-align: center;
+}
+.mv_icon_size{
+  margin-right: 15px;
+  width: 27px;
+  height: 27px;
+  text-align: center;
+}
+
+.umenu_item span {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (min-width: 576px) {
+  .usidebar.ucollapsed {
+    width: 90px;
+  }
+
+  .usidebar.ucollapsed .ulogo {
+    font-size: 18px;
+  }
+
+  .usidebar.ucollapsed .umenu_item span {
+    display: none;
+  }
+
+  .usidebar.ucollapsed .umenu_item {
+    padding: 12px;
+    justify-content: center;
+  }
+
+  .usidebar.ucollapsed .umenu_item img {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .usidebar {
+    width: 0;
+    padding: 0;
+    /* overflow: hidden; */
+  }
+
+  .usidebar.uactive {
+    width: 250px;
+    padding: initial;
+  }
+}
+
+
+/* header css */
+.unavbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: white;
+  border-bottom: 1px solid #14141433;
+  height: 64px;
+}
+
+.unavbar_left {
+  display: flex;
+  align-items: center;
+}
+
+.umenu_button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: #333;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.usearch_container {
+  flex: 1;
+  max-width: 270px;
+  margin: 0 1rem;
+}
+
+.usearch_box {
+  display: flex;
+  align-items: center;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+.usearch_icon {
+  color: #888;
+  margin-right: 0.5rem;
+}
+
+.usearch_box input {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.unavbar_right {
+  display: flex;
+  align-items: center;
+}
+
+.uuser_profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.uavatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0.75rem;
+}
+
+.uavatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uuser_info {
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.5rem;
+}
+
+.uuser_name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.uuser_role {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.udropdown_icon {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+@media (max-width: 768px) {
+  .usearch_container {
+    max-width: 300px;
+  }
+
+  .uuser_info {
+    display: none;
+  }
+
+  .udropdown_icon {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .usidebar {
+    display: none;
+  }
+
+  .offcanvas {
+    width: 270px !important;
+  }
+
+  .offcanvas .menu-items {
+    padding: 0;
+  }
+
+  .offcanvas .umenu_item {
+    padding: 12px 10px 12px 20px;
+    margin: 0;
+  }
+
+  .umenu_item span {
+    font-size: 14px;
+  }
+
+  .umenu_item img {
+    width: 24px;
+  }
+
+  .usearch_container {
+    max-width: 200px;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .unavbar {
+    padding: 0.5rem;
+  }
+
+  .usearch_container {
+    max-width: 150px;
+  }
+
+  .umenu_button {
+    margin-right: 0.5rem;
+  }
+}
+
+/* dashboard css */
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.metrics-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+.metric-card {
+  flex: 1 1 220px;
+  /* min-width: 220px; */
+  background-color: #e6f3ff;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.metric-card:nth-child(2),
+.metric-card:nth-child(4) {
+  background-color: #f0f2f5;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+}
+
+.metric-title {
+  font-size: 16px;
+  color: #555;
+  font-weight: 500;
+}
+
+.metric-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #a8d5ff;
+  border-radius: 50%;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-card:nth-child(3) .metric-icon {
+  background-color: #a8d5ff;
+  transform: rotate(70deg);
+}
+.metric-card:nth-child(2) .metric-icon,
+.metric-card:nth-child(4) .metric-icon {
+  background-color: #b8c4d9;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+}
+
+.metric-trend {
+  font-size: 18px;
+  font-weight: 500;
+  text-align: end;
+}
+
+@media (max-width: 768px) {
+  .metrics-container {
+    flex-direction: column;
+  }
+
+  .metric-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .metric-card {
+    padding: 15px;
+  }
+
+  .metric-value {
+    font-size: 24px;
+  }
+}
+
+
+
+/* table css */
+
+.udash_table {
+  overflow-x: scroll;
+  width: 100%;
+}
+
+.udash_table td {
+  padding: 20px;
+  /* text-align: center; */
+}
+
+.udash_table th {
+  padding: 20px ;
+  /* text-align: center; */
+  border-bottom: 1px solid #14141433;
+}
+
+/* view profile css */
+.uprofile_container {
+  width: 100%;
+  max-width: 400px;
+  background-color: #F7F9FB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.uprofile_header {
+  padding: 24px 0px 0px 24px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.uprofile_image_container {
+  position: relative;
+  height: 150px;
+  background-color: #b8c7e0;
+  border-radius: 0% 0% 50% 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.uprofile_image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid white;
+  position: absolute;
+  bottom: -30px;
+  background-color: #eee;
+  object-fit: cover;
+}
+
+.uprofile_name {
+  margin-top: 40px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.uprofile_email {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.uprofile_divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0 20px;
+}
+
+.uprofile_info_section {
+  padding: 20px;
+}
+
+.uprofile_info_header {
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.uprofile_info_row {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.uprofile_info_label {
+  flex: 1;
+  color: #666;
+}
+
+.uprofile_info_value {
+  flex: 2;
+  text-align: right;
+  font-weight: 500;
+}
+
+
+
+
+/* sl */
+.ucontainer {
+  width: 100%;
+  padding: 27px;
+  margin-left: 25px;
+  background-color: #F7F9FB;
+}
+
+.uheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.uheader h1 {
+  font-size: 1.2rem;
+  color: #222;
+  font-weight: 600;
+}
+
+.ubutton_group {
+  display: flex;
+  gap: 10px;
+}
+
+.ubtn {
+  padding: 10px 30px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+}
+
+.ubtn_cancel {
+  background-color: transparent;
+  border: 1px solid #14141480;
+  color: #141414;
+  transition: 0.3s ease-in-out;
+}
+.ubtn_cancel:hover{
+  border: 1px solid #14141480;
+  background-color: #1E2131;
+  color: white;
+}
+
+.ubtn_save {
+  background-color: #1E2131;
+  color: #FFFFFF;
+  border: 1px solid #14141480;
+  transition: 0.3s ease-in-out;
+}
+
+.ubtn_save:hover{
+  border: 1px solid #14141480;
+  background-color: transparent;
+  color: #141414;
+}
+
+.usection {
+  margin-bottom: 30px;
+}
+
+.usection_title {
+  font-size: 1rem;
+  color: #333;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.uprofile_pic_container {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.uprofile_pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  background-color: #eee;
+}
+
+.uprofile_pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.ucamera_icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ucamera_icon svg {
+  width: 14px;
+  height: 14px;
+  fill: #555;
+}
+
+.uform_grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.uform_group {
+  margin-bottom: 15px;
+}
+
+.uform_label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.uform_control {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.uform_control::placeholder {
+  color: #999;
+}
+
+.uform_control:focus {
+  outline: none;
+  border-color: #aaa;
+}
+.mv_password_toggle{
+  position: absolute;
+  right: 10px;
+  top: 55%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* Add these new responsive styles */
+@media (max-width: 992px) {
+  .d-flex.p-4 {
+    flex-direction: column;
+  }
+
+  .ucontainer {
+    margin-left: 0;
+  }
+
+  .uform_grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .uheader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .ubutton_group {
+    width: 100%;
+  }
+
+  .ubtn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .uprofile_container {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .ucontainer {
+    padding: 15px;
+  }
+
+  .uheader h1 {
+    font-size: 1.1rem;
+  }
+
+  .ubtn {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+  }
+
+  .usection_title {
+    font-size: 0.95rem;
+  }
+
+  .uform_label {
+    font-size: 0.85rem;
+  }
+
+  .uform_control {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Add these new responsive styles for 768px to 1250px */
+@media (min-width: 768px) and (max-width: 1250px) {
+  .d-flex.p-4 {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .uprofile_container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ucontainer {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .uform_grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .uheader {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .ubutton_group {
+    gap: 8px;
+  }
+
+  .ubtn {
+    padding: 8px 20px;
+  }
+}
+

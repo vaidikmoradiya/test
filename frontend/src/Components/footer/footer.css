@@ -1,0 +1,155 @@
+.Footer {
+    background-color: #1E2131;
+}
+
+.VK_footer_par {
+    position: relative;
+    z-index: 1;
+}
+.VK_light_color{
+    font-weight: 350;
+    font-size: 14px;
+}
+.VK_footer_net{
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    z-index: -1;
+}
+Footer .VK_footer_ul li a{
+    transition: .3s all ease-in;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 350;
+}
+Footer .VK_footer_ul li a:hover{
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
+.mv_main_mail_no{
+    margin-top: 20px;
+}
+.mv_main_email_input{
+    display: flex;
+    align-items: center !important;
+}
+.mv_mail_input{
+    font-weight: 400;
+    font-size: 16px;
+    padding: 3px 10px;
+    background-color: #1E2131;
+    border: 0.8px solid #FFFFFF99;
+    color: #fff !important;
+}
+.mv_mail_input:focus-visible{
+    outline: none;
+}
+.mv_main_sub_btn{
+    margin-left: 10px;
+    border: none !important;
+    padding: 4px 20px;
+}
+.mv_subscribe_btn{
+    color: #1E2131;
+    background-color: #fff;
+    text-decoration: none;
+}
+.mv_footer_icon img{
+    text-align: center;
+    display: inline-block !important;
+}
+.mv_copy_right{
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    border-top: 0.6px solid #FFFFFF;
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    margin: 0px 20px;
+}
+
+
+
+/* ------------------------------------------ media query ------------------------------------------ */
+
+
+/*  extra small device */
+@media (max-width:480px) {
+    .VK_sec_padding {
+        padding: 40px 15px;
+    }
+    Footer .VK_footer_ul li{
+        font-size: 14px;
+    }
+    Footer .font_20{
+        font-size: 17px;
+    }
+}
+
+
+/* small device */
+@media (max-width:575px) and (min-width:481px) {
+    .VK_sec_padding {
+        padding: 40px 0px;
+    }
+ 
+}
+
+
+/* medium device */
+@media (max-width:766px) and (min-width:576px) {
+    .VK_sec_padding {
+        padding: 40px 0px;
+    }
+}
+
+
+/* lg device */
+@media (max-width:991px) and (min-width:767px) {
+    .VK_sec_padding {
+        padding: 50px 15px;
+    }
+}
+
+
+/* xl device */
+@media (max-width:1199px) and (min-width:992px) {
+    .VK_sec_padding {
+        padding: 50px 0px;
+    }
+}
+
+
+/* 2xl device */
+@media (max-width:1440px) and (min-width:1200px) {
+    .VK_sec_padding {
+        padding: 80px 0px;
+    }
+}
+
+
+/* 3xl device */
+@media (min-width:1441px) {
+    .VK_sec_padding {
+        padding: 40px 0px;
+    }
+}
+
+@media (max-width:425px) {
+    .mv_main_email_input{
+        display: block !important;
+    }
+    .mv_mail_input{
+        margin-bottom: 10px;
+    }
+    .mv_main_sub_btn{
+        margin-left: 0px;
+    }
+    .mv_main_mail_no{
+        margin-top: 10px;
+    }
+}

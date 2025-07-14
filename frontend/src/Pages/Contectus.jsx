@@ -227,21 +227,21 @@ const Contactus = () => {
       <div className="mv_contactus_info_row">
         <div className="m_container">
           <div className="row justify-content-center">
-            <div className="col-md-4 col-sm-6 col-12">
+            <div className="col-md-4 col-sm-6 col-12 mb-4">
               <div className="mv_contactus_info_card">
                 <img src={phoneIcon} alt="Phone" className="mv_contactus_info_icon" />
                 <div className="mv_contactus_info_title">Call us</div>
                 <div className="mv_contactus_info_text">+91 3698527412</div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6 col-12">
+            <div className="col-md-4 col-sm-6 col-12 mb-4">
               <div className="mv_contactus_info_card">
                 <img src={emailIcon} alt="Email" className="mv_contactus_info_icon" />
                 <div className="mv_contactus_info_title">Email us</div>
                 <div className="mv_contactus_info_text">example123@gmail.com</div>
               </div>
             </div>
-            <div className="col-md-4 col-sm-6 col-12">
+            <div className="col-md-4 col-sm-6 col-12 mb-4">
               <div className="mv_contactus_info_card">
                 <img src={locationIcon} alt="Address" className="mv_contactus_info_icon" />
                 <div className="mv_contactus_info_title">Address</div>

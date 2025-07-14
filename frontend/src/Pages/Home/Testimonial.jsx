@@ -90,7 +90,7 @@ const Testimonial = () => {
           {...settings}
         >
           {ReviewtData.map((item, index) => (
-            <div key={index} className="px-3">
+            <div key={index} className="px-3 h-100">
               <div className="card h-100 shadow-sm border-0">
                 <div className="card-body d-flex flex-column mv_slider_card_body">
                   <div className="d-flex align-items-center">
@@ -119,7 +119,7 @@ const Testimonial = () => {
             </div>
           ))}
         </Slider>
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <div className="mv_testi_slider_btn" style={{ textAlign: "center", marginTop: "10" }}>
           <button className="button mv_slider_prev_btn" onClick={previous}>
             <img src={require('../../assets/arrow_left.png')} height="22px" width="22px" alt="" />
           </button>

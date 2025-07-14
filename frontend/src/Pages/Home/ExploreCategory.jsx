@@ -32,7 +32,7 @@ const ExploreCategory = () => {
               boxShadow: "0px 2px 5px rgba(0,0,0,0.1)"
             }}
           >
-            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className='mv_svg_color' width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 2L2 8L8 14" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -58,7 +58,7 @@ const ExploreCategory = () => {
               boxShadow: "0px 2px 5px rgba(0,0,0,0.1)"
             }}
           >
-            <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className='mv_svg_color' width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 2L8 8L2 14" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>

@@ -96,13 +96,29 @@
 }
 
 .s_slider_icon {
-    color: black;
+    color: #fff;
     font-size: 2rem;
-    background-color: white;
+    background-color: transparent;
     padding: 0.5rem;
     border-radius: 50%;
+    border: 1px solid #FFFFFF99;
 }
-
+.s_slider_icon:hover {
+    background-color: #fff;
+    color: black;
+}
+.carousel-control-prev{
+    opacity: 1 !important;
+}
+.carousel-control-prev:hover{
+    opacity: 1 !important;
+}
+.carousel-control-next{
+    opacity: 1 !important;
+}
+.carousel-control-next:hover{
+    opacity: 1 !important;
+}
 .s_category-section {
     padding: 50px 60px;
 }
@@ -111,6 +127,20 @@
 }
 .mv_slider_arrow .slick-next {
     right: -50px !important;
+}
+.mv_slider_arrow .slick-prev:hover {
+    background-color: #1E2131 !important;
+}
+.mv_slider_arrow .slick-next:hover {
+    background-color: #1E2131 !important;
+}
+.mv_slider_arrow .slick-prev:hover .mv_svg_color path{
+    background-color: #1E2131 !important;
+    stroke: #fff !important;
+}
+.mv_slider_arrow .slick-next:hover .mv_svg_color path{
+    background-color: #1E2131 !important;
+    stroke: #fff !important;
 }
 
 .s_section-title {
@@ -126,6 +156,7 @@
     justify-content: center;
     border-radius: 0px !important;
     box-shadow: -4px 4px 14px 0px #0000000F !important;
+    background-color:#fff !important;
 }
 
 .custom-prev-arrow,
@@ -196,7 +227,7 @@
 }
 .mv_slider_card_body{
     box-shadow: -4px 4px 14px 0px #0000000F;
-    margin: 10px 0px;
+    padding: 20px !important;
 }
 .mv_slider_prev_btn{
     border: none;
@@ -207,6 +238,11 @@
     border: none;
     background-color: transparent;
     margin-left: 15px;
+}
+@media (max-width: 425px){
+    .mv_slider_card_body{
+        padding: 10px !important;
+    }
 }
 /* ==================================================================================================================================================================
                                                                             Testimonial
@@ -471,9 +507,13 @@
     }
     .mv_slider_arrow .slick-prev {
         left: -40px !important;
+        width: 30px !important;
+        height: 30px !important;
     }
     .mv_slider_arrow .slick-next {
         right: -40px !important;
+        width: 30px !important;
+        height: 30px !important;
     }
 }
 

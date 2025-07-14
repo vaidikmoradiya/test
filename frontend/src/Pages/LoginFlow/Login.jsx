@@ -183,7 +183,7 @@ const Login = () => {
                     type="checkbox"
                     {...LoginFormik.getFieldProps('remember')}
                     className="me-2"
-                  />
+                  />Remember Me
                 </label>
                 <Link to={'/forgotpassword'} className="s_error text-decoration-none">Forgot Password?</Link>
               </div>

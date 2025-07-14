@@ -14,7 +14,7 @@ const MainBannar = () => {
                 <Carousel.Caption className='s_slider_caption'>
                     <p><small>Providing cutting-edge and cost-efficient solutions in power loom weaving technology</small></p>
                     <h3>Enhance your textile peformance and unlock new products design possibilities.</h3>
-                    <Link><button className='s_slider_btn mt-2'>View Products</button></Link>
+                    <Link to={'/layout/productlist'}><button className='s_slider_btn mt-2'>View Products</button></Link>
                 </Carousel.Caption>
             </Carousel.Item>
             <Carousel.Item>
@@ -22,7 +22,7 @@ const MainBannar = () => {
                 <Carousel.Caption className='s_slider_caption'>
                 <p><small>Bringing you the finest textile machinery from around the world.</small></p>
                 <h3>10+ year Manufacturing Excellence, Delivering the Finest Quality !</h3>
-                <Link><button className='s_slider_btn mt-2'>View Products</button>  </Link>
+                <Link to={'/layout/productlist'}><button className='s_slider_btn mt-2'>View Products</button></Link>
                 </Carousel.Caption>
             </Carousel.Item>
         </Carousel>

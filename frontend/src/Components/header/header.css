@@ -25,7 +25,12 @@
     line-height: 20px;
     color: #fff;
 }
-
+.mv_header_position{
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
 .s_cart {
     position: absolute;
     top: -27%;
@@ -431,13 +436,23 @@
 
 .VK_menu_list li {
     transition: .3s;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    color: #14141499;
 }
 
 .VK_menu_list li:hover {
     color: #2B221E;
     font-weight: 600;
 }
-
+.VK_menu_list p b{
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    vertical-align: middle;
+    color: #141414;
+}
 
 .VK_mega_menu {
     position: absolute;
@@ -448,6 +463,8 @@
     display: none;
     background-color: transparent !important;
     transform: translate(-15px, 0px);
+    box-shadow: -4px 4px 14px 0px #0000000F;
+    /* font-size: 25px; */
 }
 .mv_mega_left_menu{
     transform: translate(-87%, 0px);

@@ -772,9 +772,9 @@
     .mv_buy_now{
         margin-bottom: 10px;
     }
-    .mv_action_btn_main{
+    /* .mv_action_btn_main{
         display: block;
-    }
+    } */
     .mv_add_to_cart{
         text-wrap: nowrap !important;
     }
@@ -2018,7 +2018,7 @@
   background: #23263a;
 }
 .mv_contactus_info_row {
-  padding: 50px 0px;
+  padding: 30px 0px;
 }
 .mv_contactus_info_card {
   background: #fff;
@@ -2030,6 +2030,7 @@
   align-items: center;
   text-align: center;
   height: 100%;
+  margin-bottom: 10px;
 }
 .mv_contactus_info_icon {
   width: 38px;

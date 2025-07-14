@@ -342,7 +342,7 @@ const Header = () => {
 
     return (
         <React.Fragment>
-            <Container fluid className='p-0'>
+            <Container fluid className='p-0 mv_header_position'>
 
                 <nav className='mv_top_nav'>
                     <div className="m_container">

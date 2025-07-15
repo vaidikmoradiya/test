@@ -29,7 +29,7 @@ const productSchema = mongoose.Schema({
     },
     stockStatus: {
         type: Boolean,
-        default: false
+        default: true
     },
     price: {
         type: Number

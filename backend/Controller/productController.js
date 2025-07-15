@@ -14,6 +14,7 @@ exports.createProduct = async (req, res) => {
             discount,
             shortDescription,
             description,
+            stockStatus,
             data
         } = req.body;
 
@@ -103,6 +104,7 @@ exports.createProduct = async (req, res) => {
             unit,
             price,
             discount,
+            stockStatus,
             discountedPrice,
             productImage: files.map(file => file.path),
             shortDescription,
@@ -233,6 +235,7 @@ exports.updateProduct = async (req, res) => {
             unit,
             price,
             discount,
+            stockStatus,
             shortDescription,
             description,
             data,
@@ -322,6 +325,7 @@ exports.updateProduct = async (req, res) => {
             description,
             data: parsedData,
             status,
+            stockStatus
         };
         
         // Handle product image update if files are provided

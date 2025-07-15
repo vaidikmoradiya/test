@@ -143,7 +143,11 @@ const CartSlice = createSlice({
   initialState: {
     GetCartData:[],
   },
-  reducers: {},
+  reducers: {
+    clearCart: (state) => {
+      state.GetCartData = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(Createcart.pending, (state) => {
@@ -211,5 +215,7 @@ const CartSlice = createSlice({
       });
   },
 });
+
+export const { clearCart } = CartSlice.actions;
 
 export default CartSlice.reducer;

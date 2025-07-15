@@ -141,8 +141,8 @@ function Productlist() {
                     </div>
                     <div className="row mv_product_main_mar">
                         {(sortedProducts.length > 0 ? sortedProducts : ProductData).map((item, index) => (
-                            <div key={index} className="col-lg-3 col-md-4 col-sm-6">
-                                <div className="mv_main_card">
+                            <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div className="mv_main_card flex-column justify-content-between d-flex">
                                     <Link to={`/layout/Detailpage/${item._id}`} className='mv_product_img text-decoration-none'>
                                     <img src={`${Back_URL}${item.productImage[0]}`} className='' />
                                     </Link>
@@ -164,8 +164,8 @@ function Productlist() {
                                             <p className='mv_dis_price'><strike>₹{item.price}</strike></p>
                                         </div>
                                     </Link>
-                                    <div className='mv_main_add_cart_btn mv_add_cart_btn'>
-                                        <a className='' href="#" onClick={(e) => handleContinue(e, item._id)}>Add to Cart</a>
+                                    <div onClick={(e) => handleContinue(e, item._id)} className='mv_main_add_cart_btn mv_add_cart_btn'>
+                                        <a className='' href="#">Add to Cart</a>
                                     </div>
                                 </div>
                             </div>

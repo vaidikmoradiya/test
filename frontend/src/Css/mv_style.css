@@ -29,6 +29,7 @@
     box-shadow: -4px 4px 14px 0px #0000000F;
     margin-bottom: 20px;
     background-color: #fff;
+    height: 100%;
 }
 .mv_product_img{
     display: flex;
@@ -36,7 +37,8 @@
     margin-bottom: 10px;
 }
 .mv_product_img img{
-    width: 300px;
+    /* width: 300px; */
+    width: 100% !important;
     height: 168px;
 }
 .mv_pro_name{
@@ -93,6 +95,7 @@
     text-decoration: none;
     padding: 10px auto !important;
     text-decoration: none;
+    cursor: pointer;
 }
 .mv_add_cart_btn a{
     color: #1E2131 !important;
@@ -159,14 +162,16 @@
         margin-bottom: 30px;
     } */
     .mv_product_img img {
-        width: 250px;
+        /* width: 250px; */
+        width: 100% !important;
         height: 150px;
     }
 }
 
 @media(max-width:1024px) {
     .mv_product_img img {
-        width: 200px;
+        /* width: 200px; */
+        width: 80% !important;
         height: 135px;
     }
 }
@@ -811,6 +816,10 @@
 .mv_main_product{
     padding: 35px 0px;
 }
+.mv_cart_container{
+    overflow-y: scroll;
+    height: 560px;      
+}
 .mv_cart_table {
     width: 100%;
     margin-top: 20px;
@@ -846,7 +855,7 @@
 .mv_product_image {
     width: 80px;
     height: 80px;
-    object-fit: cover;
+    object-fit: contain;
     margin-right: 15px;
 }
 .mv_product_name {
@@ -2566,7 +2575,7 @@
     background: white;
     border-radius: 0px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    width: 95%;
     max-width: 500px;
 }
 .mv_profile_modal_header {
@@ -3297,6 +3306,10 @@
     }
     .mv_carddelete_modal_footer {
         padding: 10px;
+    }
+    .mv_profile_modal_content{
+        max-width: 98vw;
+        padding: 0;
     }
     /* Review Modal Unique Styles */
     .mv_review_modal_content {

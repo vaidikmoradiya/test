@@ -473,6 +473,20 @@ const Myorder = () => {
     dispatch(GetAllOrderData())
   },[])
 
+  // Scroll lock when any modal is open
+  useEffect(() => {
+    const anyModalOpen = showEditModal || showReviewModal || showCardModal || showNewModal || showAddressModal || showDeleteModal || showErrorModal;
+    if (anyModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    // Clean up on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showEditModal, showReviewModal, showCardModal, showNewModal, showAddressModal, showDeleteModal, showErrorModal]);
+
   return (
     <div className='mv_profile_main_card'>
 

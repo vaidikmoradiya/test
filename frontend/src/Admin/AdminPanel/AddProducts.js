@@ -295,8 +295,8 @@ useEffect(() => {
                         <label className='ds_login_label ' >Stock Status</label>
                         <select name='stockStatus' value={CreateProductFormik?.values.stockStatus} onChange={CreateProductFormik?.handleChange} onBlur={CreateProductFormik?.handleBlur} className='ds_user_select w-100 mt-1' style={{fontSize:"15px"}}>
                           <option value="">Select Status</option>
-                          <option value="In Stock">In Stock</option>
-                          <option value="Out of Stock">Out of Stock</option>
+                          <option value="true">In Stock</option>
+                          <option value="false">Out of Stock</option>
                         </select>
                         {CreateProductFormik.touched.stockStatus && CreateProductFormik.errors.stockStatus && (
                           <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateProductFormik.errors.stockStatus}</div>

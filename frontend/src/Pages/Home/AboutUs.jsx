@@ -54,7 +54,7 @@ const AboutUs = () => {
                     <div className='s_img_content '>
                         <h4 className='text-white'>Have a question?</h4>
                         <p className='text-secondary'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex consectetur impedit odit aut similique, officia dicta facere quos fuga voluptates!</p>
-                        <button className='s_slider_btn'>Contact Us</button>
+                        <Link to={'/layout/Contectus'}><button className='s_slider_btn'>Contact Us</button></Link>
                     </div>
                 </div>
             </div>

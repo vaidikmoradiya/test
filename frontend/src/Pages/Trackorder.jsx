@@ -28,6 +28,97 @@ const Trackorder = () => {
     comment: ''
   });
 
+  const cancelOptions = [
+    { value: '', label: 'Select' },
+    { value: 'I was hopping for a shorter delivery time', label: 'I was hopping for a shorter delivery time' },
+    { value: 'Product quality does not match the level of its worth', label: 'Product quality does not match the level of its worth' },
+    { value: "The product doesn't look like the online picture", label: "The product doesn't look like the online picture" },
+    { value: 'The product was damaged in transit or was poorly made', label: 'The product was damaged in transit or was poorly made' },
+    { value: 'The product information was misleading', label: 'The product information was misleading' },
+    { value: 'My reason are not listed here', label: 'My reason are not listed here' },
+  ];
+
+  const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = React.useRef(null);
+    const selected = options.find(opt => opt.value === value);
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (containerRef.current && !containerRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    return (
+      <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+        <div
+          className='mv_cancel_modal_select'
+          role="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          tabIndex={0}
+          onClick={() => setIsOpen(prev => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+            if (e.key === 'Escape') setIsOpen(false);
+          }}
+        >
+          <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+            {selected && selected.value !== '' ? selected.label : placeholder}
+          </span>
+          <span style={{ marginLeft: 8 }}>▾</span>
+        </div>
+        {isOpen && (
+          <ul
+            role="listbox"
+            style={{
+              position: 'absolute',
+              zIndex: 20,
+              left: 0,
+              right: 0,
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: 0,
+              boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+              maxHeight: 220,
+              overflowY: 'auto',
+              margin: 0,
+              paddingLeft: 0,
+              listStyle: 'none',
+            }}
+          >
+            {options.filter(o => o.value !== '').map(opt => (
+              <li
+              className='mv_cancel_modal_select_option'
+                key={opt.value}
+                role="option"
+                aria-selected={opt.value === value}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 0,
+                  background: opt.value === value ? 'blue' : 'transparent',
+                  color: opt.value === value ? '#fff' : '',
+                  cursor: 'pointer',
+                }}
+              >
+                {opt.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
+
   const handleOpenModal = () => setShowCancelModal(true);
   const handleCloseModal = () => {
     setShowCancelModal(false);
@@ -126,7 +217,7 @@ const Trackorder = () => {
             <div key={ind} className="mv_main_card mv_track_order_card">
               <div className="row mv_track_order_row">
                 {/* Product Details */}
-                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mv_track_order_col">
+                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 mv_track_order_col">
                   <div>
                       <p className='mv_product_heading'>Product Details</p>
                   </div>
@@ -163,7 +254,7 @@ const Trackorder = () => {
                     ))}
                 </div>
                 {/* Delivery Address */}
-                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mv_track_order_col mv_track_address_section">
+                <div className="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mv_track_order_col mv_track_address_section">
                   <div>
                       <p className='mv_product_heading'>Delivery Address</p>
                   </div>
@@ -210,27 +301,18 @@ const Trackorder = () => {
             <div className="mv_cancel_modal_body">
               <div className="mv_cancel_modal_group">
                 <label>Reason for Cancellation<span style={{color:'red'}}>*</span></label>
-                <select
-                  className="mv_cancel_modal_select"
+                <CustomSelect
+                  options={cancelOptions}
                   value={cancelorder.reason}
-                  // onChange={e => setCancelReason(e.target.value)}
-                  onChange={(e) => setCancelorder({ reason: e.target.value})}
-                >
-                  <option value="">Select</option>
-                  <option value="I was hopping for a shorter delivery time">I was hopping for a shorter delivery time</option>
-                  <option value="Product quality does not match the level of its worth">Product quality does not match the level of its worth</option>
-                  <option value="The product doesn't look like the online picture">The product doesn't look like the online picture</option>
-                  <option value="The product was damaged in transit or was poorly made">The product was damaged in transit or was poorly made</option>
-                  <option value="The product information was misleading">The product information was misleading</option>
-                  <option value="My reason are not listed here">My reason are not listed here</option>
-                </select>
+                  onChange={(val) => setCancelorder(prev => ({ ...prev, reason: val }))}
+                  placeholder="Select"
+                />
               </div>
               <div className="mv_cancel_modal_group">
                 <label>Comments<span style={{color:'red'}}>*</span></label>
                 <textarea className="mv_cancel_modal_textarea" 
                 value={cancelorder.comment} 
-                // onChange={e => setCancelComments(e.target.value)}
-                onChange={(e) => setCancelorder({comment: e.target.value })} 
+                onChange={(e) => setCancelorder(prev => ({ ...prev, comment: e.target.value }))} 
                 placeholder="Enter comments" />
               </div>
             </div>

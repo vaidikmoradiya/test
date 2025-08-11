@@ -152,7 +152,7 @@ const Deliveredorder = () => {
             <div className="mv_main_card mv_track_order_card">
               <div className="row mv_track_order_row">
                 {/* Product Details */}
-                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mv_track_order_col">
+                <div className="col-xxl-5 col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 mv_track_order_col">
                   <div>
                       <p className='mv_product_heading'>Product Details</p>
                   </div>
@@ -189,7 +189,7 @@ const Deliveredorder = () => {
                   ))}
                 </div>
                 {/* Delivery Address */}
-                <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mv_track_order_col mv_track_address_section">
+                <div className="col-xxl-3 col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 mv_track_order_col mv_track_address_section">
                   <div>
                       <p className='mv_product_heading'>Delivery Address</p>
                   </div>

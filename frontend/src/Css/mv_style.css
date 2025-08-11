@@ -3928,14 +3928,21 @@
 }
 .mv_cancel_modal_select {
     width: 100%;
-    padding: 9px 10px;
-    border: 0.8px solid #14141499;
-    border-radius: 0px;
+    padding: 9px 10px !important;
+    border: 0.8px solid #14141499 !important;
+    border-radius: 0px !important;
     margin-top: 2px;
     font-weight: 400;
     font-size: 16px;
     line-height: 100%;
-    color: #14141499;
+    color: #14141499 !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    cursor: pointer;
+    background: #fff;
 }
 .mv_cancel_modal_select option{
     color: #141414;
@@ -3943,6 +3950,10 @@
 }
 .mv_cancel_modal_select:focus{
     outline: none;
+}
+.mv_cancel_modal_select_option:hover{
+    background-color: blue !important;
+    color: #fff !important;
 }
 .mv_cancel_modal_textarea {
     width: 100%;

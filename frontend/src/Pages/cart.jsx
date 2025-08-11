@@ -55,9 +55,7 @@ const Cart = () => {
 
     const [addressData, SetAddressData] = useState([]);
     useEffect(() => {
-        const user = localStorage.getItem("UserId")
-        const data = AlladdressData.filter(item => item.userId === user)
-        SetAddressData(data);
+        SetAddressData(AlladdressData);
         localStorage.setItem('CartbyuserData',JSON.stringify(CartbyuserData))
     }, [AlladdressData])
 

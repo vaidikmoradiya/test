@@ -24,7 +24,9 @@ const LOCAL_KEY = 'profileData';
 const Myorder = () => {
   const dispatch = useDispatch();
   const { allAddress, loading, error } = useSelector((state) => state.address);
-  const { allUserData } = useSelector((state) => state.user);
+  console.log("allAddress",allAddress);
+  
+  const { allUserData } = useSelector((state) => state.user);  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const Myorder = () => {
 
   const userid = localStorage.getItem("UserId");
   let currentUser = allUserData?.find(user => user._id === userid) || {};
+  console.log("userid",userid);
   // console.log("efrerfrferfrf",currentUser);
 
   // const { id } = useParams();

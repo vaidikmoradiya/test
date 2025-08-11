@@ -38,7 +38,8 @@ export const getalladdress = createAsyncThunk(
     "address/get",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${API_URL}/getAllAddress`, {
+            const user = localStorage.getItem("UserId");
+            const response = await axios.get(`${API_URL}/getAddressByUserId/${user}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -46,6 +47,22 @@ export const getalladdress = createAsyncThunk(
             return response.data.data;
         } catch (error) {
             return rejectWithValue(error.response?.data || { message: "Failed to fetch addresses" });
+        }
+    }
+);
+
+export const getAllAddresses = createAsyncThunk(
+    "address/getAll",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${API_URL}/getAllAddress`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: "Failed to fetch all addresses" });
         }
     }
 );
@@ -124,6 +141,19 @@ const AddressSlice = createSlice({
             .addCase(getalladdress.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload?.message || 'Failed to fetch addresses';
+            })
+            .addCase(getAllAddresses.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getAllAddresses.fulfilled, (state, action) => {
+                state.loading = false;
+                state.allAddress = action.payload;
+                state.error = null;
+            })
+            .addCase(getAllAddresses.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload?.message || 'Failed to fetch all addresses';
             })
             .addCase(updateAddress.pending, (state) => {
                 state.loading = true;

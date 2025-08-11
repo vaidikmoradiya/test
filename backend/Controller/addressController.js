@@ -71,6 +71,35 @@ exports.getAllAddress = async (req, res) => {
     }
 }
 
+exports.getAddressByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        const addressData = await addressModal.aggregate([
+            {
+                $match: { userId: new mongoose.Types.ObjectId(userId) }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userData"
+                }
+            }
+        ]);
+        
+        if (!addressData.length > 0) {
+            return res.status(404).json({ status: false, message: 'No addresses found for this user' })
+        }
+
+        return res.status(200).json({ status: true, message: 'User addresses found successfully', data: addressData });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: false, message: error.message });
+    }
+}
+
 exports.getAddressById = async (req, res) => {
     try {
         const id = req.params.id;

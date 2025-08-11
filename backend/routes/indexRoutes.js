@@ -16,7 +16,7 @@ const { createTermCondition, getAllTermConditions, getTermConditionById, updateT
 const { createPrivacyPolicy, getAllPrivacyPolicy, getPrivacyPolicyById, updatePrivacyPolicy, deletePrivacyPolicy } = require('../Controller/privacyController');
 const { createFaqCategory, getAllFaqCategories, getFaqCategoryById, updateFaqCategory, deleteFaqCategory } = require('../Controller/faqCategoryController');
 const { createFaq, getAllFaq, getFaqById, updateFaq, deleteFaq, getFaqsByCategory } = require('../Controller/faqController');
-const { createAddress, updateAddress, getAllAddress, getAddressById, deleteAddress } = require('../Controller/addressController');
+const { createAddress, updateAddress, getAllAddress, getAddressById, deleteAddress, getAddressByUserId } = require('../Controller/addressController');
 const { createOrder, updateOrder, getAllOrder, getOrderById, deleteOrder } = require('../Controller/orderController');
 const { createCart, getCartByuser, updatecart, deleteCart } = require('../Controller/cartController')
 const { createReview, updateReview, getAllReview, getReviewById, deleteReview, getCompnayProfile } = require('../Controller/reviewController');
@@ -124,6 +124,7 @@ indexRoute.delete('/deleteTermCondition/:id', auth(['Admin', 'User']), deleteTer
 indexRoute.post('/createAddress', auth(['Admin', 'User']), createAddress);
 indexRoute.put('/updateAddress/:id', updateAddress);
 indexRoute.get('/getAllAddress', getAllAddress);
+indexRoute.get('/getAddressByUserId/:userId', auth(['Admin', 'User']), getAddressByUserId);
 indexRoute.get('/getAddressById/:id', auth(['Admin', 'User']), getAddressById);
 indexRoute.delete('/deleteAddress/:id', auth(['Admin', 'User']), deleteAddress);
 

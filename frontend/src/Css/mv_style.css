@@ -3536,6 +3536,14 @@
         left: 30px;
     }
 }
+@media (max-width:425px){
+    .mv_track_order_info {
+        flex-wrap: wrap !important;
+    }
+    .mv_track_product_img_container{
+        margin-right: 20px;
+    }
+}
 @media(max-width:375px) {
     .mv_back_line {
         width: 78%;
@@ -3556,6 +3564,18 @@
     }
     .mv_track_returnrefund_back_line {
         width: 75%;
+    }
+    .mv_track_product_name{
+        font-size: 13px;
+    }
+    .mv_track_product_price{
+        font-size: 13px;
+    }
+    .mv_track_order_heading{
+        font-size: 13px;
+    }
+    .mv_track_order_text{
+        font-size: 13px;
     }
 }
 

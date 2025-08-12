@@ -82,7 +82,7 @@ const Testimonial = () => {
         <h2 className="mv_relay_text">what our customers says</h2>
       </div>
 
-      <div className="m_container">
+      <div className="m_container mv_testimonial_slider">
         <Slider
           ref={slider => {
             sliderRef = slider;
@@ -91,7 +91,7 @@ const Testimonial = () => {
         >
           {ReviewtData.map((item, index) => (
             <div key={index} className="px-3 h-100">
-              <div className="card h-100 shadow-sm border-0">
+              <div className="card h-100 border-0 mv_testimonial_card">
                 <div className="card-body d-flex flex-column mv_slider_card_body">
                   <div className="d-flex align-items-center">
                     <img src={`${Back_URL}${item?.userData?.[0]?.image}`} className="rounded-circle me-3" style={{ width: "50px", height: "50px", objectFit: "cover" }} />  

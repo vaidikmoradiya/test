@@ -1659,8 +1659,8 @@ const Header = () => {
                                         {maincategoryData && maincategoryData.map((mainCat, index) => (
                                             <li key={mainCat._id} className='VK_sub_menu'>
                                                 {mainCat.mainCategoryName}
-                                                <div className={index < 5 ? 'VK_mega_menu' : 'VK_mega_menu mv_mega_left_menu'}>
-                                                    <div className={index < 5 ? 'VK_mega_menu_div_parent' : 'VK_mega_menu_big_div_parent'}>
+                                                <div className={index < 6 ? 'VK_mega_menu' : 'VK_mega_menu mv_mega_left_menu'}>
+                                                    <div className={index < 6 ? 'VK_mega_menu_div_parent' : 'VK_mega_menu_big_div_parent'}>
                                                         {categoryData && categoryData
                                                             .filter(cat => cat.mainCategoryId === mainCat._id)
                                                             .map((category) => (

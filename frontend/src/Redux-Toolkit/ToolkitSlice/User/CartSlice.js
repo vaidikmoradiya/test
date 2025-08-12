@@ -138,6 +138,27 @@ export const DeleteCartItem = createAsyncThunk(
   }
 );
 
+export const ClearAllCart = createAsyncThunk(
+  'clearallcart',
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const userId = localStorage.getItem('UserId');
+      const response = await axios.delete(`${url}/clearAllCart/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      dispatch(GetCartByuser());
+      return response?.data;
+    } catch (error) {
+      console.error("Clear All Cart Error:", error.message);
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to clear cart" }
+      );
+    }
+  }
+);
+
 const CartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -212,6 +233,20 @@ const CartSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.message = action.payload?.message || "Failed to delete cart item";
+      })
+      .addCase(ClearAllCart.pending, (state) => {
+        state.loading = true;
+        state.message = "Clearing cart...";
+      })
+      .addCase(ClearAllCart.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.message = "Cart cleared successfully";
+      })
+      .addCase(ClearAllCart.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.message = action.payload?.message || "Failed to clear cart";
       });
   },
 });

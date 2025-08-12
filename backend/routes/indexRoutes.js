@@ -18,7 +18,7 @@ const { createFaqCategory, getAllFaqCategories, getFaqCategoryById, updateFaqCat
 const { createFaq, getAllFaq, getFaqById, updateFaq, deleteFaq, getFaqsByCategory } = require('../Controller/faqController');
 const { createAddress, updateAddress, getAllAddress, getAddressById, deleteAddress, getAddressByUserId } = require('../Controller/addressController');
 const { createOrder, updateOrder, getAllOrder, getOrderById, deleteOrder } = require('../Controller/orderController');
-const { createCart, getCartByuser, updatecart, deleteCart } = require('../Controller/cartController')
+const { createCart, getCartByuser, updatecart, deleteCart, clearAllCart } = require('../Controller/cartController')
 const { createReview, updateReview, getAllReview, getReviewById, deleteReview, getCompnayProfile } = require('../Controller/reviewController');
 const { getBestSellerProducts, getDashboard, getOrderSummary, getIncomeAndExpense, getRevenueByLocation } = require('../Controller/dashboardController');
 const {createContact, getAllContact, getContactById, updateContact, deleteContact} = require('../Controller/contactUsController');
@@ -168,6 +168,7 @@ indexRoute.post('/createCart', createCart)
 indexRoute.get('/getCartByuser/:id', getCartByuser)
 indexRoute.put('/updatecart/:id', updatecart)
 indexRoute.delete('/deletecart/:id', deleteCart)
+indexRoute.delete('/clearAllCart/:userId', clearAllCart)
 
 // review Route 
 indexRoute.post('/createReview', auth(['Admin', 'User']), createReview);

@@ -825,7 +825,11 @@ const Myorder = () => {
                                     return order.orderStatus === orderFilter;
                                   })
                                   .map((item, index) => (
-                                  <div key={item.id} className="mv_order_card" onClick={() => {
+                                  <div key={item.id} className="mv_order_card" onClick={(e) => {
+                                    // Prevent navigation when clicking on action links
+                                    if (e.target.closest('.mv_order_action')) {
+                                      return;
+                                    }
                                     if (item.orderStatus === 'Delivered') {
                                       navigate(`/layout/Deliveredorder/${item._id}`);
                                     }
@@ -861,7 +865,7 @@ const Myorder = () => {
                                         <div className="col-xxl-9 col-xl-8 col-lg-8 col-md-8 col-sm-6 col-6">
                                           <div key={ind}>
                                             <div className="mv_order_details">
-                                              <div className="mv_order_product_name">{it.productName}</div>
+                                              <div className="mv_order_product_name">{it.details.productName}</div>
                                               <div className="mv_order_info">
                                                 <p className='mb-2 mv_order_text_qty'>Qty :</p>
                                                 <p className='mb-2 mv_order_qty'>{it.qty}</p>
@@ -880,7 +884,7 @@ const Myorder = () => {
                                         <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3 d-flex flex-column justify-content-between align-items-end" style={{ minHeight: '100px' }}>
                                           <div className="mv_order_action mt-auto">
                                             {item.orderStatus === 'Pending' && <Link  to={`/layout/Trackorder/${item._id}`} className="mv_order_action_link" >Track Order</Link>}
-                                            {item.orderStatus === 'Delivered' && <Link  to={``} className="mv_order_action_link" onClick={(e) => { e.preventDefault(); setShowReviewModal(true); setProductid(it?.details._id) }}>Submit Review</Link>}
+                                            {item.orderStatus === 'Delivered' && <Link  to={``} className="mv_order_action_link" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowReviewModal(true); setProductid(it?.details._id) }}>Submit Review</Link>}
                                             {item.orderStatus === 'Cancelled' && <Link  to={`/layout/Trackrefund/${item._id}`} className="mv_order_action_link" >Track Refund</Link>}
                                           </div>
                                         </div>

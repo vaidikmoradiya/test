@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Country, State, City } from 'country-state-city';
-import { GetCartByuser, UpdateCartQuantity, DeleteCartItem, Createcart } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
+import { GetCartByuser, UpdateCartQuantity, DeleteCartItem, Createcart, ClearAllCart } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
 import { GetBestSeller } from '../Redux-Toolkit/ToolkitSlice/User/TopSellingSlice';
 import { createaddress, getalladdress, updateAddress } from '../Redux-Toolkit/ToolkitSlice/User/AddressSlice';
 
@@ -56,8 +56,13 @@ const Cart = () => {
     const [addressData, SetAddressData] = useState([]);
     useEffect(() => {
         SetAddressData(AlladdressData);
-        localStorage.setItem('CartbyuserData',JSON.stringify(CartbyuserData))
-    }, [AlladdressData])
+        if (CartbyuserData && CartbyuserData.length > 0) {
+            localStorage.setItem('CartbyuserData',JSON.stringify(CartbyuserData))
+        } else if (CartbyuserData && CartbyuserData.length === 0) {
+            localStorage.removeItem('CartbyuserData');
+            localStorage.removeItem('selectedaddress');
+        }
+    }, [AlladdressData, CartbyuserData])
 
     const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([
@@ -339,6 +344,20 @@ const Cart = () => {
     };
         
    const handleCheckout = async () => {
+    // Check if cart is empty
+    if (!CartbyuserData || CartbyuserData.length === 0) {
+        setErrorMessage('Your cart is empty. Please add items before checkout');
+        setShowErrorModal(true);
+        return;
+    }
+
+    // Check if address is selected
+    if (!selectedAddress) {
+        setErrorMessage('Please select a delivery address before checkout');
+        setShowErrorModal(true);
+        return;
+    }
+
     const res = await loadRazorpayScript();
     if (!res) {
         alert("Razorpay SDK failed to load. Are you online?");
@@ -392,9 +411,16 @@ const Cart = () => {
           };
         console.log('sdasd',orderData)
         // dispatch(CreateOrder(orderData));
+        
+        // Clear cart from backend and localStorage
+        dispatch(ClearAllCart());
+        localStorage.removeItem('CartbyuserData');
+        localStorage.removeItem('selectedaddress');
+        
         setShowPaymentSuccessModal(true);
         setTimeout(() => {
           setShowPaymentSuccessModal(false);
+          navigate('/layout/home');
         }, 2000);
         },
         modal: {
@@ -431,6 +457,7 @@ const Cart = () => {
               </svg>
             </div>
             <h3 style={{ marginBottom: '10px', color: '#141414' }}>Payment Successful!</h3>
+            <p style={{ color: '#666', marginBottom: '20px' }}>Your order has been placed successfully. Redirecting to home page...</p>
           </div>
         </div>
       </div>
@@ -590,10 +617,15 @@ const Cart = () => {
                                             </div>
 
                                             <button
-                                                className="mv_checkout_btn"
+                                                className={`mv_checkout_btn ${(!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'disabled' : ''}`}
                                                 onClick={handleCheckout}
+                                                disabled={!selectedAddress || !CartbyuserData || CartbyuserData.length === 0}
+                                                style={{
+                                                    opacity: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 0.6 : 1,
+                                                    cursor: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'not-allowed' : 'pointer'
+                                                }}
                                             >
-                                                Checkout
+                                                {!CartbyuserData || CartbyuserData.length === 0 ? 'Cart is Empty' : !selectedAddress ? 'Select Address First' : 'Checkout'}
                                             </button>
                                         </div>
                                     </div>

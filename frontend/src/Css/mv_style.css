@@ -664,6 +664,7 @@
     color: #4A4A4A;
     line-height: 1.5;
     margin: 0;
+    word-wrap: break-word;
 }
 .mv_view_all_btn {
     font-weight: 500;
@@ -1024,6 +1025,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
+    margin-bottom: 15px;
     /* padding-top: 15px; */
     /* border-top: 1px solid #EAEAEA; */
     font-weight: 500;
@@ -1038,12 +1040,24 @@
 .mv_checkout_btn {
     width: 100%;
     padding: 12px;
-    background: #1E2131;
-    color: white;
+    background-color: #1E2131;
+    color: #fff;
     border: none;
-    margin-top: 20px;
+    border-radius: 0px;
     cursor: pointer;
+    font-size: 14px;
     font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.mv_checkout_btn.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.mv_checkout_btn:hover:not(.disabled) {
+    background-color: #000;
 }
 
 /* Address Modal Styles */
@@ -2377,6 +2391,7 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid #eee;
+    margin-right: 20px;
 }
 .mv_profile_row {
     display: flex;

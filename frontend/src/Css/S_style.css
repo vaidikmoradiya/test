@@ -228,6 +228,7 @@
 .mv_slider_card_body{
     box-shadow: -4px 4px 14px 0px #0000000F;
     padding: 20px !important;
+    margin: 10px 0px !important;
 }
 .mv_slider_prev_btn{
     border: none;
@@ -244,6 +245,53 @@
         padding: 10px !important;
     }
 }
+
+/* ================= Testimonial Slider ================ */
+.mv_testimonial_slider .slick-track {
+    display: flex;
+}
+.mv_testimonial_slider .slick-slide > div {
+    height: 100%;
+}
+.mv_testimonial_card {
+    height: 100%;
+    min-height: 280px;
+    max-height: 280px;
+    display: flex;
+}
+.mv_slider_card_body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.mv_testimonial_comment {
+    overflow: hidden;
+    display: -webkit-box;
+    /* -webkit-line-clamp: 4; */
+    -webkit-box-orient: vertical;
+}
+@media (max-width: 991px){
+    .mv_testimonial_card {
+        min-height: 320px;
+        max-height: 320px;
+    }
+}
+@media (max-width: 575px){
+    .mv_testimonial_card {
+        min-height: 300px;
+        max-height: 300px;
+    }
+    .mv_services_section{
+        padding: 30px 0 !important;
+    }
+}
+@media (max-width: 375px){
+    .mv_testimonial_card {
+        min-height: 320px;
+        max-height: 320px;
+    }
+}
+/* ==================================================== */
 /* ==================================================================================================================================================================
                                                                             Testimonial
 ================================================================================================================================================================ */

@@ -177,13 +177,13 @@ const Detailpage = () => {
                   </div>
 
                   <div className="mv_price_section">
-                    <span className="mv_current_price">${item.discountedPrice}</span>
-                    <span className="mv_original_price">${item.price}</span>
+                    <span className="mv_current_price">₹{item.discountedPrice}</span>
+                    <span className="mv_original_price">₹{item.price}</span>
                     <span className="mv_discount">{item.discount}% Off</span>
                   </div>
 
                   <div className="mv_part_number">
-                    <div><p className='mb-0'>Part No.:</p></div>
+                    {/* <div><p className='mb-0'>Part No.:</p></div> */}
                     {/* <div className='mv_part_no'>{item.partNo}</div> */}
                   </div>
 

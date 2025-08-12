@@ -87,3 +87,17 @@ exports.deleteCart = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 }
+
+exports.clearAllCart = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const result = await cartModal.deleteMany({ userId: userId });
+        res.status(200).json({ 
+            success: true, 
+            msg: 'All cart items cleared successfully !!',
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+}

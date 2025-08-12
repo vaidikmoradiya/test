@@ -34,10 +34,12 @@ export const cancleOrder = createAsyncThunk(
   'cancleorder',
   async ( value , { rejectWithValue }) => {
     try {
+      const Userid = localStorage.getItem('UserId');
       const response = await axios.post(`${url}/createCancleOrder`, {
-          userId: value.userId,
+          userId: Userid,
           orderId: value.orderId,
           reason: value.reason,
+          comment: value.comment,
         },{
           headers: {
             Authorization: `Bearer ${token}`,

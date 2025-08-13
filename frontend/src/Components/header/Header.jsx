@@ -14,6 +14,7 @@ import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCate
 import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice'
 import { GetSubCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice'
 import { GetAllProduct } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
+import { GetCartByuser } from '../../Redux-Toolkit/ToolkitSlice/User/CartSlice'
 
 
 const Header = () => {
@@ -71,6 +72,7 @@ const Header = () => {
     const categoryData = useSelector((state) => state.category.getCategoryData)
     const subcategoryData = useSelector((state) => state.subcategory.getSubCategoryData)
     const ProductData = useSelector((state) => state.product.allProductData)
+    const cartData = useSelector((state) => state.cart.GetCartData)
     // console.log(maincategoryData);
     // console.log(categoryData);
     // console.log(subcategoryData);
@@ -81,6 +83,7 @@ const Header = () => {
         dispatch(GetCateData())
         dispatch(GetSubCateData())
         dispatch(GetAllProduct())
+        dispatch(GetCartByuser())
     }, [])
 
     // Handle form input changes
@@ -446,9 +449,11 @@ const Header = () => {
                                                     <Link to='/cart' className='px-3 py-3 d-flex align-items-center d_theme text-decoration-none  position-relative'>
                                                         {/* <BsCart3 className='me-2 font_20' /> */}
                                                         <img className='me-2' src={require("../../assets/Cart.png")} height={22} width={22} alt="" />
-                                                        {/* <span className='s_cart1'> */}
-                                                        {/* {cartItems.length || 0} */}
-                                                        {/* </span> */}
+                                                        {cartData && cartData.length > 0 && (
+                                                            <span className='s_cart1'>
+                                                                {cartData.length}
+                                                            </span>
+                                                        )}
                                                         Cart
                                                     </Link>
                                                     <hr className='m-0' />
@@ -520,14 +525,16 @@ const Header = () => {
                                         </Link> */}
                                         <Link to='/layout/Cart' className='mv_cart_link'>
                                             <div className='d-flex align-items-center'>
-                                                <div>
+                                                <div className='position-relative'>
                                                     <img src={require("../../assets/Cart.png")} height={22} width={22} alt="" />
-                                                    {/* <span className='s_cart'> */}
-                                                    {/* {cartItems.length || 0} */}
-                                                    {/* </span> */}
+                                                    {cartData && cartData.length > 0 && (
+                                                        <span className='s_cart'>
+                                                            {cartData.length}
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div>
-                                                    <p className='mb-0 ms-2 mv_cart_text'>Cart</p>
+                                                    <p className='mb-0 ms-3 mv_cart_text'>Cart</p>
                                                 </div>
                                             </div>
                                         </Link>
@@ -1471,7 +1478,13 @@ const Header = () => {
                                                             </p>
                                                             <ul className='list-unstyled p-0 m-0 header_light inter'>
                                                                 <li className='py-1'>
-                                                                    Oil Pump & Nozzles
+                                                                    Oil Pump & Nozzels
+                                                                </li>
+                                                                <li className='py-1'>
+                                                                    Automatic Lubrication System
+                                                                </li>
+                                                                <li className='py-1'>
+                                                                    Smart door locks
                                                                 </li>
                                                                 <li className='py-1'>
                                                                     Cooling Fans
@@ -1659,8 +1672,8 @@ const Header = () => {
                                         {maincategoryData && maincategoryData.map((mainCat, index) => (
                                             <li key={mainCat._id} className='VK_sub_menu'>
                                                 {mainCat.mainCategoryName}
-                                                <div className={index < 6 ? 'VK_mega_menu' : 'VK_mega_menu mv_mega_left_menu'}>
-                                                    <div className={index < 6 ? 'VK_mega_menu_div_parent' : 'VK_mega_menu_big_div_parent'}>
+                                                <div className={'VK_mega_menu'}>
+                                                    <div className={ 'VK_mega_menu_div_parent'}>
                                                         {categoryData && categoryData
                                                             .filter(cat => cat.mainCategoryId === mainCat._id)
                                                             .map((category) => (

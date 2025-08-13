@@ -37,11 +37,11 @@
     right: -50%;
     width: 20px;
     height: 20px;
-    background-color: #ffffff;
+    background-color: #DB4444;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #2B221E;
+    color: #ffffff;
     border-radius: 50%;
     font-size: 12px;
     font-weight: bold;
@@ -411,7 +411,8 @@
 .VK_mega_menu_div_parent {
     display: flex;
     /* flex-wrap: wrap; */
-    width: 700px;
+    /* width: 700px; */
+    width: 100%;
     background-color: #fff;
 }
 .VK_mega_menu_big_div_parent{
@@ -457,14 +458,17 @@
 .VK_mega_menu {
     position: absolute;
     top: 162px;
+    left: 50%;
+    
     background-color: #FDFDFD;
     z-index: 3;
     /* transition: all 0.5s ease; */
     display: none;
     background-color: transparent !important;
-    transform: translate(-15px, 0px);
+    transform: translate(-50%);
     box-shadow: -4px 4px 14px 0px #0000000F;
     /* font-size: 25px; */
+    width: 80%;
 }
 .mv_mega_left_menu{
     transform: translate(-87%, 0px);
@@ -853,6 +857,8 @@
     .VK_mega_menu_div_parent{
         display: block !important;
         width: auto !important;
+        height: 500px;
+        overflow: auto;
     }
     .mv_megasub_menu{
         display: block !important;
@@ -927,7 +933,7 @@
         left: 9%;
         width: 20px;
         height: 20px;
-        background-color: #2B221E;
+        background-color: #DB4444;
         display: flex;
         align-items: center;
         justify-content: center;

@@ -467,237 +467,236 @@ const Cart = () => {
         <>
             <div className='mv_cart_main_padd'>
                 <div className="m_container">
-                {CartbyuserData.length === 0 ? (
-                    <div className="col-12">
-                        <div className="text-center mv_no_result_parent" style={{padding: "100px 0"}}>
-                            <div className="not-found-message">
-                                <img className='mb-3' src={require('../assets/Cart_is_empty.png')} height="116px" width="116px" alt="" />
-                            </div>
-                            <h4 className='mv_no_result_heading'>Cart is empty</h4>
-                            <p className='mb-0 mv_no_result_text'>Start adding items to the cart</p>
-                        </div>
-                    </div>
-                    ) : (
-                    <>
-                        <p className='mv_page_main_heading'>Cart</p>
+                <p className='mv_page_main_heading'>Cart</p>
 
-                        <div className="row mv_main_product">
-                                <div className="col-lg-8 col-md-12 col-sm-12">
-                                    <div className="cart-container mv_cart_container">
-                                        <table className="mv_cart_table">
-                                            <thead>
-                                                <tr className="mv_art_header">
-                                                    <th className="mv_cart_header_item" style={{ flex: 2 }}>Product</th>
-                                                    <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Price</th>
-                                                    <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Quantity</th>
-                                                    <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Subtotal</th>
-                                                    <th className="mv_cart_header_item" style={{ flex: '0 0 40px' }}></th>
+                <div className="row mv_main_product">
+                        <div className="col-lg-8 col-md-12 col-sm-12">
+                            <div className="cart-container mv_cart_container">
+                                <table className="mv_cart_table">
+                                    <thead>
+                                        <tr className="mv_art_header">
+                                            <th className="mv_cart_header_item" style={{ flex: 2 }}>Product</th>
+                                            <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Price</th>
+                                            <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Quantity</th>
+                                            <th className="mv_cart_header_item" style={{ flex: 1, textAlign: 'center' }}>Subtotal</th>
+                                            <th className="mv_cart_header_item" style={{ flex: '0 0 40px' }}></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {CartbyuserData.length === 0 ? (
+                                            // Empty cart state - show empty table body
+                                            <tr>
+                                                <td colSpan="5" style={{ 
+                                                    textAlign: 'center', 
+                                                    padding: '50px 0',
+                                                    color: '#666',
+                                                    fontSize: '16px'
+                                                }}>
+                                                    No items in cart
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            // Cart items
+                                            CartbyuserData.map((item) => (
+                                                console.log("bwivbweiqiqvgiqwe", item),
+
+                                                <tr key={item.id} className="mv_cart_item">
+                                                    <td>
+                                                        <div className="mv_cart_product_info">
+                                                            <img src={`${Back_URL}${item?.productData[0]?.productImage[0]}`} alt={item.name} className="mv_product_image" />
+                                                            <div>
+                                                                <div className="mv_product_name">{item.productData[0]?.productName}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="mv_price_column">
+                                                        ₹{item.productData[0]?.discountedPrice}
+                                                    </td>
+                                                    <td className="mv_quantity_column">
+                                                        <div className="mv_quantity_controls">
+                                                            <button
+                                                                className="mv_quantity_btn"
+                                                                onClick={() =>
+                                                                    handleQuantityChange(item._id, item.qty - 1)
+                                                                }
+                                                                disabled={item.qty <= 1}
+
+                                                            >
+                                                                <span>-</span>
+                                                            </button>
+                                                            <span className="mv_quantity_input">
+                                                                {item.qty}
+                                                            </span>
+                                                            <button
+                                                                className="mv_quantity_btn"
+                                                                onClick={() => {
+                                                                    console.log("Plus clicked", item._id, item.qty + 1);  // Add this
+                                                                    handleQuantityChange(item._id, item.qty + 1);
+                                                                }}
+                                                            >
+                                                                <span>+</span>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td className="mv_subtotal_column">
+                                                        ₹{item.productData[0]?.discountedPrice * item.qty}
+                                                    </td>
+                                                    <td>
+                                                        <button className="mv_remove_btn" onClick={() => removeItem(item._id)}>×</button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {CartbyuserData.map((item) => (
-                                                    console.log("bwivbweiqiqvgiqwe", item),
-
-                                                    <tr key={item.id} className="mv_cart_item">
-                                                        <td>
-                                                            <div className="mv_cart_product_info">
-                                                                <img src={`${Back_URL}${item?.productData[0]?.productImage[0]}`} alt={item.name} className="mv_product_image" />
-                                                                <div>
-                                                                    <div className="mv_product_name">{item.productData[0]?.productName}</div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="mv_price_column">
-                                                            ₹{item.productData[0]?.discountedPrice}
-                                                        </td>
-                                                        <td className="mv_quantity_column">
-                                                            <div className="mv_quantity_controls">
-                                                                <button
-                                                                    className="mv_quantity_btn"
-                                                                    onClick={() =>
-                                                                        handleQuantityChange(item._id, item.qty - 1)
-                                                                    }
-                                                                    disabled={item.qty <= 1}
-
-                                                                >
-                                                                    <span>-</span>
-                                                                </button>
-                                                                <span className="mv_quantity_input">
-                                                                    {item.qty}
-                                                                </span>
-                                                                <button
-                                                                    className="mv_quantity_btn"
-                                                                    onClick={() => {
-                                                                        console.log("Plus clicked", item._id, item.qty + 1);  // Add this
-                                                                        handleQuantityChange(item._id, item.qty + 1);
-                                                                    }}
-                                                                >
-                                                                    <span>+</span>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                        <td className="mv_subtotal_column">
-                                                            ₹{item.productData[0]?.discountedPrice * item.qty}
-                                                        </td>
-                                                        <td>
-                                                            <button className="mv_remove_btn" onClick={() => removeItem(item._id)}>×</button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4 col-md-12 col-sm-12">
-                                    <div className="mv_price_details_container">
-                                        <div className="mv_address_section">
-                                            {(!addresses || addresses.length === 0) ? (
-                                                <>
-                                                    <span className="mv_no_address">No saved address</span>
-                                                    <button
-                                                        className="mv_add_address_btn"
-                                                        onClick={() => setShowAddressModal(true)}
-                                                    >
-                                                        + Add Address
-                                                    </button>
-                                                </>
-                                            ) : !selectedAddress ? (
-                                                <>
-                                                    <span className="mv_no_address">No address selected</span>
-                                                    <button
-                                                        className="mv_add_address_btn"
-                                                        onClick={() => setShowAddressSelectionModal(true)}
-                                                    >
-                                                        Select Address
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <div className="mv_saved_address_card">
-                                                    <div className="mv_address_card_header_btn">
-                                                        <div className="mv_address_name">{selectedAddress.fullName}</div>
-                                                        <div className="mv_address_type_btn">{selectedAddress.addressType}</div>
-                                                    </div>
-                                                    <div className="mv_address_phone">+91 {selectedAddress.contactNo}</div>
-                                                    <div className="mv_address_text">
-                                                        {selectedAddress.address}, {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.pincode}
-                                                        {selectedAddress.country ? `, ${selectedAddress.country}` : ''}
-                                                    </div>
-                                                    <button
-                                                        className="mv_address_change_btn"
-                                                        onClick={() => setShowAddressSelectionModal(true)}
-                                                    >
-                                                        Change
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="mv_price_details_section">
-                                            <h3 className="mv_price_details_heading">Price details</h3>
-
-                                            <div className='mv_main_price_row'>
-                                                <div className="mv_price_row mt-4">
-                                                    <span className="mv_price_label">Sub Total</span>
-                                                    <span className="mv_price_value">₹{CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0)}</span>
-                                                </div>
-
-                                                <div className="mv_price_row">
-                                                    <span className="mv_price_label">Tax (28%)</span>
-                                                    <span className="mv_price_value">₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 0.28)}</span>
-                                                </div>
-
-                                                <div className="mv_price_row mb-3">
-                                                    <span className="mv_price_label">Delivery Charge</span>
-                                                    <span className="mv_discount_value">FREE</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="mv_total_row">
-                                                <span className='mv_total_amount'>Total Amount</span>
-                                                <span className='mv_total_amount'>₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 1.28)}</span>
-                                            </div>
-
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="col-lg-4 col-md-12 col-sm-12">
+                            <div className="mv_price_details_container">
+                                <div className="mv_address_section">
+                                    {(!addresses || addresses.length === 0) ? (
+                                        <>
+                                            <span className="mv_no_address">No saved address</span>
                                             <button
-                                                className={`mv_checkout_btn ${(!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'disabled' : ''}`}
-                                                onClick={handleCheckout}
-                                                disabled={!selectedAddress || !CartbyuserData || CartbyuserData.length === 0}
-                                                style={{
-                                                    opacity: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 0.6 : 1,
-                                                    cursor: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'not-allowed' : 'pointer'
-                                                }}
+                                                className="mv_add_address_btn"
+                                                onClick={() => setShowAddressModal(true)}
                                             >
-                                                {!CartbyuserData || CartbyuserData.length === 0 ? 'Cart is Empty' : !selectedAddress ? 'Select Address First' : 'Checkout'}
+                                                + Add Address
+                                            </button>
+                                        </>
+                                    ) : !selectedAddress ? (
+                                        <>
+                                            <span className="mv_no_address">No address selected</span>
+                                            <button
+                                                className="mv_add_address_btn"
+                                                onClick={() => setShowAddressSelectionModal(true)}
+                                            >
+                                                Select Address
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <div className="mv_saved_address_card">
+                                            <div className="mv_address_card_header_btn">
+                                                <div className="mv_address_name">{selectedAddress.fullName}</div>
+                                                <div className="mv_address_type_btn">{selectedAddress.addressType}</div>
+                                            </div>
+                                            <div className="mv_address_phone">+91 {selectedAddress.contactNo}</div>
+                                            <div className="mv_address_text">
+                                                {selectedAddress.address}, {selectedAddress.city}, {selectedAddress.state}, {selectedAddress.pincode}
+                                                {selectedAddress.country ? `, ${selectedAddress.country}` : ''}
+                                            </div>
+                                            <button
+                                                className="mv_address_change_btn"
+                                                onClick={() => setShowAddressSelectionModal(true)}
+                                            >
+                                                Change
                                             </button>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
-                            
+                                <div className="mv_price_details_section">
+                                    <h3 className="mv_price_details_heading">Price details</h3>
+
+                                    <div className='mv_main_price_row'>
+                                        <div className="mv_price_row mt-4">
+                                            <span className="mv_price_label">Sub Total</span>
+                                            <span className="mv_price_value">₹{CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0)}</span>
+                                        </div>
+
+                                        <div className="mv_price_row">
+                                            <span className="mv_price_label">Tax (28%)</span>
+                                            <span className="mv_price_value">₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 0.28)}</span>
+                                        </div>
+
+                                        <div className="mv_price_row mb-3">
+                                            <span className="mv_price_label">Delivery Charge</span>
+                                            <span className="mv_discount_value">FREE</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mv_total_row">
+                                        <span className='mv_total_amount'>Total Amount</span>
+                                        <span className='mv_total_amount'>₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 1.28)}</span>
+                                    </div>
+
+                                    <button
+                                        className={`mv_checkout_btn ${(!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'disabled' : ''}`}
+                                        onClick={handleCheckout}
+                                        disabled={!selectedAddress || !CartbyuserData || CartbyuserData.length === 0}
+                                        style={{
+                                            opacity: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 0.6 : 1,
+                                            cursor: (!selectedAddress || !CartbyuserData || CartbyuserData.length === 0) ? 'not-allowed' : 'pointer'
+                                        }}
+                                    >
+                                        {!CartbyuserData || CartbyuserData.length === 0 ? 'Cart is Empty' : !selectedAddress ? 'Select Address First' : 'Checkout'}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </>
-                )}
+                    
+                </div>
                 </div>
             </div>
 
             {/* Explore Other Products */}
-            {CartbyuserData.length !== 0 && (
-                <div className='mv_product_des_padd'>
-                    <div className="m_container">
-                        <div className="row">
-                            <div className="col-12">
-                                <div className='mv_relay_main mt-0'>
-                                    <div className=''>
-                                        <h2 className='mv_relay_text'>Explore Other Products</h2>
-                                        <h6 style={{ color: '#14141499' }}>Explore our top selling products</h6>
-                                    </div>
+            <div className='mv_product_des_padd'>
+                <div className="m_container">
+                    <div className="row">
+                        <div className="col-12">
+                            <div className='mv_relay_main mt-0'>
+                                <div className=''>
+                                    <h2 className='mv_relay_text'>Explore Other Products</h2>
+                                    <h6 style={{ color: '#14141499' }}>Explore our top selling products</h6>
                                 </div>
                             </div>
                         </div>
-                        <div className="row mv_product_main_mar">
-                            {TopsellingData?.map((item, index) => (
-                                <div key={index} className="col-lg-3 col-md-4 col-sm-6">
-                                    <div className="mv_main_card">
-                                        <div
-                                            className='mv_product_img text-decoration-none'
-                                            onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            <img src={`${Back_URL}${item?.productDetails?.productImage[0]}`} className='' />
+                    </div>
+                    <div className="row mv_product_main_mar">
+                        {TopsellingData?.map((item, index) => (
+                            <div key={index} className="col-lg-3 col-md-4 col-sm-6">
+                                <div className="mv_main_card">
+                                    <div
+                                        className='mv_product_img text-decoration-none'
+                                        onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <img src={`${Back_URL}${item?.productDetails?.productImage[0]}`} className='' />
+                                    </div>
+                                    <div
+                                        className='mv_name_dis text-decoration-none'
+                                        onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <div>
+                                            <p className='mv_pro_name'>{item.productDetails?.productName}</p>
                                         </div>
-                                        <div
-                                            className='mv_name_dis text-decoration-none'
-                                            onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
-                                            style={{ cursor: 'pointer' }}
-                                        >
+                                        {item.productDetails.discount && (
                                             <div>
-                                                <p className='mv_pro_name'>{item.productDetails?.productName}</p>
+                                                <p className='mv_dis_per'>{item.productDetails?.discount}% off</p>
                                             </div>
-                                            {item.productDetails.discount && (
-                                                <div>
-                                                    <p className='mv_dis_per'>{item.productDetails?.discount}% off</p>
-                                                </div>
-                                            )}
+                                        )}
+                                    </div>
+                                    <div
+                                        className='mv_main_pro_price text-decoration-none'
+                                        onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <div className=''>
+                                            <p className='mv_product_price'>${item.productDetails?.discountedPrice}</p>
                                         </div>
-                                        <div
-                                            className='mv_main_pro_price text-decoration-none'
-                                            onClick={() => window.location.href = `/layout/Detailpage/${item._id}`}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            <div className=''>
-                                                <p className='mv_product_price'>${item.productDetails?.discountedPrice}</p>
-                                            </div>
-                                            <div>
-                                                <p className='mv_dis_price'><strike>${item.productDetails?.price}</strike></p>
-                                            </div>
-                                        </div>
-                                        <div className='mv_main_add_cart_btn mv_add_cart_btn'>
-                                            <a className='' href="#" onClick={(e) => handleContinue(e, item._id)}>Add to Cart</a>
+                                        <div>
+                                            <p className='mv_dis_price'><strike>${item.productDetails?.price}</strike></p>
                                         </div>
                                     </div>
+                                    <div className='mv_main_add_cart_btn mv_add_cart_btn'>
+                                        <a className='' href="#" onClick={(e) => handleContinue(e, item._id)}>Add to Cart</a>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Address Form Modal */}
             {showAddressModal && (

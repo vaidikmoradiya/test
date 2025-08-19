@@ -162,7 +162,7 @@ exports.login = async (req, res) => {
         }
 
         // Check if user is verified
-        if (!checkEmail.isVerified) {
+        if (!checkEmail.isVerified  && !isAdmin) {
             return res.status(400).json({ status: false, message: "Please verify your email first" });
         }
 

@@ -99,7 +99,7 @@ const Testimonial = () => {
                   <p className="text-muted small flex-grow-1 mv_testimonial_comment">{item.description}</p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="text-start">
-                      <h5 className="mb-0">{item.userData[0].firstName}</h5>
+                      <h5 className="mb-0">{item.userData[0]?.firstName}</h5>
                       {/* <small className="text-muted">{item.name}</small> */}
                     </div>
                     <div className="d-flex">

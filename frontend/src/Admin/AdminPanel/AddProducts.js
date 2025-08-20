@@ -243,7 +243,7 @@ useEffect(() => {
                           style={{ fontSize: "15px", width: "100%", borderBottomRightRadius:"0px", borderBottomLeftRadius: "0px" }}
                         >
                           <option value="">Select Unit</option>
-                          {unitData?.map(element => (
+                          {unitData?.filter(el => el?.status).map(element => (
                             !(CreateProductFormik.values.unit || []).includes(element.unitName) && (
                               <option key={element._id} value={element.unitName}>{element.unitName}</option>
                             )

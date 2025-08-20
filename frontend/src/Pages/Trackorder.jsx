@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import '../Css/mv_style.css';
 import { GetOrderData } from '../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
 import { cancleOrder } from '../Redux-Toolkit/ToolkitSlice/User/CancelOrderSlice';
+import { getAllReasonCancellation } from '../Redux-Toolkit/ToolkitSlice/Admin/ReasonCancellationSlice';
 
 const Trackorder = () => {
   const { id } = useParams();
@@ -19,6 +20,10 @@ const Trackorder = () => {
     dispatch(GetOrderData(id))
   }, [])
 
+  useEffect(() => {
+    dispatch(getAllReasonCancellation())
+  }, [])
+
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [cancelComments, setCancelComments] = useState('');
@@ -28,14 +33,12 @@ const Trackorder = () => {
     comment: ''
   });
 
+  const allReasonCancel = useSelector((state) => state?.reasonCancel?.allReason);
   const cancelOptions = [
     { value: '', label: 'Select' },
-    { value: 'I was hopping for a shorter delivery time', label: 'I was hopping for a shorter delivery time' },
-    { value: 'Product quality does not match the level of its worth', label: 'Product quality does not match the level of its worth' },
-    { value: "The product doesn't look like the online picture", label: "The product doesn't look like the online picture" },
-    { value: 'The product was damaged in transit or was poorly made', label: 'The product was damaged in transit or was poorly made' },
-    { value: 'The product information was misleading', label: 'The product information was misleading' },
-    { value: 'My reason are not listed here', label: 'My reason are not listed here' },
+    ...((Array.isArray(allReasonCancel) ? allReasonCancel : [])
+      .filter((r) => r?.status)
+      .map((r) => ({ value: r?.reasonCancel || '', label: r?.reasonCancel || '' })))
   ];
 
   const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {

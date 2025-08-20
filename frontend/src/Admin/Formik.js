@@ -52,14 +52,14 @@ export const reasonCancellationSchema = Yup.object({
   reasonCancel: Yup.string()
   .required('Reason is required')
   .min(2, 'Reason must be at least 2 characters')
-  .max(50, 'Reason must be 50 characters or less'),
+  .max(100, 'Reason must be 50 characters or less'),
 });
 
 export const editReasonCancellationSchema = Yup.object({
   reasonCancel: Yup.string()
   .required('Reason is required')
   .min(2, 'Reason must be at least 2 characters')
-  .max(50, 'Reason must be 50 characters or less'),
+  .max(100, 'Reason must be 50 characters or less'),
 })
 
 export const termConditionSchema = Yup.object({

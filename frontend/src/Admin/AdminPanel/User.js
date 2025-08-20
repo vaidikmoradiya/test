@@ -24,6 +24,10 @@ const User = () => {
         dispatch(GetUserData());
     }, [dispatch]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
     const Back_URL = 'http://localhost:5000/'
 
     const filteredUsers = allUserData.filter(user => 
@@ -145,52 +149,62 @@ const User = () => {
                     <img src={search} alt="" className='ds_page_icon' />
                 </div>
             </div>
-            <div className='sp_table overflow-x-auto'>
-                <table className='w-100'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            {/* <th>Gender</th> */}
-                            <th>Contact No</th>
-                            <th className='sp_th_action'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentUsers.map((user, index) => (
-                            <tr key={user._id}>
-                                <td>{startIndex + index + 1}</td>
-                                <td className='sp_table_img'>
-                                    <img src={`${Back_URL}${user?.image}`} alt={user.firstName} />
-                                </td>
-                                <td>{user.firstName}</td>
-                                <td>{user.lastName}</td>
-                                <td>{user.email}</td>
-                                {/* <td>{user.gender || 'N/A'}</td> */}
-                                <td>{user.mobileNo || 'N/A'}</td>
-                                <td>
-                                    <div className='sp_table_action d-flex'>
-                                        <div onClick={() => handleView(user)}>
-                                            <img src={eye} alt="View" />
-                                        </div>
-                                        <div onClick={() => handleDelete(user)}>
-                                            <img src={deleteImg} alt="Delete" />
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            
-            {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {searchTerm.trim() && filteredUsers.length === 0 ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <>
+                    <div className='sp_table overflow-x-auto'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    {/* <th>Gender</th> */}
+                                    <th>Contact No</th>
+                                    <th className='sp_th_action'>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentUsers.map((user, index) => (
+                                    <tr key={user._id}>
+                                        <td>{startIndex + index + 1}</td>
+                                        <td className='sp_table_img'>
+                                            <img src={`${Back_URL}${user?.image}`} alt={user.firstName} />
+                                        </td>
+                                        <td>{user.firstName}</td>
+                                        <td>{user.lastName}</td>
+                                        <td>{user.email}</td>
+                                        {/* <td>{user.gender || 'N/A'}</td> */}
+                                        <td>{user.mobileNo || 'N/A'}</td>
+                                        <td>
+                                            <div className='sp_table_action d-flex'>
+                                                <div onClick={() => handleView(user)}>
+                                                    <img src={eye} alt="View" />
+                                                </div>
+                                                <div onClick={() => handleDelete(user)}>
+                                                    <img src={deleteImg} alt="Delete" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {/* PAGINATION CODE */}
+                    {filteredUsers.length > 0 && (
+                        <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                            {renderPagination()}
+                        </div>
+                    )}
+                </>
+            )}
 
             {/* Delete Modal */}
             <Modal
@@ -298,7 +312,7 @@ const User = () => {
                                 <div className="row">
                                     <div className="col-xl-5 col-lg-5 col-md-5 col-5">
                                         <div className='d-flex justify-content-between'>
-                                            <p className='mb-2' style={{whiteSpace:'nowrap'}}>Contact No</p>
+                                            <p className='mb-2'>Contact No</p>
                                             <p className='mb-2'>:</p>
                                         </div>
                                     </div>
@@ -312,7 +326,7 @@ const User = () => {
                                     <div className="row" key={index}>
                                         <div className="col-xl-5 col-lg-5 col-md-5 col-5">
                                             <div className='d-flex justify-content-between'>
-                                                <p className='mb-2' style={{whiteSpace:'nowrap'}}>
+                                                <p className='mb-2'>
                                                     Address ({address.addressType || 'N/A'})
                                                 </p>
                                                 <p className='mb-2'>:</p>

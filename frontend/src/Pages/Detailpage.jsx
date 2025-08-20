@@ -334,7 +334,7 @@ const Detailpage = () => {
                       <div className='mv_review_name_star'>
                         <div className='mv_main_user_name'>
                           <div>
-                            <h4 className="mv_user_name">{item.userData[0].firstName}</h4>
+                            <h4 className="mv_user_name">{item.userData[0]?.firstName}</h4>
                           </div>
                           <div className="mv_rating_stars">
                             {[...Array(5)].map((_, index) => (

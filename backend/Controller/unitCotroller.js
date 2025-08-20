@@ -76,10 +76,14 @@ exports.deleteUnitById = async (req, res) => {
 
 exports.getAllUnit = async (req, res) => {
     try {
-        const unitData = await unit.find();
+        const onlyActive = req.query.active === 'true';
 
-        if (unitData.length < 0) {
-            return res.status(404).json({ status: false, message: 'Unit Not Found' });
+        const filter = onlyActive ? { status: true } : {};
+
+        const unitData = await unit.find(filter);
+
+        if (!unitData || unitData.length === 0) {
+            return res.status(404).json({ status: false, message: 'Unit Not Found', data: [] });
         }
 
         return res.status(200).json({ status: true, message: 'Unit Found Successfully...', data: unitData });

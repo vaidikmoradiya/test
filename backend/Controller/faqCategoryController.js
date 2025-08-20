@@ -79,11 +79,15 @@ const getFaqCategoryById = async (req, res) => {
 // Update FAQ category
 const updateFaqCategory = async (req, res) => {
   try {
-    const { categoryName } = req.body;
-    
+    const { categoryName, status } = req.body;
+
+    const updateFields = {};
+    if (typeof categoryName !== 'undefined') updateFields.categoryName = categoryName;
+    if (typeof status !== 'undefined') updateFields.status = status;
+
     const faqCategory = await FaqCategory.findByIdAndUpdate(
       req.params.id,
-      { categoryName },
+      updateFields,
       { new: true, runValidators: true }
     );
     

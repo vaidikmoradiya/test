@@ -122,9 +122,15 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProduct = async (req, res) => {
     try {
-        // const productData = await product.find();
+        const onlyActive = req.query.active === 'true';
 
-        let productdata = await product.aggregate([
+        const pipeline = [];
+
+        if (onlyActive) {
+            pipeline.push({ $match: { status: true } });
+        }
+
+        pipeline.push(
             {
                 $lookup: {
                     from: 'maincategories',
@@ -140,15 +146,16 @@ exports.getAllProduct = async (req, res) => {
                     foreignField: "_id",
                     as: "categoryData"
                 }
-            }
-            ,{
+            },
+            {
                 $lookup: {
                     from: 'subcategories',
                     localField: "subCategoryId",
                     foreignField: "_id",
                     as: "subCategoryData"
                 }
-            },{
+            },
+            {
                 $lookup: {
                     from: 'sizes',
                     localField: "sizeNameId",
@@ -156,7 +163,9 @@ exports.getAllProduct = async (req, res) => {
                     as: "sizeData"
                 }
             }
-        ])
+        );
+
+        const productdata = await product.aggregate(pipeline);
         
         if (!productdata.length > 0) {
             return res.status(404).json({ status: false, message: 'Main Category Not Found' })

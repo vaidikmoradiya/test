@@ -3,6 +3,27 @@ import axios from "axios";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("login")
 
+export const GetActiveCateData = createAsyncThunk(
+  'getactivecatedata',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${url}/getAllCategory?active=true`);
+      return response?.data?.data;
+    } catch (error) {
+      console.error("Get GetActiveCateData Error:", error.message);
+      if(error.status === 404){
+        let data = [];
+        return data;
+      } else {
+        alert("Get GetActiveCateData ", error.message)
+      }
+      return rejectWithValue(
+        error.response?.data || { message: "Unexpected error occurred" }
+      );
+    }
+  }
+);
+
 export const GetCateData = createAsyncThunk(
   'getcatedata',
   async (_, { rejectWithValue }) => {
@@ -178,6 +199,21 @@ const CategorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(GetActiveCateData.pending, (state) => {
+        state.loading = true;
+        state.message = "Accepting Get Active CateData...";
+      })
+      .addCase(GetActiveCateData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.getCategoryData = action.payload
+        state.message = "Get Active CateData SuccessFully";
+      })
+      .addCase(GetActiveCateData.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.message = action.payload?.message || "Failed To Get Active CateData";
+      })
       .addCase(GetCateData.pending, (state) => {
         state.loading = true;
         state.message = "Accepting Get CateData...";

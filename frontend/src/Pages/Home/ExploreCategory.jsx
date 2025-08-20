@@ -10,7 +10,7 @@ import cat2 from '../../assets/cat2.png';
 import cat3 from '../../assets/cat3.png';
 import cat4 from '../../assets/cat4.png';
 import cat5 from '../../assets/cat5.png';
-import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice';
+import { GetActiveCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice';
 
 const ExploreCategory = () => {
     const CustomPrevArrow = (props) => {
@@ -105,7 +105,7 @@ const ExploreCategory = () => {
     // console.log(categoryData);
 
     useEffect(() => {
-      dispatch(GetCateData())
+      dispatch(GetActiveCateData())
   }, [])
 
   const Back_URL = 'http://localhost:5000/'

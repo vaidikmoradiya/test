@@ -33,8 +33,10 @@ const createFaq = async (req,res) => {
 
 const getAllFaq = async (req,res) => {
     try {
-        const faqs = await Faq.find().populate('categoryId', 'categoryName');
-        res.status(200).json(faqs);
+        const faqs = await Faq.find().populate({ path: 'categoryId', select: 'categoryName status' });
+        // Only return FAQs whose category is active
+        const activeFaqs = faqs.filter((faq) => faq?.categoryId && faq.categoryId.status === true);
+        res.status(200).json(activeFaqs);
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -124,11 +126,11 @@ const deleteFaq = async (req, res) => {
 const getFaqsByCategory = async (req, res) => {
     try {
         const categoryId = req.params.categoryId;
-        const faqs = await Faq.find({ categoryId }).populate('categoryId', 'categoryName');
-        
+        const faqs = await Faq.find({ categoryId }).populate({ path: 'categoryId', select: 'categoryName status' });
+        const activeFaqs = faqs.filter((faq) => faq?.categoryId && faq.categoryId.status === true);
         res.status(200).json({
             success: true,
-            data: faqs
+            data: activeFaqs
         });
     } catch (error) {
         res.status(500).json({

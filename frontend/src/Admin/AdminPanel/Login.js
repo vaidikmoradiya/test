@@ -133,7 +133,7 @@ const handleResendOtp = () => {
     <div>
        <div className='d-flex flex-wrap' style={{height:"100vh"}}>
             <div className="col-xl-3 col-lg-4 col-md-12 col-sm-12 col-12 position-relative">
-                <div className='d-flex flex-column justify-content-center align-item   s-center h-100'>
+                <div className='d-flex justify-content-center align-item   s-center h-100 mv_direction'>
 
                     {toggle === "login" && <div className='ds_login_box'>
                       <h5 className='mb-0 fw-bold'>LOGIN</h5>
@@ -147,7 +147,7 @@ const handleResendOtp = () => {
                           <div className="form-group mt-3">
                              <div className='position-relative'>
                                 <label className='ds_login_label' >Password</label>
-                                <input type={type} name={type} value={LoginFormik.values.password} onChange={LoginFormik.handleChange} onBlur={LoginFormik.handleBlur}  className="form-control ds_login_input mt-1" placeholder='Enter Password' />
+                                <input type={type} name="password" value={LoginFormik.values.password} onChange={LoginFormik.handleChange} onBlur={LoginFormik.handleBlur}  className="form-control ds_login_input mt-1" placeholder='Enter Password' />
                                 {LoginFormik.touched.password && LoginFormik.errors.password && (<div className="ds_forget mt-1">{LoginFormik.errors.password}</div>)}
                                 {type === "password" ? <IoIosEyeOff onClick={()=> setType("text")} className="ds_login_eye" /> : <IoIosEye onClick={()=> setType("password")} className='ds_login_eye' /> }
                              </div>

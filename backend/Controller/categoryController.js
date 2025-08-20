@@ -47,16 +47,26 @@ exports.updateCategory = async (req, res) => {
 
 exports.getAllCategory = async (req, res) => {
     try {
-        const categoryData = await category.aggregate([
-            {
-              $lookup: {
+        const onlyActive = String(req.query.active).toLowerCase() === 'true' || req.query.active === '1';
+
+        const pipeline = [];
+
+        if (onlyActive) {
+            pipeline.push({ $match: { status: true } });
+        }
+
+        pipeline.push({
+            $lookup: {
                 from: 'maincategories',
                 localField: 'mainCategoryId',
                 foreignField: '_id',
                 as: 'mainCategoryData'
-              }
-            }]);
-        if (!categoryData.length > 0) {
+            }
+        });
+
+        const categoryData = await category.aggregate(pipeline);
+
+        if (!(categoryData.length > 0)) {
             return res.status(404).json({ status: false, message: 'Category Not Found' })
         }
 

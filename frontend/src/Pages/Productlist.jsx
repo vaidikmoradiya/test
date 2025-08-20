@@ -24,7 +24,7 @@ function Productlist() {
     const Back_URL = 'http://localhost:5000/'
 
     useEffect(() => {
-        dispatch(GetAllProduct())
+        dispatch(GetAllProduct(true))
     }, [])
 
     // Toggle dropdown visibility

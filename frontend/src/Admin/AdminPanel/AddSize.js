@@ -170,7 +170,7 @@ useEffect(() => {
                           <label className='ds_login_label'>Unit</label>
                             <select name='unit' value={CreateSizeFormik?.values.unit} onChange={CreateSizeFormik?.handleChange} onBlur={CreateSizeFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
                                 <option value="">Select Unit</option>
-                                {unitData?.map((element)=>{
+                                {unitData?.filter(el => el?.status).map((element)=>{
                                     return(
                                         <option value={element?._id}>{element?.unitName}</option>
                                     )

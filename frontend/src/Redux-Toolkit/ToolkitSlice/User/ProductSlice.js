@@ -5,9 +5,10 @@ const token = localStorage.getItem("login")
 
 export const GetAllProduct = createAsyncThunk(
   'getallproduct',
-  async (_, { rejectWithValue }) => {
+  async (activeOnly = false, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getAllProduct`, {
+      const endpoint = activeOnly ? `${url}/getAllProduct?active=true` : `${url}/getAllProduct`;
+      const response = await axios.get(endpoint, {
         headers: {
             Authorization: `Bearer ${token}`,
         }

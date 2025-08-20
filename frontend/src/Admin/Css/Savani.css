@@ -13,6 +13,9 @@
     background-size: cover;
     height: 100%;
 }
+.mv_direction{
+    flex-direction: column;
+}
 .ds_login_box{
     position: absolute;
     right: -120px;
@@ -603,6 +606,9 @@ input[type="date"]:focus-visible{
     .ds_login_box{
         position: inherit;
         width: 450px;
+    }
+    .mv_direction{
+        flex-direction: row !important;
     }
 }
 

@@ -11,7 +11,7 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { ChangePassword } from '../../Redux-Toolkit/ToolkitSlice/User/LoginSlice';
 import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice'
-import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice'
+import { GetActiveCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice'
 import { GetSubCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice'
 import { GetAllProduct } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
 import { GetCartByuser } from '../../Redux-Toolkit/ToolkitSlice/User/CartSlice'
@@ -80,9 +80,9 @@ const Header = () => {
 
     useEffect(() => {
         dispatch(GetMainCateData())
-        dispatch(GetCateData())
+        dispatch(GetActiveCateData())
         dispatch(GetSubCateData())
-        dispatch(GetAllProduct())
+        dispatch(GetAllProduct(true))
         dispatch(GetCartByuser())
     }, [])
 
@@ -1669,7 +1669,7 @@ const Header = () => {
                                                 </div>
                                             </div>
                                         </li> */}
-                                        {maincategoryData && maincategoryData.map((mainCat, index) => (
+                                        {maincategoryData && maincategoryData.filter((mc) => mc?.status).map((mainCat, index) => (
                                             <li key={mainCat._id} className='VK_sub_menu'>
                                                 {mainCat.mainCategoryName}
                                                 <div className={'VK_mega_menu'}>
@@ -1686,7 +1686,7 @@ const Header = () => {
                                                                         </p>
                                                                         <ul className='list-unstyled p-0 m-0 header_light inter'>
                                                                             {subcategoryData && subcategoryData
-                                                                                .filter(subCat => subCat.categoryId === category._id)
+                                                                                .filter(subCat => subCat.categoryId === category._id && subCat?.status)
                                                                                 .map((subCat) => (
                                                                                     <li key={subCat._id} className='py-1'>
                                                                                         {subCat.subCategoryName}

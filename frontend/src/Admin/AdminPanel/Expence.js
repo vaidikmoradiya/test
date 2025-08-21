@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import { ExpenceSchema } from '../Formik';
 import search from '../Image/Savani/search_icon.svg'
 import { CreateExpence, DeleteExpence, EditExpence, GetExpenceData } from '../../Redux-Toolkit/ToolkitSlice/Admin/ExpenceSlice';
-
+import { Link } from 'react-router-dom';
 
 const Expence = () => {
 
@@ -179,7 +179,7 @@ const Expence = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>Expence</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / Expence</span></span>
+                    <span><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span> / Expence</span></span>
 
                 </div>
                 <div className='d-flex flex-wrap '>

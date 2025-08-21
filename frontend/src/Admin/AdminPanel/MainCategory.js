@@ -10,6 +10,7 @@ import { CreateMainCate, DeleteMainCate, EditMainCate, EditStatusMainCate, GetMa
 import { useFormik } from 'formik';
 import { MainCateSchema } from '../Formik';
 import search from '../Image/Savani/search_icon.svg'
+import { Link } from 'react-router-dom';
 
 
 const MainCategory = () => {
@@ -184,7 +185,7 @@ const MainCategory = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>Main Category</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / Main Category</span></span>
+                    <span><Link to="/admin/dashboard" className='sp_text_gray'>Dashboard</Link><span> / Main Category</span></span>
 
                 </div>
                 <div className='d-flex flex-wrap '>

@@ -5,6 +5,8 @@ import { IoMenu } from "react-icons/io5";
 import { IoSearch } from "react-icons/io5";
 import { FaAngleDown } from "react-icons/fa6";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import { useDispatch, useSelector } from 'react-redux';
+import { GetSingleUserData } from "../../Redux-Toolkit/ToolkitSlice/Admin/ViewProfileSlice";
 
 import dashboard1 from "../Image/Umang/dashBoard.svg";
 import dashboard from "../Image/Umang/dashboard1.svg";
@@ -51,6 +53,7 @@ import aboutUs1 from "../Image/Umang/aboutus1.svg";
 import profileimg from '../Image/Savani/profile_icon.svg'
 import logout from '../Image/Savani/logout.svg'
 import { Modal } from "react-bootstrap";
+import profileImg from "../Image/Umang/profileImg.png";
 
 
 const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
@@ -59,6 +62,9 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
   const [adminFrame, setAdminFrame] = useState(false)
   const navigate = useNavigate()
   const [logOut, setLogOut] = useState(false)
+  const dispatch = useDispatch();
+  const profileData = useSelector((state) => state?.profile?.GetSingleUserData);
+  const Back_URL = 'http://localhost:5000/';
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -82,6 +88,10 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
     setActiveLocation(location.pathname);
     // console.log('data',location.pathname)
   }, [location.pathname]);
+
+  useEffect(() => {
+    dispatch(GetSingleUserData());
+  }, [dispatch]);
 
  const handlePrfileManager  = () => {
     if(userType === "customer"){
@@ -114,7 +124,7 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
           <div className="uuser_profile position-relative">
             <div className="uavatar ">
               <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
+                src={profileData?.image ? `${Back_URL}${profileData.image}` : profileImg}
                 alt="User avatar"
                 onClick={()=> {setProfile(!profile); setAdminFrame(false)}}
               />
@@ -134,7 +144,7 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
               </div>}
             </div>
             <div className="uuser_info" onClick={()=> {setAdminFrame(!adminFrame); setProfile(false)}}>
-              <div className="uuser_name">Johan Patel</div>
+              <div className="uuser_name">{[profileData?.firstName, profileData?.lastName].filter(Boolean).join(' ') || profileData?.email || 'User'}</div>
               {/* <div className="uuser_role">
                 Admin <FaAngleDown className="udropdown_icon" />
               </div>

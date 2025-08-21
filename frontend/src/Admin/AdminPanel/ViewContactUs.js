@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { GetSingleContactUsData } from '../../Redux-Toolkit/ToolkitSlice/User/ContactusSlice';
+import { Link } from 'react-router-dom';
 
 const ViewContactUs = () => {
 
@@ -21,7 +22,7 @@ const ViewContactUs = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div >
                     <h4>View Contact Us</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><a className='sp_text_gray'> / Contact Us</a><span> / View Contact Us</span></span>
+                    <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span onClick={()=> navigate("/admin/contactus")}> / Contact Us </span><span style={{color:'rgba(20, 20, 20, 1)'}}> / View Contact Us</span></p>
                 </div>
             </div>
             <div className='sp_spec_view' >

@@ -10,7 +10,7 @@ import { editReasonCancellationSchema, reasonCancellationSchema } from '../Formi
 import { useDispatch, useSelector } from 'react-redux';
 import { createReasonCancellation, DeleteReasonCancellation, EditReasonCancellation, EditStatusReasonCancellation, getAllReasonCancellation } from '../../Redux-Toolkit/ToolkitSlice/Admin/ReasonCancellationSlice';
 import search from '../Image/Savani/search_icon.svg'
-
+import { Link } from 'react-router-dom';
 
 const ReasonofCancellation = () => {
     const [addShow, setAddShow] = useState(false);
@@ -182,7 +182,7 @@ const ReasonofCancellation = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>Reason For Cancellation</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / Reason For Cancellation</span></span>
+                    <span><a className='sp_text_gray'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link></a><span> / Reason For Cancellation</span></span>
                 </div>
                 <div className='d-flex flex-wrap '>
                     <div className='position-relative me-4 mt-3'>

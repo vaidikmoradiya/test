@@ -9,6 +9,7 @@ import { GetSizeData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SizeSlice';
 import { GetUnitData } from '../../Redux-Toolkit/ToolkitSlice/Admin/UnitSlice';
 import { EditProduct, GetAllProduct, GetSingleProductData } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice';
 import { ProductSchema } from '../Formik';
+import { Link } from 'react-router-dom';
 
 const EditProducts = () => {
 
@@ -247,7 +248,7 @@ useEffect(() => {
             <div className='d-flex justify-content-between mt-sm-4 mt-3'>
                 <div>
                    <h4 className='ds_600 mb-0'>Edit Products</h4>
-                   <p className='ds_text ds_font ds_cursor'>Dashboard / <span onClick={()=> navigate("/admin/product")}>Products</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / Edit Products</span></p>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link> / <span onClick={()=> navigate("/admin/product")}>Products</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / Edit Products</span></p>
                 </div>
             </div>
             <form onSubmit={EditProductFormik.handleSubmit}>
@@ -509,7 +510,7 @@ useEffect(() => {
                 </div>
                     {(EditProductFormik.values.fields || []).map((element, idx) => (
                       <div className="row" key={idx}>
-                        <div className="col-xl-6 col-lg-6 px-3 mt-sm-4 mt-3">
+                        <div className={`col-xl-6 col-lg-6 px-3 ${idx === 0 ? 'mt-sm-4 mt-3' : ''}`}>
                           <div className="form-group">
                             <label className='ds_login_label'>Title</label>
                             <input
@@ -533,7 +534,7 @@ useEffect(() => {
                             </div>
                           )}
                         </div>
-                        <div className="col-xl-6 col-lg-6 px-3 mt-sm-4 mt-3">
+                        <div className={`col-xl-6 col-lg-6 px-3 ${idx === 0 ? 'mt-sm-4 mt-3' : ''}`}>
                           <div className="form-group">
                             <label className='ds_login_label'>Description</label>
                             <input
@@ -556,6 +557,23 @@ useEffect(() => {
                               {EditProductFormik.errors.fields[idx].value}
                             </div>
                           )}
+                        </div>
+                        <div className="col-12 px-3 mt-sm-4 mt-3 d-flex align-items-end justify-content-end">
+                          <button 
+                            type="button"
+                            className="btn btn-danger"
+                            style={{
+                              backgroundColor: '#dc3545',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '8px 16px',
+                              fontSize: '14px',
+                              fontWeight: '500',
+                            }}
+                            onClick={() => removeFields(idx)}
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     ))}

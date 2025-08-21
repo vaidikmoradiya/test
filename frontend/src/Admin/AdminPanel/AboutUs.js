@@ -264,7 +264,7 @@ const AboutUs = () => {
           <div className='d-flex flex-wrap justify-content-between align-items-center'>
               <div className='mt-3' >
                   <h4>About Us</h4>
-                  <span><a className='sp_text_gray'>Dashboard</a><span> / About Us</span></span>
+                  <span><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span> / About Us</span></span>
               </div>
               <div className='d-flex flex-wrap'>
                   <div className='position-relative me-4 mt-3'>

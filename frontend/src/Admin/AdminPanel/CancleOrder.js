@@ -8,6 +8,7 @@ import { FaAngleLeft } from "react-icons/fa";
 import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { GetAllCancelOrder } from "../../Redux-Toolkit/ToolkitSlice/User/CancelOrderSlice";
+import { Link } from 'react-router-dom';
 
 const CancleOrder = () => {
 
@@ -114,7 +115,7 @@ const CancleOrder = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center '>
                 <div className='mt-3'>
                     <h4>Cancel Order</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / Cancel Order</span></span>
+                    <span><a className='sp_text_gray'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link></a><span> / Cancel Order</span></span>
                 </div>
                 <div className='position-relative mt-3'>
                      <input type="text" value={searchInput} onChange={(e)=> setSearchInput(e.target.value)} className='ds_page_input' placeholder='Search... ' />

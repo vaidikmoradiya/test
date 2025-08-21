@@ -11,6 +11,7 @@ import { CreateSubCateData, DeleteSubCateData, EditStatusSubCateData, EditSubCat
 import { SubCateSchema } from '../Formik'
 import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice'
 import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice'
+import { Link } from 'react-router-dom';
 
 const SubCategory = () => {
 
@@ -281,7 +282,7 @@ useEffect(() => {
          <div className='d-flex flex-wrap justify-content-between '>
                 <div className='mt-3'>
                    <h4 className='ds_600 mb-0'>Sub Category</h4>
-                   <p className='ds_text ds_font mb-0'>Dashboard<span style={{color:'rgba(20, 20, 20, 1)'}}> / Sub Category</span></p>
+                   <p className='ds_text ds_font mb-0'><Link to="/admin/dashboard" className='sp_text_gray'>Dashboard</Link><span style={{color:'rgba(20, 20, 20, 1)'}}> / Sub Category</span></p>
                 </div>
                 <div className='d-flex flex-wrap'>
                    <div className='position-relative me-4 mt-3'>

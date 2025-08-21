@@ -136,7 +136,7 @@ const User = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>User</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / User</span></span>
+                    <span><Link to="/admin/dashboard" className='sp_text_gray'>Dashboard</Link><span> / User</span></span>
                 </div>
                 <div className='position-relative mt-3'>
                     <input 

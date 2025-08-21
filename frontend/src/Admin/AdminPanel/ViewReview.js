@@ -9,6 +9,7 @@ import order2 from '../Image/Savani/order2.png'
 import profile from '../Image/Savani/profile.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { GetSingleReviewData } from '../../Redux-Toolkit/ToolkitSlice/User/ReviewSlice'
+import { Link } from 'react-router-dom';
 
 
 const ViewReview = () => {
@@ -32,7 +33,7 @@ useEffect(() => {
         <div className='d-flex flex-wrap justify-content-between mt-sm-4 mt-3'>
                 <div>
                    <h4 className='ds_600 mb-0'>View Review</h4>
-                   <p className='ds_text ds_font ds_cursor'>Dashboard <span onClick={()=> navigate("/admin/review")}> / Review</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / View Review</span></p>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link> <span onClick={()=> navigate("/admin/review")}> / Review</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / View Review</span></p>
                 </div>
         </div>
 

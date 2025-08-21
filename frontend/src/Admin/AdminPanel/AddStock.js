@@ -8,6 +8,7 @@ import { GetSubCateData } from "../../Redux-Toolkit/ToolkitSlice/Admin/SubCatego
 import { GetAllProduct } from "../../Redux-Toolkit/ToolkitSlice/User/ProductSlice";
 import { CreateStock, GetAllStock } from "../../Redux-Toolkit/ToolkitSlice/Admin/StockSlice";
 import { StockSchema } from "../Formik";
+import { Link } from 'react-router-dom';
 
 const AddStock = () => {
 
@@ -86,13 +87,8 @@ useEffect(() => {
           <div className="d-flex justify-content-between mt-sm-4 mt-3">
             <div>
               <h4 className="ds_600 mb-0">Add Stock</h4>
-              <p className="ds_text ds_font">
-                Dashboard / Stock{" "}
-                <span style={{ color: "rgba(20, 20, 20, 1)" }}>
-                  {" "}
-                  / Add Stock
-                </span>
-              </p>
+              <p className="ds_text ds_font ds_cursor">
+              <Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link> / <span onClick={()=>navigate("/admin/stock")}> Stock </span> <span style={{ color: "rgba(20, 20, 20, 1)" }}> / Add Stock</span></p>
             </div>
           </div>
 

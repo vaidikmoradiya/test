@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteStockData, GetAllStock } from '../../Redux-Toolkit/ToolkitSlice/Admin/StockSlice';
+import { Link } from 'react-router-dom';
 
 const Stock = () => {
 
@@ -219,7 +220,7 @@ const handleFilterReset = () => {
         <div className='d-flex flex-wrap justify-content-between'>
                 <div className='mt-3'>
                    <h4 className='ds_600 mb-0'>Stock</h4>
-                   <p className='ds_text ds_font mb-0'>Dashboard<span style={{color:'rgba(20, 20, 20, 1)'}}> / Stock</span></p>
+                   <p className='ds_text ds_font mb-0'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span style={{color:'rgba(20, 20, 20, 1)'}}> / Stock</span></p>
                 </div>
                 <div className='d-flex flex-wrap'>
                    <div className='position-relative me-4 mt-3'>

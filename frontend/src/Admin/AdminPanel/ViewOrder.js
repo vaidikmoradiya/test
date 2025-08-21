@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import pro from '../Image/Savani/pro.png'
 import { GetOrderData } from '../../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
+import { Link } from 'react-router-dom';
 
 const ViewOrder = () => {
 
@@ -24,7 +25,7 @@ useEffect(() => {
         <div className='d-flex flex-wrap justify-content-between mt-sm-4 mt-3'>
                 <div>
                    <h4 className='ds_600 mb-0'>View Order</h4>
-                   <p className='ds_text ds_font ds_cursor'>Dashboard  <span onClick={()=> navigate("/admin/order")}>/  Order </span> <span style={{color:'rgba(20, 20, 20, 1)'}}>  / View Order</span></p>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link>  <span onClick={()=> navigate("/admin/order")}>/  Order </span> <span style={{color:'rgba(20, 20, 20, 1)'}}>  / View Order</span></p>
                 </div>
         </div>
         {SingleOrderData?.map((item, index) => (

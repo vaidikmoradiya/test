@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import { FaqCateSchema } from '../Formik';
 import search from '../Image/Savani/search_icon.svg'
 import { CreateFaqCate, DeleteFaqCate, EditFaqCate, EditStatusFaqCate, GetFaqCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/FaqCategorySlice';
-
+import { Link } from 'react-router-dom';
 
 const FaqCategory = () => {
 
@@ -188,7 +188,7 @@ const FaqCategory = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>FAQ's Category</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / FAQ's Category</span></span>
+                    <span><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span> / FAQ's Category</span></span>
 
                 </div>
                 <div className='d-flex flex-wrap '>

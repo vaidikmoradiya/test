@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllTermCondition } from '../../Redux-Toolkit/ToolkitSlice/Admin/TermConditionSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewTandC = () => {
 
+    const navigate = useNavigate()
     const dispatch = useDispatch();
 
     const getTermCondition = useSelector((state) => state?.termCondition?.allTermCondition)
@@ -15,9 +17,9 @@ const ViewTandC = () => {
     return (
         <div className='sp_main sp_height'>
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
-                <div >
-                    <h4>View Terms & Conditions</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><a className='sp_text_gray'> / Terms & Conditions</a><span> / View Terms & Conditions</span></span>
+                <div>
+                   <h4 className='ds_600 mb-0'>View Terms & Conditions</h4>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link>  <span onClick={()=> navigate("/admin/tandc")}>/  Terms & Conditions </span> <span style={{color:'rgba(20, 20, 20, 1)'}}>  / View Terms & Conditions</span></p>
                 </div>
             </div>
             <div className='sp_view'>

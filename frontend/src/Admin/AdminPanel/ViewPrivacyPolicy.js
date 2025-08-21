@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllPrivacyPolicy } from '../../Redux-Toolkit/ToolkitSlice/Admin/PrivacyPolicySlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewPrivacyPolicy = () => {
 
+    const navigate = useNavigate()
     const dispatch = useDispatch();
 
     const getPrivacyPolicy = useSelector((state) => state?.privacyPolicy?.allPrivacyPolicy);
@@ -18,7 +20,7 @@ const ViewPrivacyPolicy = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div >
                     <h4>View Privacy Policy</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><a className='sp_text_gray'> / Privacy Policy</a><span> / Privacy Policy</span></span>
+                    <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span onClick={()=> navigate("/admin/privacypolicy")}> / Privacy Policy </span><span style={{color:'rgba(20, 20, 20, 1)'}}> / View Privacy Policy</span></p>
                 </div>
             </div>
             <div className='sp_view'>

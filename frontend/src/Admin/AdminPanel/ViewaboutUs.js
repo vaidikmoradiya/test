@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getallAboutUs } from '../../Redux-Toolkit/ToolkitSlice/User/AboutusSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewaboutUs = () => {
+    const navigate = useNavigate()
     const aboutData = useSelector((state) => state.about.allAbout)
     const dispatch = useDispatch()
 
@@ -19,7 +21,7 @@ const ViewaboutUs = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div >
                     <h4>View About Us</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><a className='sp_text_gray'> / About Us</a><span> / View About Us</span></span>
+                    <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span onClick={()=> navigate("/admin/aboutus")}> / About Us </span><span style={{color:'rgba(20, 20, 20, 1)'}}> / View About Us</span></p>
                 </div>
             </div>
             <div className='sp_view'>

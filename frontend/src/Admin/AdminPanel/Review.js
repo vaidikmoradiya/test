@@ -9,6 +9,7 @@ import deleteImg from '../Image/Sujal/delete.svg'
 import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteReviewData, GetAllReview } from '../../Redux-Toolkit/ToolkitSlice/User/ReviewSlice';
+import { Link } from 'react-router-dom';
 
 const Review = () => {
 
@@ -139,7 +140,7 @@ const Review = () => {
         <div className='d-flex flex-wrap justify-content-between '>
                 <div className='mt-3'>
                    <h4 className='ds_600 mb-0'>Review</h4>
-                   <p className='ds_text ds_font mb-0'>Dashboard<span style={{color:'rgba(20, 20, 20, 1)'}}> / Review</span></p>
+                   <p className='ds_text ds_font mb-0'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span style={{color:'rgba(20, 20, 20, 1)'}}> / Review</span></p>
                 </div>
                 <div className='position-relative mt-3'>
                      <input 
@@ -185,7 +186,7 @@ const Review = () => {
                                     ))}
                                   </div>
                                </td>
-                               <td>{item.description}</td>
+                               <td>{item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description[0] ?? ''}</td>
                                <td>
                                    <div className='sp_table_action d-flex'>
                                        <div onClick={()=> {navigate("/admin/viewreview"); localStorage.setItem("Getid" , item._id);}}> <img src={eye} alt="view" /> </div>

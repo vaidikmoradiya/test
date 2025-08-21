@@ -7,6 +7,7 @@ import vertical from '../Image/Savani/vertical.png'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { GetSingleProductData } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
+import { Link } from 'react-router-dom';
 
 const Back_URL = 'http://localhost:5000/'
 
@@ -43,7 +44,7 @@ useEffect(() => {
         <div className='d-flex flex-wrap justify-content-between mt-sm-4 mt-3'>
                 <div>
                    <h4 className='ds_600 mb-0'>View Products</h4>
-                   <p className='ds_text ds_font ds_cursor'>Dashboard  <span onClick={()=> navigate("/admin/product")}>/  Product </span> <span style={{color:'rgba(20, 20, 20, 1)'}}>  / View Products</span></p>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link>  <span onClick={()=> navigate("/admin/product")}>/  Product </span> <span style={{color:'rgba(20, 20, 20, 1)'}}>  / View Products</span></p>
                 </div>
         </div>
         <div className='ds_view_main'>

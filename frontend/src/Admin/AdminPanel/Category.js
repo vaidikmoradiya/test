@@ -10,6 +10,7 @@ import search from '../Image/Savani/search_icon.svg'
 import { useFormik } from 'formik'
 import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice'
 import { CateSchema } from '../Formik'
+import { Link } from 'react-router-dom';
 
 const Category = () => {
 
@@ -191,6 +192,26 @@ const handleEditBrowseClick = () => {
   editFileInputRef.current.click();
 };
 
+const handleAddModalClose = () => {
+  setAddPopup(false);
+  setSelectedAddImages([]);
+  CreateCateFormik.resetForm();
+  // Clear the file input value so the same file can be selected again
+  if (addFileInputRef.current) {
+    addFileInputRef.current.value = '';
+  }
+};
+
+const handleEditModalClose = () => {
+  setEditPopup(false);
+  setSelectedEditImages([]);
+  EditCateFormik.resetForm();
+  // Clear the file input value so the same file can be selected again
+  if (editFileInputRef.current) {
+    editFileInputRef.current.value = '';
+  }
+};
+
 const handleAddImageSelect = (event) => {
   const files = Array.from(event.target.files);
   if (files.length > 0) {
@@ -203,6 +224,8 @@ const handleAddImageSelect = (event) => {
     setSelectedAddImages(newImage);
     CreateCateFormik.setFieldValue('img', newImage);
   }
+  // Clear the input value to allow the same file to be selected again
+  event.target.value = '';
 };
 
 const handleEditImageSelect = (event) => {
@@ -217,6 +240,8 @@ const handleEditImageSelect = (event) => {
     setSelectedEditImages(newImage);
     EditCateFormik.setFieldValue && EditCateFormik.setFieldValue('img', newImage);
   }
+  // Clear the input value to allow the same file to be selected again
+  event.target.value = '';
 };
 
 const removeAddImage = (index) => {
@@ -254,9 +279,8 @@ const CreateCateFormik = useFormik({
         dispatch(CreateCateData(submitData))
         .then((response)=>{
             if(response?.meta?.requestStatus === "fulfilled"){
-                setAddPopup(false)
+                handleAddModalClose()
                 dispatch(GetCateData())
-                setSelectedAddImages([]);
             }
         })
         action.resetForm()
@@ -288,9 +312,8 @@ const EditCateFormik = useFormik({
         dispatch(EditCateData({values: submitData, id:editData?._id}))
         .then((response)=>{
             if(response?.meta?.requestStatus === "fulfilled"){
-                setEditPopup(false)
+                handleEditModalClose()
                 dispatch(GetCateData())
-                setSelectedEditImages([]);
             }
         })
         action.resetForm()
@@ -324,7 +347,7 @@ const handleDelete = () => {
          <div className='d-flex flex-wrap justify-content-between  '>
                 <div className='mt-3'>
                    <h4 className='ds_600 mb-0'>Category</h4>
-                   <p className='ds_text ds_font mb-0'>Dashboard<span style={{color:'rgba(20, 20, 20, 1)'}}> / Category</span></p>
+                   <p className='ds_text ds_font mb-0'><Link to="/admin/dashboard" className='sp_text_gray'>Dashboard</Link><span style={{color:'rgba(20, 20, 20, 1)'}}> / Category</span></p>
                 </div>
                 <div className='d-flex flex-wrap'>
                    <div className='position-relative me-4 mt-3'>
@@ -433,7 +456,7 @@ const handleDelete = () => {
         </Offcanvas>
 
         {/* ************ Add Category *************** */}
-        <Modal show={addPopup} onHide={() => setAddPopup(false)} aria-labelledby="contained-modal-title-vcenter " className='sp_add_modal' centered>
+        <Modal show={addPopup} onHide={handleAddModalClose} aria-labelledby="contained-modal-title-vcenter " className='sp_add_modal' centered>
             <Modal.Header closeButton>
             </Modal.Header>
             <Modal.Body>
@@ -494,7 +517,7 @@ const handleDelete = () => {
                         </div>
                     </div>   
                     <div className='d-flex justify-content-center py-2 mt-sm-5 mt-4'>
-                        <button type='button' onClick={()=> setAddPopup(false)} className='ds_user_cancel'>Cancel</button>
+                        <button type='button' onClick={handleAddModalClose} className='ds_user_cancel'>Cancel</button>
                         <button type='submit' className='ds_user_add'>Add</button>
                     </div>
                 </form>
@@ -502,10 +525,10 @@ const handleDelete = () => {
         </Modal>
 
         {/* ************ Edit Category *************** */}
-        <Modal show={editPopup} onHide={() => setEditPopup(false)} aria-labelledby="contained-modal-title-vcenter " className='sp_add_modal' centered>
+        <Modal show={editPopup} onHide={handleEditModalClose} aria-labelledby="contained-modal-title-vcenter " className='sp_add_modal' centered>
             <Modal.Header closeButton>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{ maxHeight: '70vh', overflowY: 'auto' }}>
                 <h4 className='text-center'>Edit Category</h4>
                 <form onSubmit={EditCateFormik.handleSubmit}>
                     <div className='mx-sm-3 mx-1'>
@@ -563,7 +586,7 @@ const handleDelete = () => {
                         </div>
                     </div>   
                     <div className='d-flex justify-content-center py-2 mt-sm-5 mt-4'>
-                        <button type='button' onClick={()=> setEditPopup(false)} className='ds_user_cancel'>Cancel</button>
+                        <button type='button' onClick={handleEditModalClose} className='ds_user_cancel'>Cancel</button>
                         <button type='submit' className='ds_user_add'>Update</button>
                     </div>
                 </form>

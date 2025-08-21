@@ -8,6 +8,7 @@ import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCate
 import { GetSubCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice'
 import { GetAllProduct } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
 import { StockSchema } from "../Formik";
+import { Link } from 'react-router-dom';
 
 const EditStock = () => {
 
@@ -87,15 +88,10 @@ const EditStock = () => {
       <div className="px-sm-4 px-3 mx-sm-3">
         <div className="d-flex justify-content-between mt-sm-4 mt-3">
           <div>
-            <h4 className="ds_600 mb-0">Edit Stock</h4>
-            <p className="ds_text ds_font">
-              Dashboard / Stock{" "}
-              <span style={{ color: "rgba(20, 20, 20, 1)" }}>
-                {" "}
-                / Edit Stock
-              </span>
-            </p>
-          </div>
+              <h4 className="ds_600 mb-0">Edit Stock</h4>
+              <p className="ds_text ds_font ds_cursor">
+              <Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link> / <span onClick={()=>navigate("/admin/stock")}> Stock </span> <span style={{ color: "rgba(20, 20, 20, 1)" }}> / Edit Stock</span></p>
+            </div>
         </div>
         <form onSubmit={EditStockFormik.handleSubmit}>
           <div className="ds_user_box mt-2">

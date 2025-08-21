@@ -152,7 +152,7 @@ const FAQs = () => {
     const editFaqVal = {
         faqQuestion: editData?.faqQuestion,
         faqAnswer: editData?.faqAnswer,
-        categoryName: editData?.categoryId?._id,
+        categoryName: editData?.categoryId?._id || "",
     }
 
     const editFaqFormik = useFormik({
@@ -181,7 +181,7 @@ const FAQs = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>FAQ's</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / FAQ's</span></span>
+                    <span><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span> / FAQ's</span></span>
                 </div>
                 <div className='d-flex flex-wrap  '>
                     <div className='position-relative me-4 mt-3'>
@@ -218,7 +218,7 @@ const FAQs = () => {
                                 return (
                                     <tr key={item._id}>
                                         <td>{((currentPage - 1) * 10) + (index + 1)}</td>
-                                        <td>{item.categoryId.categoryName}</td>
+                                        <td>{item?.categoryId?.categoryName}</td>
                                         <td>{item.faqQuestion?.length > 120 ? `${item.faqQuestion?.slice(0, 120)}...` : item.faqQuestion}</td>
                                         <td>{item.faqAnswer?.length > 120 ? `${item.faqAnswer?.slice(0, 120)}...` : item.faqAnswer}</td>
                                         <td>
@@ -259,10 +259,10 @@ const FAQs = () => {
                             <div className="form-group  mb-4 pt-3">
                                 <label className='ds_login_label' style={{fontSize:"15px"}}>FaqCategory</label>
                                 <select name='categoryName' value={createFaqFormik?.values.categoryName} onChange={createFaqFormik?.handleChange} onBlur={createFaqFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                    <option value="" disabled>Select FaqCategory</option>
+                                    <option value="" disabled hidden>Select FaqCategory</option>
                                     {faqCateData?.map((element)=>{
                                         return(
-                                            <option value={element?._id}>{element?.categoryName}</option>
+                                            <option key={element?._id} value={element?._id}>{element?.categoryName}</option>
                                         )
                                     })}
                                 </select>
@@ -277,12 +277,14 @@ const FAQs = () => {
                                     onChange={createFaqFormik.handleChange}
                                     onBlur={createFaqFormik.handleBlur}
                                 ></input>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createFaqFormik.errors.faqQuestion}
-                                </p>
+                                {createFaqFormik.touched.faqQuestion && createFaqFormik.errors.faqQuestion && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createFaqFormik.errors.faqQuestion}
+                                    </p>
+                                )}
                             </div>
                             <div className='mb-3'>
                                 <small>Answer</small><br></br>
@@ -291,16 +293,18 @@ const FAQs = () => {
                                     onChange={createFaqFormik.handleChange}
                                     onBlur={createFaqFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createFaqFormik.errors.faqAnswer}
-                                </p>
+                                {createFaqFormik.touched.faqAnswer && createFaqFormik.errors.faqAnswer && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createFaqFormik.errors.faqAnswer}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                            <button className='ds_user_cancel' onClick={() => setAddShow(false)}>Cancel</button>
+                            <button type='button' className='ds_user_cancel' onClick={() => setAddShow(false)}>Cancel</button>
                             <button type='submit' className='ds_user_add'>Add</button>
                         </div>
                     </Modal.Body>
@@ -324,10 +328,10 @@ const FAQs = () => {
                             <div className="form-group  mb-4 pt-3">
                                 <label className='ds_login_label' style={{fontSize:"15px"}}>FaqCategory</label>
                                 <select name='categoryName' value={editFaqFormik?.values.categoryName} onChange={editFaqFormik?.handleChange} onBlur={editFaqFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                    <option value="" disabled>Select FaqCategory</option>
+                                    <option value="" disabled hidden>Select FaqCategory</option>
                                     {faqCateData?.map((element)=>{
                                         return(
-                                            <option value={element?._id}>{element?.categoryName}</option>
+                                            <option key={element?._id} value={element?._id}>{element?.categoryName}</option>
                                         )
                                     })}
                                 </select>
@@ -342,12 +346,14 @@ const FAQs = () => {
                                     onChange={editFaqFormik.handleChange}
                                     onBlur={editFaqFormik.handleBlur}
                                 ></input>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editFaqFormik.errors.faqQuestion}
-                                </p>
+                                {editFaqFormik.touched.faqQuestion && editFaqFormik.errors.faqQuestion && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editFaqFormik.errors.faqQuestion}
+                                    </p>
+                                )}
                             </div>
                             <div className='mb-3'>
                                 <small>Answer</small><br></br>
@@ -356,17 +362,19 @@ const FAQs = () => {
                                     onChange={editFaqFormik.handleChange}
                                     onBlur={editFaqFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editFaqFormik.errors.faqAnswer}
-                                </p>
+                                {editFaqFormik.touched.faqAnswer && editFaqFormik.errors.faqAnswer && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editFaqFormik.errors.faqAnswer}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                            <button className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>
-                            <button className='ds_user_add'>Update</button>
+                            <button type='button' className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>
+                            <button type='submit' className='ds_user_add'>Update</button>
                         </div>
                     </Modal.Body>
                 </form>

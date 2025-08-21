@@ -12,6 +12,7 @@ import { UnitSchema } from '../Formik';
 import '../Css/Savani.css'
 import { EditMainCate } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice';
 import search from '../Image/Savani/search_icon.svg'
+import { Link } from 'react-router-dom';
 
 const Unit = () => {
 
@@ -179,7 +180,7 @@ const Unit = () => {
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
                 <div className='mt-3'>
                     <h4>Unit</h4>
-                    <span><a className='sp_text_gray'>Dashboard</a><span> / Unit</span></span>
+                    <span><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span> / Unit</span></span>
 
                 </div>
                 <div className='d-flex flex-wrap '>

@@ -12,6 +12,7 @@ import print from '../Image/Savani/print.svg'
 import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteOrderData, GetAllOrderData } from '../../Redux-Toolkit/ToolkitSlice/User/OrderSlice'
+import { Link } from 'react-router-dom';
 
 const Order = () => {
 
@@ -202,7 +203,7 @@ const STEP = 5;
               <div className='d-flex flex-wrap justify-content-between'>
                       <div className='mt-3'>
                          <h4 className='ds_600 mb-0'>Order</h4>
-                         <p className='ds_text ds_font mb-0'>Dashboard<span style={{color:'rgba(20, 20, 20, 1)'}}> / Order</span></p>
+                         <p className='ds_text ds_font mb-0'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link><span style={{color:'rgba(20, 20, 20, 1)'}}> / Order</span></p>
                       </div>
                       <div className='d-flex flex-wrap'>
                          <div className='position-relative me-4 mt-3'>

@@ -8,6 +8,7 @@ import { SizeSchema } from '../Formik'
 import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice';
 import { EditSizeData, GetSingleSizeData, GetSizeData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SizeSlice';
 import { GetUnitData } from '../../Redux-Toolkit/ToolkitSlice/Admin/UnitSlice';
+import { Link } from 'react-router-dom';
 
 const EditSize = () => {
 
@@ -70,6 +71,12 @@ const EditSizeFormik = useFormik({
   }
 })
 
+const handleSizeNameChange = (e) => {
+  const value = e.target.value;
+  const capitalized = value ? value.charAt(0).toUpperCase() + value.slice(1) : "";
+  EditSizeFormik.setFieldValue('sizeName', capitalized);
+}
+
 useEffect(() => {
     if (EditSizeFormik.values.mainCateId) {
       setFilteredCategories(
@@ -100,7 +107,7 @@ useEffect(() => {
             <div className='d-flex justify-content-between mt-sm-4 mt-3'>
                 <div>
                    <h4 className='ds_600 mb-0'>Edit Size</h4>
-                   <p className='ds_text ds_font ds_cursor'>Dashboard / <span onClick={()=>navigate("/admin/size")}>Size</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / Edit Size</span></p>
+                   <p className='ds_text ds_font ds_cursor'><Link to="/admin/Dashboard" className='sp_text_gray'>Dashboard</Link> / <span onClick={()=>navigate("/admin/size")}>Size</span> <span style={{color:'rgba(20, 20, 20, 1)'}}> / Edit Size</span></p>
                 </div>
             </div>
           <div className='ds_user_box mt-2'>
@@ -157,7 +164,7 @@ useEffect(() => {
                     <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                         <div className="form-group">
                               <label className='ds_login_label' >Size Name</label>
-                              <input type="text" name='sizeName' value={EditSizeFormik.values?.sizeName} onChange={EditSizeFormik?.handleChange} onBlur={EditSizeFormik.handleBlur} className="form-control ds_login_input mt-1" placeholder='Enter Size Name' id="exampleInputEmail1" aria-describedby="emailHelp"/>
+                              <input type="text" name='sizeName' value={EditSizeFormik.values?.sizeName} onChange={handleSizeNameChange} onBlur={EditSizeFormik.handleBlur} className="form-control ds_login_input mt-1" placeholder='Enter Size Name' id="exampleInputEmail1" aria-describedby="emailHelp"/>
                         </div>
                         {EditSizeFormik.touched.sizeName && EditSizeFormik.errors.sizeName && (
                             <div className="text-danger mt-1" style={{fontSize:"12px"}}>{EditSizeFormik.errors.sizeName}</div>

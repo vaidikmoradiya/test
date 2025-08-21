@@ -26,25 +26,37 @@ const TandC = () => {
 
     const dispatch = useDispatch();
     const gettTermCondition = useSelector((state) => state?.termCondition?.allTermCondition);
-    const totalPages = Math.ceil((gettTermCondition?.length || 0) / itemPerPage);
-
 
     useEffect(() => {
     dispatch(getAllTermCondition());
     }, [])
 
     useEffect(() => {
+        setCurrentPage(1)
+    }, [searchInput])
+
+    const filteredTermCondition = gettTermCondition?.filter((element) => {
+        const search = searchInput?.toLowerCase();
+        return (
+            String(element?.title || "").toLowerCase().includes(search) ||
+            String(element?.description || "").toLowerCase().includes(search)
+        );
+    })
+
+    var totalPages = Math.ceil((filteredTermCondition?.length || 0) / itemPerPage);
+
+    useEffect(() => {
         const startIndex = (currentPage - 1) * itemPerPage;
         const endIndex = startIndex + itemPerPage;
-        const paginatedData = gettTermCondition?.slice(startIndex, endIndex);
-        let filter = paginatedData?.filter((element) => {
+        const filtered = gettTermCondition?.filter((element) => {
             const search = searchInput?.toLowerCase();
             return (
                 String(element?.title || "").toLowerCase().includes(search) ||
                 String(element?.description || "").toLowerCase().includes(search)
             );
-        });
-        setData(filter);
+        })
+        const paginatedData = filtered?.slice(startIndex, endIndex);
+        setData(paginatedData);
     }, [currentPage, gettTermCondition, searchInput]);
     
     const handlePageChange = (page) => {
@@ -181,40 +193,48 @@ const TandC = () => {
                 </div>
 
             </div>
-            <div className='sp_table'>
-                <table className='w-100 '>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th className='sp_th_action'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.map((item, index) => {
-                            return (
-                                <tr key={item?._id}>
-                                    <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                                    <td>{item.title}</td>
-                                    <td>{item.description[0]?.length > 120 ? `${item.description[0]?.slice(0, 120)}...` : item.description[0] ?? ''}</td>
-                                    <td>
-                                        <div className=' sp_table_action d-flex'>
-                                            <div><img src={editImg} onClick={() => {setEditShow(true); setEditData(item)}}></img></div>
-                                            <div><img src={deleteImg} onClick={() => {setDeleteShow(true); setDeleteId(item?._id)}}></img></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            {searchInput.trim() && (data?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='sp_table'>
+                    <table className='w-100 '>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th className='sp_th_action'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.map((item, index) => {
+                                return (
+                                    <tr key={item?._id}>
+                                        <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                                        <td>{item.title}</td>
+                                        <td>{item.description[0]?.length > 120 ? `${item.description[0]?.slice(0, 120)}...` : item.description[0] ?? ''}</td>
+                                        <td>
+                                            <div className=' sp_table_action d-flex'>
+                                                <div><img src={editImg} onClick={() => {setEditShow(true); setEditData(item)}}></img></div>
+                                                <div><img src={deleteImg} onClick={() => {setDeleteShow(true); setDeleteId(item?._id)}}></img></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {!searchInput.trim() && (filteredTermCondition?.length > 0) && (
+                <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                    {renderPagination()}
+                </div>
+            )}
             {/* add role modal  */}
             <Modal
                 show={addShow}

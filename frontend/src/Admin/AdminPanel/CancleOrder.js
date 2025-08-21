@@ -121,37 +121,45 @@ const CancleOrder = () => {
                     <img src={search} alt="" className='ds_page_icon' />
                 </div>
             </div>
-            <div className='sp_table'>
-                <table className='w-100'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Customer Name</th>
-                            <th>Product</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {paginatedData?.map((item, index) => (
-                        <tr key={item._id || index}>
-                            <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                            <td>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</td>
-                            <td>{item.orderData?.product[0]?.productName}</td>
-                            <td>{new Date(item.orderData?.createdAt).toLocaleDateString('en-GB')}</td>
-                            <td>{item.comment}</td>
-                            <td>{item.reason}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+            {searchInput.trim() && (paginatedData?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='sp_table'>
+                    <table className='w-100'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer Name</th>
+                                <th>Product</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {paginatedData?.map((item, index) => (
+                            <tr key={item._id || index}>
+                                <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                                <td>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</td>
+                                <td>{item.orderData?.product[0]?.productName}</td>
+                                <td>{new Date(item.orderData?.createdAt).toLocaleDateString('en-GB')}</td>
+                                <td>{item.comment}</td>
+                                <td>{item.reason}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {!searchInput.trim() && (filteredData?.length > 0) && (
+                <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                    {renderPagination()}
+                </div>
+            )}
         </div>
     )
 }

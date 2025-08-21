@@ -32,20 +32,26 @@ const Expence = () => {
     },[])
    
     var itemPerPage = 10;
-    var totalPages = Math.ceil(expenceData?.length / itemPerPage);
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchInput])
+
+    const filteredExpence = expenceData?.filter((element)=>{
+        return element?.expenceName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+               element?.price?.toString().toLowerCase().includes(searchInput?.toLowerCase())
+    })
+    var totalPages = Math.ceil((filteredExpence?.length || 0) / itemPerPage);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * itemPerPage;   // 0 * 10
         const endIndex = startIndex + itemPerPage;            // 0 + 10
-        const paginatedData = expenceData?.slice(startIndex, endIndex);
-        let filter = paginatedData?.filter((element)=>{
-          return (
-            element?.expenceName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
-            element?.price?.toString().toLowerCase().includes(searchInput?.toLowerCase())
-          )
+        const filtered = expenceData?.filter((element)=>{
+            return element?.expenceName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.price?.toString().toLowerCase().includes(searchInput?.toLowerCase())
         })
-        setData(filter);
-    }, [currentPage, expenceData , searchInput]);
+        const paginatedData = filtered?.slice(startIndex, endIndex);
+        setData(paginatedData);
+    }, [currentPage, expenceData, searchInput]);
 
 
     const handlePageChange = (page) => {
@@ -187,45 +193,53 @@ const Expence = () => {
                 </div>
                 
             </div>
-            <div className='sp_table'>
-                <table className='w-100'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Expence Name</th>
-                            <th>Price</th>
-                            {/* <th>Status</th> */}
-                            <th className='sp_th_action'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.map((element , index)=>{
-                            return(
-                                <tr key={element?._id}>
-                                   <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                                   <td>{element?.expenceName}</td>
-                                   <td>₹{element?.price}</td>
-                                   {/* <td><label className="sp_switch">
-                                       <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=>handleStatusChange(e , element?._id)}/>
-                                           <span className="sp_slider sp_round"></span>
-                                   </label></td> */}
-                                   <td>
-                                       <div className=' sp_table_action d-flex'>
-                                           <div onClick={() => {setEditShow(true); setEditData(element)}}><img src={editImg} ></img></div>
-                                           <div onClick={() => {setDeleteShow(true); setDeleteId(element?._id)}}><img src={deleteImg} ></img></div>
-                                       </div>
-                                   </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            {searchInput.trim() && (data?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='sp_table'>
+                    <table className='w-100'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Expence Name</th>
+                                <th>Price</th>
+                                {/* <th>Status</th> */}
+                                <th className='sp_th_action'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.map((element , index)=>{
+                                return(
+                                    <tr key={element?._id}>
+                                       <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                                       <td>{element?.expenceName}</td>
+                                       <td>₹{element?.price}</td>
+                                       {/* <td><label className="sp_switch">
+                                           <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=>handleStatusChange(e , element?._id)}/>
+                                               <span className="sp_slider sp_round"></span>
+                                       </label></td> */}
+                                       <td>
+                                           <div className=' sp_table_action d-flex'>
+                                               <div onClick={() => {setEditShow(true); setEditData(element)}}><img src={editImg} ></img></div>
+                                               <div onClick={() => {setDeleteShow(true); setDeleteId(element?._id)}}><img src={deleteImg} ></img></div>
+                                           </div>
+                                       </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {!searchInput.trim() && (filteredExpence?.length > 0) && (
+                <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                    {renderPagination()}
+                </div>
+            )}
             {/* add role modal  */}
             <Modal
                 show={addShow}

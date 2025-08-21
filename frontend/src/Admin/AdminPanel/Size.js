@@ -190,45 +190,54 @@ const handleDeleteUnit = () => {
                 </div>
         </div>
 
-         <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-            <table className="w-100 ds_customer_manage">
-                <thead className=''>
-                    <tr className=''>
-                        <th>ID</th>
-                        <th>Main Category</th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-                        <th>Size Name</th>
-                        <th>Size</th>
-                        <th>Unit</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data && data.map((item, index) => (
-                        <tr key={index}>
-                            <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                            <td>{item.mainCategoryId?.mainCategoryName}</td>
-                            <td>{item.categoryId?.categoryName}</td>
-                            <td>{item.subCategoryId?.subCategoryName}</td>
-                            <td>{item.sizeName}</td>
-                            <td>{item.size}</td>
-                            <td>{item.unitId?.unitName}</td>
-                            <td>
-                                <div className='sp_table_action d-flex'>
-                                    <div onClick={()=> {navigate("/admin/editsize"); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt="edit" /></div>
-                                    <div onClick={()=> {setDeletePopup(true); setdeleteId(item?._id)}}><img src={deleteImg} alt="delete" /></div>
-                                </div>
-                            </td>
+         {searchInput.trim() && (data?.length === 0) ? (
+             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+             </div>
+         ) : (
+             <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+                <table className="w-100 ds_customer_manage">
+                    <thead className=''>
+                        <tr className=''>
+                            <th>ID</th>
+                            <th>Main Category</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Size Name</th>
+                            <th>Size</th>
+                            <th>Unit</th>
+                            <th>Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {data && data.map((item, index) => (
+                            <tr key={index}>
+                                <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                                <td>{item.mainCategoryId?.mainCategoryName}</td>
+                                <td>{item.categoryId?.categoryName}</td>
+                                <td>{item.subCategoryId?.subCategoryName}</td>
+                                <td>{item.sizeName}</td>
+                                <td>{item.size}</td>
+                                <td>{item.unitId?.unitName}</td>
+                                <td>
+                                    <div className='sp_table_action d-flex'>
+                                        <div onClick={()=> {navigate("/admin/editsize"); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt="edit" /></div>
+                                        <div onClick={()=> {setDeletePopup(true); setdeleteId(item?._id)}}><img src={deleteImg} alt="delete" /></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+         )}
 
-        <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-            {renderPagination()}
-        </div>
+        {/* PAGINATION CODE */}
+        {!searchInput.trim() && (filteredData?.length > 0) && (
+            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+                {renderPagination()}
+            </div>
+        )}
 
         {/* ************ Offcanvas *************** */}
         <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

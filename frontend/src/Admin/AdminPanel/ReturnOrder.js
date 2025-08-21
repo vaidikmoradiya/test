@@ -26,7 +26,17 @@ const ReturnOrder = () => {
     },[])
     
     const itemPerPage = 10;
-    const totalPages = Math.ceil(returnOrderData?.length / itemPerPage);
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchInput])
+
+    const filteredReturnOrder = returnOrderData?.filter(item => {
+        const name = item.userData && item.userData.length > 0
+            ? `${item.userData[0].firstName} ${item.userData[0].lastName}`.toLowerCase()
+            : "";
+        return name.includes(searchInput.toLowerCase());
+    });
+    const totalPages = Math.ceil((filteredReturnOrder?.length || 0) / itemPerPage);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * itemPerPage;
@@ -139,70 +149,79 @@ const ReturnOrder = () => {
                 </div>
         </div>
 
-        <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-           <table className="w-100 ds_customer_manage">
-               <thead className=''>
-                   <tr className=''>
-                       <th>ID</th>
-                       <th>Customer Name</th>
-                       <th>Product</th>
-                       <th>Date</th>
-                       <th>Status</th>
-                       <th>Reason</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   {data?.map((item, index) => (
-                       <tr key={item._id || index}>
-                           <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                           <td>
-                               {item.userData && item.userData.length > 0 &&
-                                   `${item.userData[0].firstName} ${item.userData[0].lastName}`}
-                           </td>
-                           <td>
-                               {item.orderData && item.orderData.length > 0 &&
-                                   item.orderData.map((order, i) => (
-                                       <div key={order.product.productId}>
-                                           <b>{order.product.productDetail?.productName || order.product.productId}</b>
-                                       </div>
-                                   ))}
-                           </td>
-                           <td>
-                               {item.createdAt && (() => {
-                                   const date = new Date(item.createdAt);
-                                   return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-                               })()}
-                           </td>
-                           <td>
-                               <div className='d-flex'>
-                                   {!returnOrderStatus[item._id] && !clickedButtons[item._id] &&
-                                       <>
-                                           <button
-                                               className='ds_returnorder_btn me-2'
-                                               onClick={() => handleStatusClick(item._id, "Accept")}
-                                           >
-                                               Accept
-                                           </button>
-                                           <button
-                                               className='ds_returnorder_btn2'
-                                               onClick={() => handleStatusClick(item._id, "Reject")}
-                                           >
-                                               Reject
-                                           </button>
-                                       </>
-                                   }
-                               </div>
-                           </td>
-                           <td>{item.reason}</td>
+        {searchInput.trim() && (data?.length === 0) ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%', minHeight: '700px' }}>
+                <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+            </div>
+        ) : (
+            <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+               <table className="w-100 ds_customer_manage">
+                   <thead className=''>
+                       <tr className=''>
+                           <th>ID</th>
+                           <th>Customer Name</th>
+                           <th>Product</th>
+                           <th>Date</th>
+                           <th>Status</th>
+                           <th>Reason</th>
                        </tr>
-                   ))}
-               </tbody>
-           </table>
-       </div>
+                   </thead>
+                   <tbody>
+                       {data?.map((item, index) => (
+                           <tr key={item._id || index}>
+                               <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                               <td>
+                                   {item.userData && item.userData.length > 0 &&
+                                       `${item.userData[0].firstName} ${item.userData[0].lastName}`}
+                               </td>
+                               <td>
+                                   {item.orderData && item.orderData.length > 0 &&
+                                       item.orderData.map((order, i) => (
+                                           <div key={order.product.productId}>
+                                               <b>{order.product.productDetail?.productName || order.product.productId}</b>
+                                           </div>
+                                       ))}
+                               </td>
+                               <td>
+                                   {item.createdAt && (() => {
+                                       const date = new Date(item.createdAt);
+                                       return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+                                   })()}
+                               </td>
+                               <td>
+                                   <div className='d-flex'>
+                                       {!returnOrderStatus[item._id] && !clickedButtons[item._id] &&
+                                           <>
+                                               <button
+                                                   className='ds_returnorder_btn me-2'
+                                                   onClick={() => handleStatusClick(item._id, "Accept")}
+                                               >
+                                                   Accept
+                                               </button>
+                                               <button
+                                                   className='ds_returnorder_btn2'
+                                                   onClick={() => handleStatusClick(item._id, "Reject")}
+                                               >
+                                                   Reject
+                                               </button>
+                                           </>
+                                       }
+                                   </div>
+                               </td>
+                               <td>{item.reason}</td>
+                           </tr>
+                       ))}
+                   </tbody>
+               </table>
+           </div>
+        )}
 
-       <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-           {renderPagination()}
-       </div>
+       {/* PAGINATION CODE */}
+       {!searchInput.trim() && (filteredReturnOrder?.length > 0) && (
+           <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+               {renderPagination()}
+           </div>
+       )}
     </div>
   )
 }

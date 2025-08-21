@@ -264,60 +264,69 @@ const Products = () => {
                 </div>
             </div>
 
-            <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-            <table className="w-100 ds_customer_manage">
-                <thead className=''>
-                    <tr className=''>
-                        <th>ID</th>
-                        <th>Main Category</th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {data?.map((item , index)=>{
-                    return(
-                        <tr key={item?._id}>
-                            <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                            <td>{item.mainCategoryData[0]?.mainCategoryName}</td>
-                            <td>{item.categoryData[0]?.categoryName}</td>
-                            <td>{item.subCategoryData[0]?.subCategoryName}</td>
-                            <td>
-                                <div className='d-flex align-items-center'>
-                                    <div>
-                                        <img src={`${Back_URL}${item.productImage[0]}`} alt='' className='ds_pro_img' />
-                                    </div>
-                                    <p className='mb-0 ms-2'>{item.productName}</p>
-                                </div>
-                            </td>
-                            <td>₹{item.price}</td>
-                            <td>
-                                <label className='sp_switch'>
-                                    <input type='checkbox' checked={item?.status ? true : false} onChange={(e)=>handleStatusChange(e , item?._id)} />
-                                    <span className='sp_slider sp_round'></span>
-                                </label>
-                            </td>
-                            <td>
-                                <div className='sp_table_action d-flex'>
-                                    <div onClick={() => {navigate('/admin/viewproduct'); localStorage.setItem("Getid" , item._id)}}><img src={eye} alt='view' /></div>
-                                    <div onClick={() => {navigate('/admin/editproduct'); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt='edit' /></div>
-                                    <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}><img src={deleteImg} alt='delete' /></div>
-                                </div>
-                            </td>
+            {searchInput.trim() && (data?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+                <table className="w-100 ds_customer_manage">
+                    <thead className=''>
+                        <tr className=''>
+                            <th>ID</th>
+                            <th>Main Category</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    {data?.map((item , index)=>{
+                        return(
+                            <tr key={item?._id}>
+                                <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                                <td>{item.mainCategoryData[0]?.mainCategoryName}</td>
+                                <td>{item.categoryData[0]?.categoryName}</td>
+                                <td>{item.subCategoryData[0]?.subCategoryName}</td>
+                                <td>
+                                    <div className='d-flex align-items-center'>
+                                        <div>
+                                            <img src={`${Back_URL}${item.productImage[0]}`} alt='' className='ds_pro_img' />
+                                        </div>
+                                        <p className='mb-0 ms-2'>{item.productName}</p>
+                                    </div>
+                                </td>
+                                <td>₹{item.price}</td>
+                                <td>
+                                    <label className='sp_switch'>
+                                        <input type='checkbox' checked={item?.status ? true : false} onChange={(e)=>handleStatusChange(e , item?._id)} />
+                                        <span className='sp_slider sp_round'></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <div className='sp_table_action d-flex'>
+                                        <div onClick={() => {navigate('/admin/viewproduct'); localStorage.setItem("Getid" , item._id)}}><img src={eye} alt='view' /></div>
+                                        <div onClick={() => {navigate('/admin/editproduct'); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt='edit' /></div>
+                                        <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}><img src={deleteImg} alt='delete' /></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+            )}
 
-        <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end">
-            {renderPagination()}
-        </div>
+        {/* PAGINATION CODE */}
+        {!searchInput.trim() && (filteredData?.length > 0) && (
+            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end">
+                {renderPagination()}
+            </div>
+        )}
 
         {/* ************ Offcanvas *************** */}
         <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

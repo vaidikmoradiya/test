@@ -231,49 +231,58 @@ const handleFilterReset = () => {
                 </div>
         </div>
 
-         <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-            <table className="w-100 ds_customer_manage">
-                <thead className=''>
-                    <tr className=''>
-                        <th>ID</th>
-                        <th>Main Category</th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-                        <th>Product</th>
-                        <th>Qty.</th>
-                        {/* <th>Stock Status</th> */}
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data?.map((item, index) => (
-                        <tr key={item.id + index}>
-                            <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                            <td>{item.mainCategory?.mainCategoryName}</td>
-                            <td>{item.category?.categoryName}</td>
-                            <td>{item.subCategory?.subCategoryName}</td>
-                            <td>{item.product?.productName}</td>
-                            <td>{item.qty}</td>
-                            {/* <td>
-                                <span className={item.stockStatus ? 'mv_in_stock' : 'mv_out_of_stock'}>
-                                    {item.stockStatus==="In Stock" ? 'In Stock' : 'Out of Stock'}
-                                </span>
-                            </td> */}
-                            <td>
-                                <div className='sp_table_action d-flex'>
-                                    <div onClick={() => {navigate("/admin/editStock"); localStorage.setItem("Editid" , item._id)}}> <img src={editImg} alt="edit" /> </div>
-                                    <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
-                                </div>
-                            </td>
+         {searchInput.trim() && (data?.length === 0) ? (
+             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+             </div>
+         ) : (
+             <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+                <table className="w-100 ds_customer_manage">
+                    <thead className=''>
+                        <tr className=''>
+                            <th>ID</th>
+                            <th>Main Category</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Product</th>
+                            <th>Qty.</th>
+                            {/* <th>Stock Status</th> */}
+                            <th>Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {data?.map((item, index) => (
+                            <tr key={item.id + index}>
+                                <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                                <td>{item.mainCategory?.mainCategoryName}</td>
+                                <td>{item.category?.categoryName}</td>
+                                <td>{item.subCategory?.subCategoryName}</td>
+                                <td>{item.product?.productName}</td>
+                                <td>{item.qty}</td>
+                                {/* <td>
+                                    <span className={item.stockStatus ? 'mv_in_stock' : 'mv_out_of_stock'}>
+                                        {item.stockStatus==="In Stock" ? 'In Stock' : 'Out of Stock'}
+                                    </span>
+                                </td> */}
+                                <td>
+                                    <div className='sp_table_action d-flex'>
+                                        <div onClick={() => {navigate("/admin/editStock"); localStorage.setItem("Editid" , item._id)}}> <img src={editImg} alt="edit" /> </div>
+                                        <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+         )}
 
-        <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-            {renderPagination()}
-        </div>
+        {/* PAGINATION CODE */}
+        {!searchInput.trim() && (filteredData?.length > 0) && (
+            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+                {renderPagination()}
+            </div>
+        )}
 
         {/* ************ Offcanvas *************** */}
         <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

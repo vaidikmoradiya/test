@@ -88,17 +88,27 @@ const AboutUs = () => {
   };
   
   var itemPerPage = 10;
-  var totalPages = Math.ceil(AboutUsData?.length / itemPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchInput])
+
+  const filteredAboutUs = AboutUsData?.filter((element)=>{
+    return  element?.title?.toLowerCase().includes(searchInput?.toLowerCase()) || 
+            element?.description?.toLowerCase().includes(searchInput?.toLowerCase())
+  })
+
+  var totalPages = Math.ceil((filteredAboutUs?.length || 0) / itemPerPage);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemPerPage;   // 0 * 10
     const endIndex = startIndex + itemPerPage;            // 0 + 10
-    const paginatedData = AboutUsData?.slice(startIndex, endIndex);
-    let filter = paginatedData?.filter((element)=>{
+    const filtered = AboutUsData?.filter((element)=>{
       return  element?.title?.toLowerCase().includes(searchInput?.toLowerCase()) || 
               element?.description?.toLowerCase().includes(searchInput?.toLowerCase())
     })
-    setData(filter);
+    const paginatedData = filtered?.slice(startIndex, endIndex);
+    setData(paginatedData);
   }, [currentPage, AboutUsData , searchInput]);
 
   const handlePageChange = (page) => {
@@ -270,40 +280,48 @@ const AboutUs = () => {
               </div>
 
           </div>
-          <div className='sp_table'>
+          {searchInput.trim() && (data?.length === 0) ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+            </div>
+          ) : (
+            <div className='sp_table'>
               <table className='w-100 '>
-                  <thead>
-                      <tr>
-                          <th>ID</th>
-                          <th>Image</th>
-                          <th>Title</th>
-                          <th>Description</th>
-                          <th className='sp_th_action'>Action</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {data?.map((item, index) => (
-                          <tr key={index}>
-                              <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                              <td className='sp_table_img'><img src={`${Back_URL}${item.image[0]}`}/></td>
-                              <td>{item.title}</td>
-                              <td>{item.description}</td>
-                              <td>
-                                  <div className=' sp_table_action d-flex'>
-                                      <div><img src={editImg} onClick={() => {setEditShow(true); setEditAbout(item)}}></img></div>
-                                      <div><img src={deleteImg} onClick={() => {setDeleteShow(true);  setDeleteId(item?._id)}}></img></div>
-                                  </div>
-                              </td>
-                          </tr>
-                      ))}
-                  </tbody>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th className='sp_th_action'>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.map((item, index) => (
+                    <tr key={index}>
+                      <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                      <td className='sp_table_img'><img src={`${Back_URL}${item.image[0]}`}/></td>
+                      <td>{item.title}</td>
+                      <td>{item.description}</td>
+                      <td>
+                        <div className=' sp_table_action d-flex'>
+                          <div><img src={editImg} onClick={() => {setEditShow(true); setEditAbout(item)}}></img></div>
+                          <div><img src={deleteImg} onClick={() => {setDeleteShow(true);  setDeleteId(item?._id)}}></img></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
-          </div>
+            </div>
+          )}
 
           {/* PAGINATION CODE */}
-          <div className="py-3 d-flex justify-content-center justify-content-md-end">
+          {!searchInput.trim() && (filteredAboutUs?.length > 0) && (
+            <div className="py-3 d-flex justify-content-center justify-content-md-end">
               {renderPagination()}
-          </div>
+            </div>
+          )}
           {/* add role modal  */}
           <Modal
               show={addShow}

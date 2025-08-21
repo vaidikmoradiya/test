@@ -224,47 +224,56 @@ const STEP = 5;
                       </div>
               </div>
 
-         <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-            <table className="w-100 ds_customer_manage">
-                <thead className=''>
-                    <tr className=''>
-                        <th>ID</th>
-                        <th>Customer Name</th>
-                        <th>Order Date</th>
-                        <th>Total Amount</th>
-                        <th>Order Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data?.map((order, index) => (
-                        <tr key={order?._id || index}>
-                            <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                            <td>{order?.userData?.firstName}</td>
-                            <td>{new Date(order?.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
-                            <td>₹{order?.totalAmount}</td>
-                            <td>
-                                <div className={
-                                    order?.orderStatus === 'Delivered' ? 'ds_order_deli' :
-                                    order?.orderStatus === 'Pending' ? 'ds_order_pen' :
-                                            'ds_order_can'
-                                }>{order?.orderStatus}</div>
-                            </td>
-                            <td>
-                                <div className='sp_table_action d-flex'>
-                                    <div onClick={() => {localStorage.setItem("Getid" , order._id); navigate("/admin/vieworder");}}><img src={eye} alt='view' ></img></div>
-                                    <div onClick={() => { setDeletePopup(true); setSelectedOrder(order); setDeleteId(order?._id) }}><img src={deleteImg} alt='delete'></img></div>
-                                </div>
-                            </td>
+         {searchInput.trim() && (data?.length === 0) ? (
+             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+             </div>
+         ) : (
+             <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+                <table className="w-100 ds_customer_manage">
+                    <thead className=''>
+                        <tr className=''>
+                            <th>ID</th>
+                            <th>Customer Name</th>
+                            <th>Order Date</th>
+                            <th>Total Amount</th>
+                            <th>Order Status</th>
+                            <th>Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {data?.map((order, index) => (
+                            <tr key={order?._id || index}>
+                                <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                                <td>{order?.userData?.firstName}</td>
+                                <td>{new Date(order?.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
+                                <td>₹{order?.totalAmount}</td>
+                                <td>
+                                    <div className={
+                                        order?.orderStatus === 'Delivered' ? 'ds_order_deli' :
+                                        order?.orderStatus === 'Pending' ? 'ds_order_pen' :
+                                                'ds_order_can'
+                                    }>{order?.orderStatus}</div>
+                                </td>
+                                <td>
+                                    <div className='sp_table_action d-flex'>
+                                        <div onClick={() => {localStorage.setItem("Getid" , order._id); navigate("/admin/vieworder");}}><img src={eye} alt='view' ></img></div>
+                                        <div onClick={() => { setDeletePopup(true); setSelectedOrder(order); setDeleteId(order?._id) }}><img src={deleteImg} alt='delete'></img></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+         )}
 
-        <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-            {renderPagination()}
-        </div>
+        {/* PAGINATION CODE */}
+        {!searchInput.trim() && (filteredData?.length > 0) && (
+            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+                {renderPagination()}
+            </div>
+        )}
 
         {/* ************ Offcanvas *************** */}
         <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

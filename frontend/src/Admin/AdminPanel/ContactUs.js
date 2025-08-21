@@ -28,11 +28,27 @@ const ContactUs = () => {
     dispatch(GetContactusData())
   },[])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchInput])
+
+  const filteredContactUs = contactUsData?.filter((item) => {
+    return (
+      item?.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
+      item?.email?.toLowerCase().includes(searchInput.toLowerCase()) ||
+      item?.phoneNo?.toString().includes(searchInput) ||
+      item?.subject?.toLowerCase().includes(searchInput.toLowerCase()) ||
+      item?.message?.toLowerCase().includes(searchInput.toLowerCase())
+    );
+  });
+
+  var totalPages = Math.ceil((filteredContactUs?.length || 0) / itemPerPage);
+
   // Calculate filtered and paginated data
   useEffect(() => {
     const startIndex = (currentPage - 1) * itemPerPage;
     const endIndex = startIndex + itemPerPage;
-    let filtered = contactUsData?.filter((item) => {
+    const filtered = contactUsData?.filter((item) => {
       return (
         item?.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
         item?.email?.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -43,16 +59,6 @@ const ContactUs = () => {
     });
     setData(filtered?.slice(startIndex, endIndex));
   }, [contactUsData, searchInput, currentPage]);
-
-  const totalPages = Math.ceil((contactUsData?.filter((item) => {
-    return (
-      item?.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
-      item?.email?.toLowerCase().includes(searchInput.toLowerCase()) ||
-      item?.phoneNo?.toString().includes(searchInput) ||
-      item?.subject?.toLowerCase().includes(searchInput.toLowerCase()) ||
-      item?.message?.toLowerCase().includes(searchInput.toLowerCase())
-    );
-  })?.length || 0) / itemPerPage);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -140,49 +146,57 @@ const ContactUs = () => {
           <span><a className='sp_text_gray'>Dashboard</a><span> / Contact Us</span></span>
         </div>
         <div className='position-relative me-4 mt-3'>
-            <input type="text" className='ds_page_input' placeholder='Search... ' value={searchInput} onChange={e => { setSearchInput(e.target.value); setCurrentPage(1); }} />
+            <input type="text" className='ds_page_input' placeholder='Search... ' value={searchInput} onChange={e => setSearchInput(e.target.value)} />
             <img src={search} alt="" className='ds_page_icon' />
          </div>
 
       </div>
-      <div className='sp_table'>
-        <table className='w-100 '>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Mobile No.</th>
-              <th>Subject</th>
-              <th>Message</th>
-              <th className='sp_th_action'>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          {data?.map((item , index) => (
-            <tr key={item._id || index}>
-              <td>{(currentPage - 1) * itemPerPage + (index + 1)}</td>
-              <td>{item.name}</td>
-              <td>{item.email}</td>
-              <td>{item.phoneNo}</td>
-              <td>{item.subject}</td>
-              <td>{item.message}</td>
-              <td>
-                <div className=' sp_table_action d-flex'>
-                  <div onClick={()=>{navigate('/admin/viewcontactus'); localStorage.setItem("Getid" , item._id);}}><img src={viewImg} alt="view" /></div>
-                  <div onClick={()=> {setDeleteShow(true); setDeleteId(item?._id)}}><img src={deleteImg} alt="delete" /></div>
-                </div>
-              </td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
-      </div>
+      {searchInput.trim() && (data?.length === 0) ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+        </div>
+      ) : (
+        <div className='sp_table'>
+          <table className='w-100 '>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile No.</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th className='sp_th_action'>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            {data?.map((item , index) => (
+              <tr key={item._id || index}>
+                <td>{(currentPage - 1) * itemPerPage + (index + 1)}</td>
+                <td>{item.name}</td>
+                <td>{item.email}</td>
+                <td>{item.phoneNo}</td>
+                <td>{item.subject}</td>
+                <td>{item.message}</td>
+                <td>
+                  <div className=' sp_table_action d-flex'>
+                    <div onClick={()=>{navigate('/admin/viewcontactus'); localStorage.setItem("Getid" , item._id);}}><img src={viewImg} alt="view" /></div>
+                    <div onClick={()=> {setDeleteShow(true); setDeleteId(item?._id)}}><img src={deleteImg} alt="delete" /></div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* PAGINATION CODE */}
-      <div className="py-3 d-flex justify-content-center justify-content-md-end">
-        {renderPagination()}
-      </div>
+      {!searchInput.trim() && (filteredContactUs?.length > 0) && (
+        <div className="py-3 d-flex justify-content-center justify-content-md-end">
+          {renderPagination()}
+        </div>
+      )}
 
 
       {/* delete Modal */}

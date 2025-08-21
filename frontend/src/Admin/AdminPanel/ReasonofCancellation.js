@@ -24,20 +24,29 @@ const ReasonofCancellation = () => {
     const dispatch = useDispatch();
     const reasonCancel = useSelector((state) => state?.reasonCancel?.allReason);
     var itemPerPage = 10;
-    const totalPages = Math.ceil((reasonCancel?.length || 0) / itemPerPage);
 
     useEffect(() => {
         dispatch(getAllReasonCancellation());
     }, [])
 
     useEffect(() => {
+        setCurrentPage(1)
+    }, [searchInput])
+
+    const filteredReasonCancel = reasonCancel?.filter((element) => {
+        return element?.reasonCancel?.toLowerCase().includes(searchInput?.toLowerCase())
+    })
+
+    var totalPages = Math.ceil((filteredReasonCancel?.length || 0) / itemPerPage);
+
+    useEffect(() => {
         const startIndex = (currentPage - 1) * itemPerPage;
         const endIndex = startIndex + itemPerPage;
-        const paginatedData = reasonCancel?.slice(startIndex, endIndex);
-        let filter = paginatedData?.filter((element) => {
-            return element?.reasonCancel?.toLowerCase().includes(searchInput?.toLowerCase());
-        });
-        setData(filter);
+        const filtered = reasonCancel?.filter((element) => {
+            return element?.reasonCancel?.toLowerCase().includes(searchInput?.toLowerCase())
+        })
+        const paginatedData = filtered?.slice(startIndex, endIndex);
+        setData(paginatedData);
     }, [currentPage, reasonCancel, searchInput]);
 
     const handlePageChange = (page) => {
@@ -186,43 +195,51 @@ const ReasonofCancellation = () => {
                 </div>
                 
             </div>
-            <div className='sp_table'>
-                <table className='w-100 '>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Reason</th>
-                            <th>Status</th>
-                            <th className='sp_th_action'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.map((ele, ind) => {
-                            return (
-                                <tr key={ele?._id}>
-                                    <td>{((currentPage - 1) * itemPerPage) + (ind + 1)}</td>
-                                    <td>{ele?.reasonCancel}</td>
-                                    <td><label className="sp_switch">
-                                        <input type="checkbox" checked={ele?.status ? true : false} onChange={(e)=>handleStatusChange(e , ele?._id)}/>
-                                            <span className="sp_slider sp_round"></span>
-                                    </label></td>
-                                    <td>
-                                        <div className=' sp_table_action d-flex'>
-                                            <div><img src={editImg} onClick={() => {setEditShow(true); setEditData(ele)}}></img></div>
-                                            <div><img src={deleteImg} onClick={() => {setDeleteShow(true); setDeleteId(ele?._id)}}></img></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            {searchInput.trim() && (data?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='sp_table'>
+                    <table className='w-100 '>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th className='sp_th_action'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.map((ele, ind) => {
+                                return (
+                                    <tr key={ele?._id}>
+                                        <td>{((currentPage - 1) * itemPerPage) + (ind + 1)}</td>
+                                        <td>{ele?.reasonCancel}</td>
+                                        <td><label className="sp_switch">
+                                            <input type="checkbox" checked={ele?.status ? true : false} onChange={(e)=>handleStatusChange(e , ele?._id)}/>
+                                                <span className="sp_slider sp_round"></span>
+                                        </label></td>
+                                        <td>
+                                            <div className=' sp_table_action d-flex'>
+                                                <div><img src={editImg} onClick={() => {setEditShow(true); setEditData(ele)}}></img></div>
+                                                <div><img src={deleteImg} onClick={() => {setDeleteShow(true); setDeleteId(ele?._id)}}></img></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {!searchInput.trim() && (filteredReasonCancel?.length > 0) && (
+                <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                    {renderPagination()}
+                </div>
+            )}
             {/* add role modal  */}
             <Modal
                 show={addShow}

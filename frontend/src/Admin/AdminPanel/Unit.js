@@ -24,20 +24,33 @@ const Unit = () => {
     const [data, setData] = useState([])
     const [editData, setEditData] = useState("")
     const [deleteId, setdeleteId] = useState(null)
+    const [searchInput, setSearchInput] = useState("")
      
     useEffect(()=>{
        dispatch(GetUnitData())
     },[])
 
     var itemPerPage = 10;
-    var totalPages = Math.ceil(unitMap?.length / itemPerPage);
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchInput])
+
+    const filteredUnit = unitMap?.filter((element)=>{
+        return element?.unitName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+               element?.shortName?.toLowerCase().includes(searchInput?.toLowerCase())
+    })
+    var totalPages = Math.ceil((filteredUnit?.length || 0) / itemPerPage);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * itemPerPage;   // 0 * 10
         const endIndex = startIndex + itemPerPage;            // 0 + 10
-        const paginatedData = unitMap?.slice(startIndex, endIndex);
+        const filtered = unitMap?.filter((element)=>{
+            return element?.unitName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.shortName?.toLowerCase().includes(searchInput?.toLowerCase())
+        })
+        const paginatedData = filtered?.slice(startIndex, endIndex);
         setData(paginatedData);
-    }, [currentPage, unitMap]);
+    }, [currentPage, unitMap, searchInput]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -171,7 +184,7 @@ const Unit = () => {
                 </div>
                 <div className='d-flex flex-wrap '>
                    <div className='position-relative me-4 mt-3'>
-                        <input type="text" className='ds_page_input' placeholder='Search... ' />
+                        <input type="text" value={searchInput} onChange={(e)=> setSearchInput(e.target.value)} className='ds_page_input' placeholder='Search... ' />
                        <img src={search} alt="" className='ds_page_icon' />
                    </div>
                    <a className='mt-3' href='#' onClick={() => setAddShow(true)}>
@@ -179,45 +192,53 @@ const Unit = () => {
                    </a>
                 </div>
             </div>
-            <div className='sp_table'>
-                <table className='w-100'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Short Name</th>
-                            <th>Status</th>
-                            <th className='sp_th_action'>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.map((element , index)=>{
-                            return(
-                                <tr key={element?._id}>
-                                   <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                                   <td>{element?.unitName}</td>
-                                   <td>{element?.shortName}</td>
-                                   <td><label className="sp_switch">
-                                       <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=> handleChangeStatus(e , element?._id)}/>
-                                           <span className="sp_slider sp_round"></span>
-                                   </label></td>
-                                   <td>
-                                       <div className=' sp_table_action d-flex'>
-                                           <div onClick={() => {setEditShow(true); setEditData(element)}}><img src={editImg} ></img></div>
-                                           <div onClick={() => {setDeleteShow(true); setdeleteId(element?._id)}}><img src={deleteImg} ></img></div>
-                                       </div>
-                                   </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
+            {searchInput.trim() && (data?.length === 0) ? (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+                </div>
+            ) : (
+                <div className='sp_table'>
+                    <table className='w-100'>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Short Name</th>
+                                <th>Status</th>
+                                <th className='sp_th_action'>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.map((element , index)=>{
+                                return(
+                                    <tr key={element?._id}>
+                                       <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                                       <td>{element?.unitName}</td>
+                                       <td>{element?.shortName}</td>
+                                       <td><label className="sp_switch">
+                                           <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=> handleChangeStatus(e , element?._id)}/>
+                                               <span className="sp_slider sp_round"></span>
+                                       </label></td>
+                                       <td>
+                                           <div className=' sp_table_action d-flex'>
+                                               <div onClick={() => {setEditShow(true); setEditData(element)}}><img src={editImg} ></img></div>
+                                               <div onClick={() => {setDeleteShow(true); setdeleteId(element?._id)}}><img src={deleteImg} ></img></div>
+                                           </div>
+                                       </td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             {/* PAGINATION CODE */}
-            <div className="py-3 d-flex justify-content-center justify-content-md-end">
-                {renderPagination()}
-            </div>
+            {!searchInput.trim() && (filteredUnit?.length > 0) && (
+                <div className="py-3 d-flex justify-content-center justify-content-md-end">
+                    {renderPagination()}
+                </div>
+            )}
             {/* add role modal  */}
             <Modal
                 show={addShow}

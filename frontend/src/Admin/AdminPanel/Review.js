@@ -153,49 +153,58 @@ const Review = () => {
                 </div>
         </div>
 
-        <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-           <table className="w-100 ds_customer_manage">
-               <thead className=''>
-                   <tr className=''>
-                       <th>ID</th>
-                       <th>Customer Name</th>
-                       <th>Product</th>
-                       <th>Date</th>
-                       <th>Rate</th>
-                       <th>Description</th>
-                       <th>Action</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   {paginatedData?.map((item, index) => (
-                       <tr key={item._id || index}>
-                           <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
-                           <td>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</td>
-                           <td>{item.productData?.[0]?.productName}</td>
-                           <td>{new Date(item.createdAt).toLocaleDateString('en-GB').replace(/\//g, '/')}</td>
-                           <td>
-                              <div className='d-flex'>
-                                {[1,2,3,4,5].map((star) => (
-                                  <FaStar key={star} className={`ds_review_star ${star <= item.rate ? 'ds_review_color' : ''}`} />
-                                ))}
-                              </div>
-                           </td>
-                           <td>{item.description}</td>
-                           <td>
-                               <div className='sp_table_action d-flex'>
-                                   <div onClick={()=> {navigate("/admin/viewreview"); localStorage.setItem("Getid" , item._id);}}> <img src={eye} alt="view" /> </div>
-                                   <div onClick={()=> {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
-                               </div>
-                           </td>
+        {searchInput.trim() && (paginatedData?.length === 0) ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+            </div>
+        ) : (
+            <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+               <table className="w-100 ds_customer_manage">
+                   <thead className=''>
+                       <tr className=''>
+                           <th>ID</th>
+                           <th>Customer Name</th>
+                           <th>Product</th>
+                           <th>Date</th>
+                           <th>Rate</th>
+                           <th>Description</th>
+                           <th>Action</th>
                        </tr>
-                   ))}
-               </tbody>
-           </table>
-       </div>
+                   </thead>
+                   <tbody>
+                       {paginatedData?.map((item, index) => (
+                           <tr key={item._id || index}>
+                               <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                               <td>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</td>
+                               <td>{item.productData?.[0]?.productName}</td>
+                               <td>{new Date(item.createdAt).toLocaleDateString('en-GB').replace(/\//g, '/')}</td>
+                               <td>
+                                  <div className='d-flex'>
+                                    {[1,2,3,4,5].map((star) => (
+                                      <FaStar key={star} className={`ds_review_star ${star <= item.rate ? 'ds_review_color' : ''}`} />
+                                    ))}
+                                  </div>
+                               </td>
+                               <td>{item.description}</td>
+                               <td>
+                                   <div className='sp_table_action d-flex'>
+                                       <div onClick={()=> {navigate("/admin/viewreview"); localStorage.setItem("Getid" , item._id);}}> <img src={eye} alt="view" /> </div>
+                                       <div onClick={()=> {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
+                                   </div>
+                               </td>
+                           </tr>
+                       ))}
+                   </tbody>
+               </table>
+           </div>
+        )}
 
-       <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-           {renderPagination()}
-       </div>
+       {/* PAGINATION CODE */}
+       {!searchInput.trim() && (filteredData?.length > 0) && (
+           <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+               {renderPagination()}
+           </div>
+       )}
 
 
        {/* **************** Delete Category *************** */}

@@ -292,48 +292,57 @@ useEffect(() => {
                    <div onClick={()=> setAddPopup(true)} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
                 </div>
         </div>
-        <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
-            <table className="w-100 ds_customer_manage">
-                <thead className=''>
-                    <tr className=''>
-                        <th>ID</th>
-                        <th>Main Category</th>
-                        <th>Category</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {data?.map((element , index)=>{
-                    return(
-                        <tr key={element?._id}>
-                            <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
-                            <td>{element?.mainCategoryData[0]?.mainCategoryName}</td>
-                            <td>{element?.categoryData[0]?.categoryName}</td>
-                            <td>{element?.subCategoryName}</td>
-                            <td>
-                                <label className="sp_switch">
-                                    <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=>handleStatusChange(e , element?._id)}/>
-                                    <span className="sp_slider sp_round"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <div className='sp_table_action d-flex'>
-                                    <div onClick={()=> {setEditPopup(true); setEditData(element)}}><img src={editImg} ></img></div>
-                                    <div onClick={()=> {setDeletePopup(true); setDeleteId(element?._id)}}><img src={deleteImg}></img></div>
-                                </div>
-                            </td>
+        {searchInput.trim() && (data?.length === 0) ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
+                <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
+            </div>
+        ) : (
+            <div className='ds_customer_table  overflow-x-auto position-relative mt-4'>
+                <table className="w-100 ds_customer_manage">
+                    <thead className=''>
+                        <tr className=''>
+                            <th>ID</th>
+                            <th>Main Category</th>
+                            <th>Category</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
-                        )
-                    })}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    {data?.map((element , index)=>{
+                        return(
+                            <tr key={element?._id}>
+                                <td>{((currentPage - 1) * 10) + ( index + 1 )}</td>
+                                <td>{element?.mainCategoryData[0]?.mainCategoryName}</td>
+                                <td>{element?.categoryData[0]?.categoryName}</td>
+                                <td>{element?.subCategoryName}</td>
+                                <td>
+                                    <label className="sp_switch">
+                                        <input type="checkbox" checked={element?.status ? true : false} onChange={(e)=>handleStatusChange(e , element?._id)}/>
+                                        <span className="sp_slider sp_round"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <div className='sp_table_action d-flex'>
+                                        <div onClick={()=> {setEditPopup(true); setEditData(element)}}><img src={editImg} ></img></div>
+                                        <div onClick={()=> {setDeletePopup(true); setDeleteId(element?._id)}}><img src={deleteImg}></img></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        )}
   
-        <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
-            {renderPagination()}
-        </div>
+        {/* PAGINATION CODE */}
+        {!searchInput.trim() && (filteredData?.length > 0) && (
+            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
+                {renderPagination()}
+            </div>
+        )}
 
         {/* ************ Offcanvas *************** */}
         <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

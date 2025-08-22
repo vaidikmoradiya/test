@@ -250,29 +250,34 @@ const TandC = () => {
                         <h4 className='text-center'>Add Terms & Conditions</h4>
                         <div className='spmodal_main_div'>
                             <small>Title</small><br></br>
-                            <input type='text' placeholder='Enter Title' className='mb-4' 
-                                name="title" value={createTermConditionFormik.values.title}
-                                onChange={createTermConditionFormik.handleChange}
-                                onBlur={createTermConditionFormik.handleBlur}
-                            ></input>
-                            <p
-                            className="text-danger mb-0 text-start ps-1 pt-1"
-                            style={{ fontSize: "14px" }}
-                            >
-                            {createTermConditionFormik.errors.title}
-                            </p>
+                            <div className='mb-4'>
+                                <input type='text' placeholder='Enter Title' className='m-0' 
+                                    name="title" value={createTermConditionFormik.values.title}
+                                    onChange={createTermConditionFormik.handleChange}
+                                    onBlur={createTermConditionFormik.handleBlur}
+                                ></input>
+                                <p
+                                className="text-danger mb-0 text-start ps-1 pt-1"
+                                style={{ fontSize: "14px" }}
+                                >
+                                {createTermConditionFormik.errors.title}
+                                </p>
+                            </div>
                             <small>Enter Description</small><br></br>
-                            <textarea placeholder='Enter reason for cancellation'
-                                name="description" value={createTermConditionFormik.values.description}
-                                onChange={createTermConditionFormik.handleChange}
-                                onBlur={createTermConditionFormik.handleBlur}
-                            ></textarea>
-                            <p
-                            className="text-danger mb-0 text-start ps-1 pt-1"
-                            style={{ fontSize: "14px" }}
-                            >
-                            {createTermConditionFormik.errors.description}
-                            </p>
+                            <div className='mb-4'>
+                                <textarea placeholder='Enter reason for cancellation'
+                                    className='m-0'
+                                    name="description" value={createTermConditionFormik.values.description}
+                                    onChange={createTermConditionFormik.handleChange}
+                                    onBlur={createTermConditionFormik.handleBlur}
+                                ></textarea>
+                                <p
+                                className="text-danger mb-0 text-start ps-1 pt-1"
+                                style={{ fontSize: "14px" }}
+                                >
+                                {createTermConditionFormik.errors.description}
+                                </p>
+                            </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                             <button className='ds_user_cancel' onClick={() => setAddShow(false)}>Cancel</button>
@@ -297,29 +302,34 @@ const TandC = () => {
                         <h4 className='text-center'>Edit Terms & Conditions</h4>
                         <div className='spmodal_main_div'>
                             <small>Title</small><br></br>
-                            <input type='text' className='mb-4'
-                                name="title" value={editTermConditionFormik.values.title}
-                                onChange={editTermConditionFormik.handleChange}
-                                onBlur={editTermConditionFormik.handleBlur}
-                            ></input>
-                            <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editTermConditionFormik.errors.title}
+                            <div className='mb-4'>
+                                <input type='text' placeholder='Enter Title' className='m-0'
+                                    name="title" value={editTermConditionFormik.values.title}
+                                    onChange={editTermConditionFormik.handleChange}
+                                    onBlur={editTermConditionFormik.handleBlur}
+                                ></input>
+                                <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editTermConditionFormik.errors.title}
                                 </p>
+                            </div>
                             <small>Enter Description</small><br></br>
-                            <textarea 
-                                name="description" value={editTermConditionFormik.values.description}
-                                onChange={editTermConditionFormik.handleChange}
-                                onBlur={editTermConditionFormik.handleBlur}
-                            ></textarea>
-                            <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editTermConditionFormik.errors.description}
+                            <div>
+                                <textarea 
+                                    className='m-0'
+                                    name="description" value={editTermConditionFormik.values.description}
+                                    onChange={editTermConditionFormik.handleChange}
+                                    onBlur={editTermConditionFormik.handleBlur}
+                                ></textarea>
+                                <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editTermConditionFormik.errors.description}
                                 </p>
+                            </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                             <button className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>

@@ -31,23 +31,23 @@ const ViewContactUs = () => {
                     <div className='p-3' style={{ minWidth: '300px' }}>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Name :</h6></div>
-                            <div className='w-50 '><p className='mb-0'>{SingleContactUsData.name}</p></div>
+                            <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.name}</p></div>
                         </div>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Email :</h6></div>
-                            <div className='w-50 '><p className='mb-0'>{SingleContactUsData.email}</p></div>
+                            <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.email}</p></div>
                         </div>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Contact No :</h6></div>
-                            <div className='w-50 '><p className='mb-0'>{SingleContactUsData.phoneNo}</p></div>
+                            <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.phoneNo}</p></div>
                         </div>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Subject :</h6></div>
-                            <div className='w-50 '><p className='mb-0'>{SingleContactUsData.subject}</p></div>
+                            <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.subject}</p></div>
                         </div>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Message :</h6></div>
-                            <div className='w-50 '><p className='mb-0'>{SingleContactUsData.message}</p></div>
+                            <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.message}</p></div>
                         </div>
                     </div>
                 )}

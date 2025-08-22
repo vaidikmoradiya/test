@@ -12,6 +12,7 @@ import { SubCateSchema } from '../Formik'
 import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice'
 import { GetCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice'
 import { Link } from 'react-router-dom';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const SubCategory = () => {
 
@@ -208,6 +209,94 @@ useEffect(() => {
         setFilteredEditCategories([]);
     }
 }, [EditSubCateFormik.values.mainCateId, cateMap]);
+
+// Reusable Custom Select (same as Category page)
+const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [container, setContainer] = useState(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (container && !container.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [container]);
+
+  const selected = options.find(opt => opt.value === value);
+
+  return (
+    <div ref={setContainer} style={{ position: 'relative', width: '100%' }}>
+      <div
+        className='mv_category_modal_select'
+        role="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        tabIndex={0}
+        onClick={() => setIsOpen(prev => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+          if (e.key === 'Escape') setIsOpen(false);
+        }}
+      >
+        <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+          {selected && selected.value !== '' ? selected.label : placeholder}
+        </span>
+        <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+      </div>
+      {isOpen && (
+        <ul
+          role="listbox"
+          style={{
+            position: 'absolute',
+            zIndex: 20,
+            left: 0,
+            right: 0,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 0,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+            maxHeight: 220,
+            overflowY: 'auto',
+            margin: 0,
+            paddingLeft: 0,
+            listStyle: 'none',
+          }}
+        >
+          {options.filter(o => o.value !== '').map(opt => (
+            <li
+              className='mv_cancel_modal_select_option'
+              key={opt.value}
+              role="option"
+              aria-selected={opt.value === value}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onChange(opt.value);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '3px 12px',
+                borderRadius: 0,
+                background: opt.value === value ? '#1967d2' : 'transparent',
+                color: opt.value === value ? '#fff' : '',
+                cursor: 'pointer',
+              }}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const mainCategoryOptions = [
+  { value: '', label: 'Select MainCategory' },
+  ...((Array.isArray(mainCateData) ? mainCateData : []).map(m => ({ value: m?._id || '', label: m?.mainCategoryName || '' })))
+];
 
 const handleDelete = () => {
     dispatch(DeleteSubCateData(deleteId))
@@ -416,14 +505,14 @@ useEffect(() => {
                     <div className='mx-sm-3 mx-1'>
                         <div className="form-group  mt-4 pt-3">
                             <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                            <select name='mainCateId' value={CreateSubCateFormik?.values.mainCateId} onChange={CreateSubCateFormik?.handleChange} onBlur={CreateSubCateFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="" disabled>Select MainCategory</option>
-                                {mainCateData?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.mainCategoryName}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className='mt-2'>
+                              <CustomSelect
+                                options={mainCategoryOptions}
+                                value={CreateSubCateFormik?.values.mainCateId}
+                                onChange={(val) => CreateSubCateFormik.setFieldValue('mainCateId', val)}
+                                placeholder="Select MainCategory"
+                              />
+                            </div>
                             {CreateSubCateFormik.touched.mainCateId && CreateSubCateFormik.errors.mainCateId && (
                                 <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateSubCateFormik.errors.mainCateId}</div>
                             )}
@@ -466,14 +555,14 @@ useEffect(() => {
                     <div className='mx-sm-3 mx-1'>
                         <div className="form-group  mt-4 pt-3">
                             <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                            <select name='mainCateId' value={EditSubCateFormik?.values.mainCateId} onChange={EditSubCateFormik?.handleChange} onBlur={EditSubCateFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="" disabled>Select MainCategory</option>
-                                {mainCateData?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.mainCategoryName}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className='mt-2'>
+                              <CustomSelect
+                                options={mainCategoryOptions}
+                                value={EditSubCateFormik?.values.mainCateId}
+                                onChange={(val) => EditSubCateFormik.setFieldValue && EditSubCateFormik.setFieldValue('mainCateId', val)}
+                                placeholder="Select MainCategory"
+                              />
+                            </div>
                             {EditSubCateFormik.touched.mainCateId && EditSubCateFormik.errors.mainCateId && (
                                 <div className="text-danger mt-1" style={{fontSize:"12px"}}>{EditSubCateFormik.errors.mainCateId}</div>
                             )}

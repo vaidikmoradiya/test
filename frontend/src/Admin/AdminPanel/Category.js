@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import '../../Css/mv_style.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
 import { FaAngleLeft, FaAngleRight, FaFilter } from 'react-icons/fa6'
@@ -11,6 +12,7 @@ import { useFormik } from 'formik'
 import { GetMainCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/MainCategorySlice'
 import { CateSchema } from '../Formik'
 import { Link } from 'react-router-dom';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const Category = () => {
 
@@ -293,6 +295,93 @@ const editCateVal = {
     img: editData?.image || []
 }
 
+// Reusable Custom Select
+const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
+  const selected = options.find(opt => opt.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+      <div
+        className='mv_category_modal_select'
+        role="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        tabIndex={0}
+        onClick={() => setIsOpen(prev => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+          if (e.key === 'Escape') setIsOpen(false);
+        }}
+      >
+        <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+          {selected && selected.value !== '' ? selected.label : placeholder}
+        </span>
+        <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+      </div>
+      {isOpen && (
+        <ul
+          role="listbox"
+          style={{
+            position: 'absolute',
+            zIndex: 20,
+            left: 0,
+            right: 0,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 0,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+            maxHeight: 220,
+            overflowY: 'auto',
+            margin: 0,
+            paddingLeft: 0,
+            listStyle: 'none',
+          }}
+        >
+          {options.filter(o => o.value !== '').map(opt => (
+            <li
+              className='mv_cancel_modal_select_option'
+              key={opt.value}
+              role="option"
+              aria-selected={opt.value === value}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onChange(opt.value);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '3px 12px',
+                borderRadius: 0,
+                background: opt.value === value ? '#1967d2' : 'transparent',
+                color: opt.value === value ? '#fff' : '',
+                cursor: 'pointer',
+              }}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const mainCategoryOptions = [
+  { value: '', label: 'Select MainCategory' },
+  ...((Array.isArray(mainCateData) ? mainCateData : []).map(m => ({ value: m?._id || '', label: m?.mainCategoryName || '' })))
+];
+
 const EditCateFormik = useFormik({
     enableReinitialize: true,
     initialValues:editCateVal,
@@ -465,14 +554,14 @@ const handleDelete = () => {
                     <div className='mx-sm-3 mx-1'>
                         <div className="form-group  mt-4 pt-3">
                             <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                            <select name='mainCateId' value={CreateCateFormik?.values.mainCateId} onChange={CreateCateFormik?.handleChange} onBlur={CreateCateFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="" disabled>Select MainCategory</option>
-                                {mainCateData?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.mainCategoryName}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className='mt-2'>
+                              <CustomSelect
+                                options={mainCategoryOptions}
+                                value={CreateCateFormik?.values.mainCateId}
+                                onChange={(val) => CreateCateFormik.setFieldValue('mainCateId', val)}
+                                placeholder="Select MainCategory"
+                              />
+                            </div>
                             {CreateCateFormik.touched.mainCateId && CreateCateFormik.errors.mainCateId && (
                                     <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateCateFormik.errors.mainCateId}</div>
                             )}
@@ -534,14 +623,14 @@ const handleDelete = () => {
                     <div className='mx-sm-3 mx-1'>
                         <div className="form-group  mt-4 pt-3">
                             <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                            <select name='mainCateId' value={EditCateFormik?.values.mainCateId} onChange={EditCateFormik?.handleChange} onBlur={EditCateFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="" disabled>Select MainCategory</option>
-                                {mainCateData?.map((element)=>{
-                                    return(
-                                       <option value={element?._id}>{element?.mainCategoryName}</option>
-                                    )
-                                })}
-                            </select>
+                            <div className='mt-2'>
+                              <CustomSelect
+                                options={mainCategoryOptions}
+                                value={EditCateFormik?.values.mainCateId}
+                                onChange={(val) => EditCateFormik.setFieldValue && EditCateFormik.setFieldValue('mainCateId', val)}
+                                placeholder="Select MainCategory"
+                              />
+                            </div>
                             {EditCateFormik.touched.mainCateId && EditCateFormik.errors.mainCateId && (
                                 <div className="text-danger mt-1" style={{fontSize:"12px"}}>{EditCateFormik.errors.mainCateId}</div>
                             )}

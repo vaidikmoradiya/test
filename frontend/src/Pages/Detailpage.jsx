@@ -49,10 +49,11 @@ const Detailpage = () => {
   });
 
   const [reviewdata, SetReviewData] = useState();
+  
   useEffect(() => {
     const data = ReviewtData.filter(item => item.productId === id)
     SetReviewData(data);
-  }, [ReviewtData])
+  }, [ReviewtData, id])
 
   const [cart, setCart] = useState({
     productId: '',
@@ -87,16 +88,34 @@ const Detailpage = () => {
     setReview({ rating: 0, title: '', comment: '' });
   };
 
-  const ratings = [
-    { stars: 5, count: 80 },
-    { stars: 4, count: 30 },
-    { stars: 3, count: 10 },
-    { stars: 2, count: 5 },
-    { stars: 1, count: 3 }
-  ];
+  // Calculate actual ratings distribution from review data
+  const calculateRatingsDistribution = () => {
+    if (!reviewdata || reviewdata.length === 0) return [];
+    
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviewdata.forEach(review => {
+      if (review.rate && review.rate >= 1 && review.rate <= 5) {
+        distribution[review.rate]++;
+      }
+    });
+    
+    return Object.entries(distribution).map(([stars, count]) => ({
+      stars: parseInt(stars),
+      count: count
+    })).reverse(); // Show 5 stars first
+  };
 
-  // Calculate total ratings to get percentages
-  const totalRatings = ratings.reduce((acc, curr) => acc + curr.count, 0);
+  const ratings = calculateRatingsDistribution();
+  const totalRatings = reviewdata ? reviewdata.length : 0;
+  
+  // Calculate average rating
+  const calculateAverageRating = () => {
+    if (!reviewdata || reviewdata.length === 0) return 0;
+    const totalRating = reviewdata.reduce((sum, review) => sum + (review.rate || 0), 0);
+    return (totalRating / reviewdata.length).toFixed(1);
+  };
+  
+  const averageRating = calculateAverageRating();
 
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -120,6 +139,31 @@ const Detailpage = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  // Function to get responsive character limit based on screen width
+  const getResponsiveCharLimit = () => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth >= 1440) return 120;
+    if (screenWidth >= 1024) return 100;
+    if (screenWidth >= 768) return 70;
+    if (screenWidth >= 575) return 50;
+    if (screenWidth >= 425) return 35;
+    if (screenWidth >= 320) return 25;
+    return 150; // default for larger screens
+  };
+
+  // State to track character limit
+  const [charLimit, setCharLimit] = useState(getResponsiveCharLimit());
+
+  // Effect to update character limit on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setCharLimit(getResponsiveCharLimit());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="">
@@ -250,9 +294,10 @@ const Detailpage = () => {
         {detailData[0]?.data && detailData[0]?.data.length > 0 && (
           <div className="mv_part_main_det_padd">
             <div className="row">
-              {/* Left Section - Show when there's at least 1 data item */}
+              {/* Left Section - Items 1-6 and odd items 13+ */}
               <div className="col-sm-6 col-12">
                 <div className='mv_part_details_padd'>
+                  {/* First 6 items */}
                   {detailData[0]?.data?.slice(0, 6).map((item, index) => (
                     <div className="row" key={index}>
                       <div className="col-md-3 col-sm-4 col-4">
@@ -263,14 +308,33 @@ const Detailpage = () => {
                       </div>
                     </div>
                   ))}
+                  {/* Items 13, 15, 17, etc. (odd items 13+) */}
+                  {detailData[0]?.data?.length > 12 && detailData[0]?.data?.slice(12).map((item, index) => {
+                    const actualIndex = index + 12;
+                    // Only show odd items (13, 15, 17, etc.) in left section
+                    if (actualIndex % 2 === 0) {
+                      return (
+                        <div className="row" key={actualIndex}>
+                          <div className="col-md-3 col-sm-4 col-4">
+                            <p className='mv_name_heading'>{item.key}</p>
+                          </div>
+                          <div className="col-md-9 col-sm-8 col-8">
+                            <p className='mv_title'>{item.value}</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               </div>
-              {/* Right Section - Show only when there are 6 or more data items */}
-              {detailData[0]?.data?.length >= 6 && (
+              {/* Right Section - Items 7-12 and even items 13+ */}
+              {detailData[0]?.data?.length >= 7 && (
                 <div className="col-sm-6 col-12">
                   <div className='mv_part_details_padd'>
-                    {detailData[0]?.data?.slice(6, detailData[0]?.data?.length).map((item, index) => (
-                      <div className="row" key={index}>
+                    {/* Items 7-12 */}
+                    {detailData[0]?.data?.slice(6, 12).map((item, index) => (
+                      <div className="row" key={index + 6}>
                         <div className="col-md-3 col-sm-4 col-4">
                           <p className='mv_name_heading'>{item.key}</p>
                         </div>
@@ -279,6 +343,24 @@ const Detailpage = () => {
                         </div>
                       </div>
                     ))}
+                    {/* Items 14, 16, 18, etc. (even items 13+) */}
+                    {detailData[0]?.data?.length > 12 && detailData[0]?.data?.slice(12).map((item, index) => {
+                      const actualIndex = index + 12;
+                      // Only show even items (14, 16, 18, etc.) in right section
+                      if (actualIndex % 2 === 1) {
+                        return (
+                          <div className="row" key={actualIndex}>
+                            <div className="col-md-3 col-sm-4 col-4">
+                              <p className='mv_name_heading'>{item.key}</p>
+                            </div>
+                            <div className="col-md-9 col-sm-8 col-8">
+                              <p className='mv_title'>{item.value}</p>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
                   </div>
                 </div>
               )}
@@ -293,92 +375,174 @@ const Detailpage = () => {
           <div className='mv_main_cus_rating'>
             <div>
               <p className='mv_coman_heading'>Customer Ratings</p>
-              <p className='mv_count_reating'>125 Ratings & 20 Reviews</p>
+              <p className='mv_count_reating'>
+                {totalRatings} {totalRatings === 1 ? 'Rating' : 'Ratings'} & {reviewdata?.length || 0} {reviewdata?.length === 1 ? 'Review' : 'Reviews'}
+              </p>
             </div>
             <div>
               <a className='mv_add_review' href="#" onClick={(e) => { e.preventDefault(); setShowReviewModal(true); }}>Add review</a>
             </div>
           </div>
 
-          <div className="mv_rating_distribution">
-            {ratings.map((rating) => (
-              <div key={rating.stars} className="mv_rating_row" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                <div style={{ width: '30px', marginRight: '8px' }}>
-                  <span style={{ color: 'black', marginRight: '5px' }}>{rating.stars}</span>
-                  <span style={{ color: '#FDC040', fontSize: '20px' }}>★</span>
+          {/* Average Rating Display */}
+          {/* {totalRatings > 0 && (
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              marginBottom: '20px',
+              padding: '20px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '8px'
+            }}>
+              <div style={{ textAlign: 'center', marginRight: '20px' }}>
+                <div style={{ fontSize: '48px', fontWeight: 'bold', color: '#1E2131' }}>
+                  {averageRating}
                 </div>
-                <div style={{ flex: 1, backgroundColor: '#CECECE', height: '8px', borderRadius: '4px' }}>
-                  <div
-                    style={{
-                      width: `${(rating.count / totalRatings) * 100}%`,
-                      backgroundColor: '#1E2131',
-                      height: '100%',
-                      borderRadius: '4px'
-                    }}
-                  />
+                <div style={{ fontSize: '14px', color: '#666' }}>out of 5</div>
+              </div>
+              <div style={{ marginLeft: '20px' }}>
+                <div style={{ display: 'flex', marginBottom: '8px' }}>
+                  {[...Array(5)].map((_, index) => (
+                    <span
+                      key={index}
+                      style={{ 
+                        color: index < Math.round(averageRating) ? '#FDC040' : '#CECECE',
+                        fontSize: '24px',
+                        marginRight: '2px'
+                      }}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <div style={{ fontSize: '14px', color: '#666' }}>
+                  Based on {totalRatings} {totalRatings === 1 ? 'rating' : 'ratings'}
                 </div>
               </div>
-            ))}
+            </div>
+          )} */}
+
+          <div className="mv_rating_distribution">
+            {ratings.length > 0 ? (
+              ratings.map((rating) => (
+                <div key={rating.stars} className="mv_rating_row" style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                  <div style={{ width: '30px', marginRight: '8px' }}>
+                    <span style={{ color: 'black', marginRight: '5px' }}>{rating.stars}</span>
+                    <span style={{ color: '#FDC040', fontSize: '20px' }}>★</span>
+                  </div>
+                  <div style={{ flex: 1, backgroundColor: '#CECECE', height: '8px', borderRadius: '4px' }}>
+                    <div
+                      style={{
+                        width: `${totalRatings > 0 ? (rating.count / totalRatings) * 100 : 0}%`,
+                        backgroundColor: '#1E2131',
+                        height: '100%',
+                        borderRadius: '4px'
+                      }}
+                    />
+                  </div>
+                  <div style={{ width: '40px', marginLeft: '8px', fontSize: '12px', color: '#666' }}>
+                    {rating.count}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                No ratings yet. Be the first to rate this product!
+              </div>
+            )}
           </div>
 
           <div className="mv_reviews_section">
             <h2 className="mv_coman_heading">Reviews</h2>
-            {reviewdata?.slice(0, showAllReviews ? reviewdata.length : 3).map((item, index) => (
-              <div key={index} className="review-card">
-                <div className="mv_review_header">
-                  <div className="mv_user_info">
-                    <div>
-                      <img src={`${Back_URL}${item?.userData?.[0]?.image}`} className="mv_avatar" />
-                    </div>
-                    <div className='w-100'>
-                      <div className='mv_review_name_star'>
-                        <div className='mv_main_user_name'>
-                          <div>
-                            <h4 className="mv_user_name">{item.userData[0]?.firstName}</h4>
-                          </div>
-                          <div className="mv_rating_stars">
-                            {[...Array(5)].map((_, index) => (
-                              <span
-                                key={index}
-                                className="mv_star"
-                                style={{ color: index < item.rate ? '#FDC040' : '#CECECE' }}
-                              >
-                                ★
+            {reviewdata && reviewdata.length > 0 ? (
+              <>
+                {reviewdata.slice(0, showAllReviews ? reviewdata.length : 3).map((item, index) => (
+                  <div key={index} className="review-card">
+                    <div className="mv_review_header">
+                      <div className="mv_user_info">
+                        <div>
+                          <img 
+                            src={item?.userData?.[0]?.image ? `${Back_URL}${item.userData[0].image}` : '/default-avatar.png'} 
+                            className="mv_avatar" 
+                            alt="User Avatar"
+                          />
+                        </div>
+                        <div className='w-100'>
+                          <div className='mv_review_name_star'>
+                            <div className='mv_main_user_name'>
+                              <div>
+                                <h4 className="mv_user_name">{item.userData[0]?.firstName || 'Anonymous User'}</h4>
+                              </div>
+                              <div className="mv_rating_stars">
+                                {[...Array(5)].map((_, index) => (
+                                  <span
+                                    key={index}
+                                    className="mv_star"
+                                    style={{ color: index < item.rate ? '#FDC040' : '#CECECE' }}
+                                  >
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <div className='mv_main_review_main'>
+                              <span className="mv_review_date">
+                                {new Date(item.createdAt).toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: 'short',
+                                  year: 'numeric'
+                                }).replace(/\s/g, ' ')}
                               </span>
-                            ))}
+                            </div>
                           </div>
-                        </div>
-                        <div className='mv_main_review_main'>
-                          <span className="mv_review_date">
-                            {new Date(item.createdAt).toLocaleDateString('en-GB', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric'
-                            }).replace(/\s/g, ' ')}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-8 col-sm-12">
-                          <p className="mv_review_text">{item.description}</p>
+                          {item.title && (
+                            <div className="row" style={{ marginBottom: '8px' }}>
+                              <div className="col-md-8 col-sm-12">
+                                <h5 style={{ 
+                                  fontSize: '16px', 
+                                  fontWeight: '600', 
+                                  color: '#1E2131',
+                                  margin: '0'
+                                }}>
+                                  {item.title}
+                                </h5>
+                              </div>
+                            </div>
+                          )}
+                          <div className="row">
+                            <div className="col-md-8 col-sm-12">
+                              <p className="mv_review_text">
+                                {item.description && item.description.length > charLimit 
+                                  ? `${item.description.slice(0, charLimit)}...` 
+                                  : item.description || 'No description provided'
+                                }
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                ))}
+                {reviewdata.length > 3 && (
+                  <a
+                    href="#"
+                    className="mv_view_all_btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowAllReviews(!showAllReviews);
+                    }}
+                  >
+                    {showAllReviews ? 'Show Less' : `View All ${reviewdata.length} Reviews`}
+                  </a>
+                )}
+              </>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                <p>No reviews yet for this product.</p>
+                <p>Be the first to share your experience!</p>
               </div>
-            ))}
-            {ReviewtData.length > 3 && (
-              <a
-                href="#"
-                className="mv_view_all_btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowAllReviews(!showAllReviews);
-                }}
-              >
-                {/* {showAllReviews ? 'Show Less' : 'View All'} */}
-              </a>
             )}
           </div>
         </div>

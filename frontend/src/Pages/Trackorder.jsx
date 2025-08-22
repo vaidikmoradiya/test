@@ -5,6 +5,7 @@ import '../Css/mv_style.css';
 import { GetOrderData } from '../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
 import { cancleOrder } from '../Redux-Toolkit/ToolkitSlice/User/CancelOrderSlice';
 import { getAllReasonCancellation } from '../Redux-Toolkit/ToolkitSlice/Admin/ReasonCancellationSlice';
+import arrowdown from '../Admin/Image/Savani/arrow.svg';
 
 const Trackorder = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const Trackorder = () => {
 
   useEffect(() => {
     dispatch(GetOrderData(id))
-  }, [])
+  }, [])  
 
   useEffect(() => {
     dispatch(getAllReasonCancellation())
@@ -73,7 +74,7 @@ const Trackorder = () => {
           <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
             {selected && selected.value !== '' ? selected.label : placeholder}
           </span>
-          <span style={{ marginLeft: 8 }}>▾</span>
+          <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
         </div>
         {isOpen && (
           <ul
@@ -106,9 +107,9 @@ const Trackorder = () => {
                   setIsOpen(false);
                 }}
                 style={{
-                  padding: '5px 12px',
+                  padding: '3px 12px',
                   borderRadius: 0,
-                  background: opt.value === value ? 'blue' : 'transparent',
+                  background: opt.value === value ? '#1967d2' : 'transparent',
                   color: opt.value === value ? '#fff' : '',
                   cursor: 'pointer',
                 }}

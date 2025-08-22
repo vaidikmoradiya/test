@@ -64,16 +64,16 @@ export const editReasonCancellationSchema = Yup.object({
 
 export const termConditionSchema = Yup.object({
   title: Yup.string()
-  .required('Term and condition is required'),
+  .required('Title is required'),
   description: Yup.string()
-  .required('Term and condition is required'),
+  .required('Description is required'),
 })
 
 export const editTermConditionSchema = Yup.object({
   title: Yup.string()
-  .required('Term and condition is required'),
+  .required('Title is required'),
   description: Yup.string()
-  .required('Term and condition is required'),
+  .required('Description is required'),
 })
 export const UnitSchema = Yup.object({
   unitName: Yup.string()

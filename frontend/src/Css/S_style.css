@@ -41,6 +41,26 @@
     font-size: 0.9em;
 }
 
+.s_password_error {
+    color: #d32f2f;
+    font-size: 0.9em;
+    background-color: #ffebee;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border-left: 4px solid #d32f2f;
+    margin-bottom: 8px;
+}
+
+.s_input_error {
+    border-color: #d32f2f !important;
+    background-color: #fff5f5;
+}
+
+.s_input_error:focus {
+    border-color: #d32f2f !important;
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
 .s_blue_button {
     width: 100%;
     padding: 10px;
@@ -255,8 +275,8 @@
 }
 .mv_testimonial_card {
     height: 100%;
-    min-height: 280px;
-    max-height: 280px;
+    min-height: 240px;
+    max-height: 240px;
     display: flex;
 }
 .mv_slider_card_body {
@@ -270,25 +290,37 @@
     /* -webkit-line-clamp: 4; */
     -webkit-box-orient: vertical;
 }
+@media (max-width: 1024px){
+    .mv_testimonial_card {
+        min-height: 260px;
+        max-height: 260px;
+    }
+}
 @media (max-width: 991px){
     .mv_testimonial_card {
-        min-height: 320px;
-        max-height: 320px;
+        min-height: 260px;
+        max-height: 260px;
     }
 }
 @media (max-width: 575px){
     .mv_testimonial_card {
-        min-height: 300px;
-        max-height: 300px;
+        min-height: 280px;
+        max-height: 280px;
     }
     .mv_services_section{
         padding: 30px 0 !important;
     }
 }
+@media (max-width: 425px){
+    .mv_testimonial_card {
+        min-height: 220px;
+        max-height: 220px;
+    }
+}
 @media (max-width: 375px){
     .mv_testimonial_card {
-        min-height: 320px;
-        max-height: 320px;
+        min-height: 240px;
+        max-height: 240px;
     }
 }
 /* ==================================================== */

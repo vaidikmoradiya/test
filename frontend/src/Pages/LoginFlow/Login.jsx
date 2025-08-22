@@ -42,11 +42,22 @@ const Login = () => {
             }, 2000);
           } else {
             setShowErrorModal(true);
+            // Reset the form submission state when login fails
+            LoginFormik.setSubmitting(false);
             setTimeout(() => {
               setShowErrorModal(false);
             }, 2000);
           }
         })
+        .catch((error) => {
+          console.error("Login error:", error);
+          setShowErrorModal(true);
+          // Reset the form submission state when there's an error
+          LoginFormik.setSubmitting(false);
+          setTimeout(() => {
+            setShowErrorModal(false);
+          }, 2000);
+        });
     }
   })
 

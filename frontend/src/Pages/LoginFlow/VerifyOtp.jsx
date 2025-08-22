@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { verifyOtp } from "../../Redux-Toolkit/ToolkitSlice/User/RegisterSlice";
+import { verifyOtp, resendOtp } from "../../Redux-Toolkit/ToolkitSlice/User/RegisterSlice";
 
 function VerifyOtp() {
 
@@ -13,6 +13,10 @@ function VerifyOtp() {
     const inputRefs = useRef(Array(6).fill().map(() => React.createRef()));
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [resendCooldown, setResendCooldown] = useState(60);
+    const [resendMessage, setResendMessage] = useState("");
+    const [resendError, setResendError] = useState("");
+    const [isVerifying, setIsVerifying] = useState(false);
 
 
     const email = location.state?.email;
@@ -35,23 +39,48 @@ function VerifyOtp() {
         }, {})
     );
 
+    React.useEffect(() => {
+        if (resendCooldown <= 0) return;
+        const timer = setInterval(() => {
+            setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [resendCooldown]);
+
+    const handleResend = async () => {
+        if (!email || resendCooldown > 0) return;
+        setResendMessage("");
+        setResendError("");
+        try {
+            const action = await dispatch(resendOtp(email));
+            if (action.payload?.status) {
+                setResendMessage("OTP resent successfully.");
+                setResendCooldown(60);
+            } else {
+                setResendError(action.payload?.message || "Failed to resend OTP");
+            }
+        } catch (e) {
+            setResendError("Failed to resend OTP");
+        }
+    };
+
     const handleSubmit = (values) => {
         const fullCode = Object.values(values).join('');
+        if (fullCode.length !== 6 || isVerifying) return;
+        setIsVerifying(true);
         dispatch(verifyOtp({ email, otp: fullCode })).then((response) => {
-            console.log(response);
-            if (response.payload.status) {
+            if (response.payload?.status) {
                 setShowSuccessModal(true);
-                // Navigate after a short delay to show the success modal
                 setTimeout(() => {
                     navigate("/layout/home");
-                }, 2000);
+                }, 1500);
             } else {
                 setShowErrorModal(true);
                 setTimeout(() => {
                     setShowErrorModal(false);
-                }, 2000);
+                }, 1500);
             }
-        })
+        }).finally(() => setIsVerifying(false));
     };
 
     // Success Modal Component
@@ -131,9 +160,15 @@ function VerifyOtp() {
                                                 onChange={(e) => {
                                                     const value = e.target.value;
                                                     if (/^[0-9]?$/.test(value)) {
+                                                        setShowErrorModal(false);
+                                                        const nextValues = { ...values, [digit]: value };
                                                         setFieldValue(digit, value);
                                                         if (value && index < 5) {
                                                             inputRefs.current[index + 1].current.focus();
+                                                        }
+                                                        const candidate = Object.values(nextValues).join('');
+                                                        if (candidate.length === 6 && /^[0-9]{6}$/.test(candidate)) {
+                                                            handleSubmit(nextValues);
                                                         }
                                                     }
                                                 }}
@@ -148,6 +183,11 @@ function VerifyOtp() {
                                                         });
                                                         const nextFocusIndex = Math.min(pastedData.length, 5);
                                                         inputRefs.current[nextFocusIndex].current.focus();
+                                                        if (pastedData.length === 6) {
+                                                            const nextValues = { ...values };
+                                                            pastedData.split('').forEach((d, idx) => { nextValues[`digit${idx + 1}`] = d; });
+                                                            handleSubmit(nextValues);
+                                                        }
                                                     }
                                                 }}
                                                 onKeyDown={(e) => {
@@ -164,18 +204,24 @@ function VerifyOtp() {
                             <ErrorMessage name="digit1" component="div" className="s_error" />
                             <button
                                 type="submit"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || isVerifying}
                                 className="s_blue_button my-3"
                             >
-                                Verify OTP
+                                {isVerifying ? 'Verifying...' : 'Verify OTP'}
                             </button>
                         </Form>
                     )}
                 </Formik>
 
-                <p className="text-center text-secondary mt-2">
-                    Didn't receive code? <small className="text-decoration-underline" style={{ color: '#1e2131', fontWeight: '600' }}>Resend</small>
-                </p>
+                <div className="text-center text-secondary mt-2">
+                    {resendCooldown > 0 ? (
+                        <p className="mb-1">Resend available in {resendCooldown}s</p>
+                    ) : (
+                        <button type="button" onClick={handleResend} className="btn btn-link p-0" style={{ textDecoration: 'underline', color: '#1e2131', fontWeight: 600 }}>Resend</button>
+                    )}
+                    {resendMessage && <div className="text-success" style={{ fontSize: '0.9rem' }}>{resendMessage}</div>}
+                    {resendError && <div className="text-danger" style={{ fontSize: '0.9rem' }}>{resendError}</div>}
+                </div>
             </div>
 
 

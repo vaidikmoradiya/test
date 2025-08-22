@@ -375,7 +375,7 @@ const Header = () => {
                         <Row className='m-0 justify-content-between align-items-center'>
                             <Col xs={12} md={2} lg={2} className='p-0'>
                                 <div className='d-flex align-items-center gap-3'>
-                                    <h2 className='mv_logo_text m-0'>
+                                    <h2 className='mv_logo_text m-0' onClick={() => navigate('/layout/home')} style={{ cursor: 'pointer' }}>
                                         LOGO
                                     </h2>
                                     {/* <div className='d-md-block d-none'>

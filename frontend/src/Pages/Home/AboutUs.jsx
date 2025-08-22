@@ -28,10 +28,10 @@ const AboutUs = () => {
                     {aboutData.map((item, index) => (
                         <div key={index} className="row my-5 align-items-center justify-content-center">
                             <div className="col-md-6">
-                                <img src={`${Back_URL}${item.image[0]}`} alt="" width={'100%'} />
+                                <img className='mv_home_aboutus' src={`${Back_URL}${item.image[0]}`} alt="" width={'100%'} />
                             </div>
                             <div className="col-md-6">
-                                <p className='text-secondary'>About Us</p>
+                                <p className='text-secondary mb-2'>About Us</p>
                                 <h3 className='fw-bold'>{item.title}</h3>
                                 <p className='text-secondary'>{item.description}</p>
                                 <p>

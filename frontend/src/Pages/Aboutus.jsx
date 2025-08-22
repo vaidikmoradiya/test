@@ -43,14 +43,14 @@ const Aboutus = () => {
           {/* Who We Are Section */}
           {aboutData.filter(item => item.image.length === 1).map((item, index) => (
             <div key={index} className="row align-items-center mv_who_we_are_section">
-              <div className="col-lg-5 mb-4 mb-lg-0">
+              <div className="col-lg-5 mb-lg-0">
                 <div className="mv_about_image_container">
                   <img src={`${Back_URL}${item.image[0]}`} alt="Manufacturing Facility" className="mv_about_image" />
                 </div>
               </div>
               <div className="col-lg-7">
                 <h2 className="mv_about_section_title">{item.title}</h2>
-                <p className="mv_section_text">{item.description}</p>
+                <p className="mv_section_text mb-0">{item.description}</p>
               </div>
             </div>
           ))}
@@ -84,7 +84,7 @@ const Aboutus = () => {
         <div className="m_container">
           <div className="mv_our_story_padd">
           {aboutData.filter(item => item.image.length > 1).map((item, index) => (
-            <div className="row mb-5" key={index}>
+            <div className="row mv_about_section_row" key={index}>
               <div className="col-lg-7 col-md-12 align-content-center">
                 <h2 className="mv_about_section_title">{item.title}</h2>
                 <p className="mv_section_text">{item.description}</p>
@@ -92,7 +92,7 @@ const Aboutus = () => {
               <div className="col-lg-5 col-md-12 align-content-center">
                 <div className="row">
                 {item.image.map((img, i) => (
-                    <div className="col-sm-6 col-6 mv_our_story_grid d-flex justify-content-${index % 2 === 0 ? 'end' : 'start'} mb-4" key={i}>
+                    <div className="col-sm-6 col-6 mv_our_story_grid py-2 d-flex justify-content-${index % 2 === 0 ? 'end' : 'start'} mb-2" key={i}>
                       <img src={`${Back_URL}${img}`} alt="Manufacturing Facility" className="mv_our_story_image" />
                     </div>
                   ))}

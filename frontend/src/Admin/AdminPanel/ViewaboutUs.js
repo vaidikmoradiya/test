@@ -27,11 +27,11 @@ const ViewaboutUs = () => {
             <div className='sp_view'>
                 {/* Who We Are Section - Single Image */}
                 {aboutData.filter(item => item.image.length === 1).map((item, index) => (
-                    <div key={index} className="row align-items-center mb-5">
-                        <div className="col-xl-4">
+                    <div key={index} className="row mv_our_singleimg_row align-items-center">
+                        <div className="col-xl-5 py-2 mv_viewaboutus_img">
                             <img src={`${Back_URL}${item.image[0]}`} className='w-100' alt={item.title} />
                         </div>
-                        <div className="col-xl-8">
+                        <div className="col-xl-7">
                             <h5>{item.title}</h5>
                             <p>{item.description}</p>
                         </div>
@@ -40,17 +40,19 @@ const ViewaboutUs = () => {
 
                 {/* Our Story Section with Multiple Images */}
                 {aboutData.filter(item => item.image.length > 1).map((item, index) => (
-                    <div key={index} className='row align-items-center justify-content-between gx-0 mb-5'>
-                        <div className='col-xl-8 order-1 order-xl-0'>
+                    <div key={index} className='row mv_our_multipleimg_row align-items-center justify-content-between'>
+                        <div className='col-xl-7'>
                             <h5>{item.title}</h5>
                             <p>{item.description}</p>
                         </div>
-                        <div className='col-xl-4 px-0 row order-0 order-xl-1'>
-                            {item.image.map((img, i) => (
-                                <div key={i} className='col-6 py-2'>
-                                    <img src={`${Back_URL}${img}`} className='w-100 h-100' alt={`${item.title} ${i + 1}`} />
-                                </div>
-                            ))}
+                        <div className='col-xl-5'>
+                            <div className='row order-0 order-xl-1'>
+                                {item.image.map((img, i) => (
+                                    <div key={i} className='col-6 py-2 mv_viewaboutus_four_img mb-2'>
+                                        <img src={`${Back_URL}${img}`} className='w-100' alt={`${item.title} ${i + 1}`} />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 ))}

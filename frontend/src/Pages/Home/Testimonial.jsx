@@ -96,7 +96,7 @@ const Testimonial = () => {
                   <div className="d-flex align-items-center">
                     <img src={`${Back_URL}${item?.userData?.[0]?.image}`} className="rounded-circle me-3" style={{ width: "50px", height: "50px", objectFit: "cover" }} />  
                   </div>
-                  <p className="text-muted small flex-grow-1 mv_testimonial_comment">{item.description}</p>
+                  <p className="text-muted small flex-grow-1 mv_testimonial_comment">{item.description.length > 80 ? `${item.description.slice(0, 80)}...` : item.description}</p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="text-start">
                       <h5 className="mb-0">{item.userData[0]?.firstName}</h5>

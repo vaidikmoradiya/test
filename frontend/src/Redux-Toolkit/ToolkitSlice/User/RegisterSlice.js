@@ -40,6 +40,17 @@ export const verifyOtp = createAsyncThunk('verifyOtp',
     }
 );
 
+export const resendOtp = createAsyncThunk('resendOtp',
+    async (email, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${url}/resendOtp`, { email });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || { message: 'Failed to resend OTP' });
+        }
+    }
+);
+
 export const forgotPassword = createAsyncThunk('forgotPassword',
     async (email, { rejectWithValue }) => {
         try {
@@ -84,6 +95,18 @@ const registerSlice = createSlice({
         .addCase(verifyOtp.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload?.error || 'OTP verification failed';
+        })
+        // resend otp
+        .addCase(resendOtp.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(resendOtp.fulfilled, (state, action) => {
+            state.loading = false;
+        })
+        .addCase(resendOtp.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload?.message || 'Failed to resend OTP';
         })
         .addCase(forgotPassword.pending, (state) => {
             state.loading = true;

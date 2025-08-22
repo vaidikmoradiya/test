@@ -15,30 +15,28 @@ import { AboutusSchema } from '../Formik';
 const AboutUs = () => {
   const [addShow, setAddShow] = useState(false);
   const [editShow, setEditShow] = useState(false);
-  const [deleteShow, setDeleteShow] = useState(false);
+  const [deleteShow, setDeleteShow] = useState(false);  
   const [EditAbout, setEditAbout] = useState("");
-  console.log("EditAbout",EditAbout);
   const [deleteId, setDeleteId] = useState(null)
   
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState([])
   const [searchInput, setSearchInput] = useState("")
-  const fileInputRef = useRef(null);
+  const addFileInputRef = useRef(null);
+  const editFileInputRef = useRef(null);
   const [fileName, setFileName] = useState("Choose Image")
   const dispatch = useDispatch()
   const Back_URL = 'http://localhost:5000/'
 
     const AboutUsData = useSelector((state) => state.about.allAbout)
-    console.log("AboutUsData",AboutUsData);
-
     const CreateAboutData = useSelector((state) => state.about.allAbout)
-    console.log("CreateAboutData",CreateAboutData);
 
     useEffect(() => {
         dispatch(getallAboutUs())
     }, [])
     
   const [selectedImages, setSelectedImages] = useState([]);
+  const [editSelectedImages, setEditSelectedImages] = useState([]);
 
   // Update selectedImages when EditAbout changes
   useEffect(() => {
@@ -54,32 +52,49 @@ const AboutUs = () => {
           isExisting: true
         };
       });
-      setSelectedImages(existingImages);
+      setEditSelectedImages(existingImages);
     } else {
-      setSelectedImages([]);
+      setEditSelectedImages([]);
     }
   }, [EditAbout]);
 
-  const handleBrowseClick = () => {
-    fileInputRef.current.click(); 
+  const handleBrowseClick = (isEdit = false) => {
+    if (isEdit) {
+      editFileInputRef.current.click();
+    } else {
+      addFileInputRef.current.click();
+    }
   };
 
-  const handleImageSelect = (event) => {
+  const handleImageSelect = (event, isEdit = false) => {
     const files = Array.from(event.target.files);
     const newImages = files.map(file => ({
       name: file.name,
       file: file,
       isExisting: false
     }));
-    const updatedImages = [...selectedImages, ...newImages];
-    setSelectedImages(updatedImages);
-    createAboutusFormik.setFieldValue('img', updatedImages);
+    
+    if (isEdit) {
+      const updatedImages = [...editSelectedImages, ...newImages];
+      setEditSelectedImages(updatedImages);
+      editAboutusFormik.setFieldValue('img', updatedImages);
+    } else {
+      const updatedImages = [...selectedImages, ...newImages];
+      setSelectedImages(updatedImages);
+      createAboutusFormik.setFieldValue('img', updatedImages);
+    }
   };
 
-  const removeImage = (index) => {
-    const newImages = selectedImages.filter((_, i) => i !== index);
-    setSelectedImages(newImages);
-    createAboutusFormik.setFieldValue('img', newImages);
+  const removeImage = (index, isEdit = false) => {
+    if (isEdit) {
+      const newImages = editSelectedImages.filter((_, i) => i !== index);
+      setEditSelectedImages(newImages);
+      editAboutusFormik.setFieldValue('img', newImages);
+    } else {
+      const newImages = selectedImages.filter((_, i) => i !== index);
+      setSelectedImages(newImages);
+      createAboutusFormik.setFieldValue('img', newImages);
+    }
   };
 
   const handleFileChange = (event) => {
@@ -206,13 +221,17 @@ const AboutUs = () => {
                 dispatch(getallAboutUs());
                 setAddShow(false);
                 setSelectedImages([]);
+                action.resetForm();
+                // Reset file input
+                if (addFileInputRef.current) {
+                    addFileInputRef.current.value = '';
+                }
             }).catch((error) => {
-                alert(error)
+                console.error('Error creating about us:', error);
+                alert('Error creating about us. Please try again.');
             })
-            action.resetForm();
         })
     })
-
 
     const editAboutusFormik = useFormik({
         enableReinitialize: true,
@@ -224,7 +243,7 @@ const AboutUs = () => {
         validationSchema: AboutusSchema,
         onSubmit: ((values, action) => {
             // Prepare the image data for submission
-            const imageData = selectedImages.map(img => {
+            const imageData = editSelectedImages.map(img => {
                 if (img.isExisting) {
                     return img.path; // Keep existing image path
                 } else {
@@ -239,12 +258,18 @@ const AboutUs = () => {
             
             dispatch(EditAboutus({values: submitData, id: EditAbout._id})).then(() => {
                 dispatch(getallAboutUs());
-                setEditShow(false)
-                setSelectedImages([]);
+                setEditShow(false);
+                setEditSelectedImages([]);
+                setEditAbout("");
+                action.resetForm();
+                // Reset file input
+                if (editFileInputRef.current) {
+                    editFileInputRef.current.value = '';
+                }
             }).catch((error) => {
-                alert(error)
+                console.error('Error updating about us:', error);
+                alert('Error updating about us. Please try again.');
             })
-            action.resetForm();
         })
     })
 
@@ -253,10 +278,31 @@ const AboutUs = () => {
        .then(()=>{
           dispatch(getallAboutUs())
           setDeleteShow(false)
+          setDeleteId(null);
        })
        .catch((error)=>{
-         alert(error)
+         console.error('Error deleting about us:', error);
+         alert('Error deleting about us. Please try again.');
        })
+    }
+
+    const handleAddModalClose = () => {
+        setAddShow(false);
+        setSelectedImages([]);
+        createAboutusFormik.resetForm();
+        if (addFileInputRef.current) {
+            addFileInputRef.current.value = '';
+        }
+    }
+
+    const handleEditModalClose = () => {
+        setEditShow(false);
+        setEditSelectedImages([]);
+        setEditAbout("");
+        editAboutusFormik.resetForm();
+        if (editFileInputRef.current) {
+            editFileInputRef.current.value = '';
+        }
     }
     
   return (
@@ -305,8 +351,8 @@ const AboutUs = () => {
                       <td>{item.description}</td>
                       <td>
                         <div className=' sp_table_action d-flex'>
-                          <div><img src={editImg} onClick={() => {setEditShow(true); setEditAbout(item)}}></img></div>
-                          <div><img src={deleteImg} onClick={() => {setDeleteShow(true);  setDeleteId(item?._id)}}></img></div>
+                          <div><img src={editImg} onClick={() => {setEditShow(true); setEditAbout(item)}} alt="Edit" /></div>
+                          <div><img src={deleteImg} onClick={() => {setDeleteShow(true);  setDeleteId(item?._id)}} alt="Delete" /></div>
                         </div>
                       </td>
                     </tr>
@@ -322,10 +368,11 @@ const AboutUs = () => {
               {renderPagination()}
             </div>
           )}
+          
           {/* add role modal  */}
           <Modal
               show={addShow}
-              onHide={() => setAddShow(false)}
+              onHide={handleAddModalClose}
               aria-labelledby="contained-modal-title-vcenter "
               className='sp_add_modal'
               centered
@@ -345,12 +392,14 @@ const AboutUs = () => {
                                     onChange={createAboutusFormik.handleChange}
                                     onBlur={createAboutusFormik.handleBlur}
                                 ></input>
-                                <p
-                                    className="text-danger mb-0 text-start ps-1"
-                                    style={{ fontSize: "14px" }}
-                                    >
-                                    {createAboutusFormik.errors.title}
-                                </p>
+                                {createAboutusFormik.touched.title && createAboutusFormik.errors.title && (
+                                    <p
+                                        className="text-danger mb-0 text-start ps-1"
+                                        style={{ fontSize: "14px" }}
+                                        >
+                                        {createAboutusFormik.errors.title}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div>
@@ -361,12 +410,14 @@ const AboutUs = () => {
                                     onChange={createAboutusFormik.handleChange}
                                     onBlur={createAboutusFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                    className="text-danger mb-0 text-start ps-1"
-                                    style={{ fontSize: "14px" }}
-                                    >
-                                    {createAboutusFormik.errors.description}
-                                </p>
+                                {createAboutusFormik.touched.description && createAboutusFormik.errors.description && (
+                                    <p
+                                        className="text-danger mb-0 text-start ps-1"
+                                        style={{ fontSize: "14px" }}
+                                        >
+                                        {createAboutusFormik.errors.description}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className="form-group position-relative">
@@ -383,33 +434,35 @@ const AboutUs = () => {
                                         fontSize: '14px',
                                         }}>
                                       <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
-                                          {image.isExisting ? image.name : image.name}
+                                          {image.name}
                                       </span>
-                                      <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index)}>✕</span>
+                                      <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index, false)}>✕</span>
                                     </div>
                                   ))}
                                 </div>
                                 <input
                                   type="file"
-                                  ref={fileInputRef}
+                                  ref={addFileInputRef}
                                   name="img"
                                   multiple
                                   accept="image/*"
                                   onBlur={createAboutusFormik.handleBlur}
-                                  onChange={handleImageSelect}
+                                  onChange={(e) => handleImageSelect(e, false)}
                                   className='d-none'
                                 />
-                            <div className='ds_user_browse ds_cursor' onClick={handleBrowseClick}>Browse</div>
+                            <div className='ds_user_browse ds_cursor' onClick={() => handleBrowseClick(false)}>Browse</div>
                             </div>
-                            <p
-                                className="text-danger mb-0 text-start ps-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createAboutusFormik.errors.img}
-                            </p>
+                            {createAboutusFormik.touched.img && createAboutusFormik.errors.img && (
+                                <p
+                                    className="text-danger mb-0 text-start ps-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createAboutusFormik.errors.img}
+                                </p>
+                            )}
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                        <button className='ds_user_cancel' onClick={() => setAddShow(false)}>Cancel</button>
+                        <button type='button' className='ds_user_cancel' onClick={handleAddModalClose}>Cancel</button>
                         <button type='submit' className='ds_user_add'>Add</button>
                     </div>
               </form>
@@ -420,7 +473,7 @@ const AboutUs = () => {
           {/* edit role modal  */}
           <Modal
               show={editShow}
-              onHide={() => setEditShow(false)}
+              onHide={handleEditModalClose}
               aria-labelledby="contained-modal-title-vcenter "
               className='sp_add_modal'
               centered
@@ -439,12 +492,14 @@ const AboutUs = () => {
                                 onChange={editAboutusFormik.handleChange}
                                 onBlur={editAboutusFormik.handleBlur}
                             ></input>
-                            <p
-                                className="text-danger mb-0 text-start ps-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editAboutusFormik.errors.title}
-                            </p>
+                            {editAboutusFormik.touched.title && editAboutusFormik.errors.title && (
+                                <p
+                                    className="text-danger mb-0 text-start ps-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editAboutusFormik.errors.title}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div>
@@ -455,18 +510,20 @@ const AboutUs = () => {
                                 onChange={editAboutusFormik.handleChange}
                                 onBlur={editAboutusFormik.handleBlur}
                             ></textarea>
-                            <p
-                                className="text-danger mb-0 text-start ps-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editAboutusFormik.errors.description}
-                            </p>
+                            {editAboutusFormik.touched.description && editAboutusFormik.errors.description && (
+                                <p
+                                    className="text-danger mb-0 text-start ps-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editAboutusFormik.errors.description}
+                                </p>
+                            )}
                         </div>
                     </div>
                     <div className="form-group position-relative">
                             <label className='ds_login_label' >Image</label>
                             <div style={{ background: '#1414140F', borderRadius: '4px', display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: "4px", padding: "8px 12px", minHeight: "40px" }}>
-                            {selectedImages.map((image, index) => (
+                            {editSelectedImages.map((image, index) => (
                                 <div key={index} 
                                 style={{ 
                                     background: '#14141426', 
@@ -477,33 +534,35 @@ const AboutUs = () => {
                                     fontSize: '14px',
                                     }}>
                                 <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
-                                    {image.isExisting ? image.name : image.name}
+                                    {image.name}
                                 </span>
-                                <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index)}>✕</span>
+                                <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index, true)}>✕</span>
                                 </div>
                             ))}
                             </div>
                             <input
                             type="file"
-                            ref={fileInputRef}
+                            ref={editFileInputRef}
                             name="img"
                             multiple
                             accept="image/*"
                             onBlur={editAboutusFormik.handleBlur}
-                            onChange={handleImageSelect}
+                            onChange={(e) => handleImageSelect(e, true)}
                             className='d-none'
                             />
-                        <div className='ds_user_browse ds_cursor' onClick={handleBrowseClick}>Browse</div>
+                        <div className='ds_user_browse ds_cursor' onClick={() => handleBrowseClick(true)}>Browse</div>
                         </div>
-                        <p
-                            className="text-danger mb-0 text-start ps-1"
-                            style={{ fontSize: "14px" }}
-                            >
-                            {editAboutusFormik.errors.img}
-                        </p>
+                        {editAboutusFormik.touched.img && editAboutusFormik.errors.img && (
+                            <p
+                                className="text-danger mb-0 text-start ps-1"
+                                style={{ fontSize: "14px" }}
+                                >
+                                {editAboutusFormik.errors.img}
+                            </p>
+                        )}
                 </div>
                 <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                    <button className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>
+                    <button type='button' className='ds_user_cancel' onClick={handleEditModalClose}>Cancel</button>
                     <button type='submit' className='ds_user_add'>Update</button>
                 </div>
             </form>

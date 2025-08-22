@@ -37,7 +37,7 @@ export const EditTermCondition = createAsyncThunk(
     async ({values , editData}, { rejectWithValue }) => {
       try {
         const response = await axios.put(`${url}/updateTermCondition/${editData?._id}`, {
-          title:values?.title,
+          title: values?.title,
           description: values?.description
         },
         {
@@ -47,8 +47,8 @@ export const EditTermCondition = createAsyncThunk(
         });
         return response?.data?.data;
       } catch (error) {
-        console.error("EditReason Cancellation Error:", error.message);
-        alert("Edit ReasonCancellation", error.message);
+        console.error("Edit Term & Condition Error:", error.message);
+        alert("Edit Term & Condition Error: " + error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );

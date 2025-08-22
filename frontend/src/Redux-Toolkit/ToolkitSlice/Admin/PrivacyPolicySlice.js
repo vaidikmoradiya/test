@@ -23,9 +23,8 @@ export const createPrivacyPolicy = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Create Privacy Policy Error:", error.message);
-      alert("Create Privacy Policy", error.message);
       return rejectWithValue(
-        error.response?.data || { message: "Unexpected error occurred" }
+        error.response?.data || { message: "Failed to create privacy policy" }
       );
     }
   }
@@ -50,9 +49,8 @@ export const EditPrivacyPolicy = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Edit Privacy Policy Error:", error.message);
-      alert("Edit Privacy Policy", error.message);
       return rejectWithValue(
-        error.response?.data || { message: "Unexpected error occurred" }
+        error.response?.data || { message: "Failed to update privacy policy" }
       );
     }
   }
@@ -70,9 +68,8 @@ export const getAllPrivacyPolicy = createAsyncThunk(
       return response?.data;
     } catch (error) {
       console.error("Get All Privacy Policy Error:", error.message);
-      alert("GetAll Privacy Policy", error.message);
       return rejectWithValue(
-        error.response?.data || { message: "Unexpected error occurred" }
+        error.response?.data || { message: "Failed to fetch privacy policies" }
       );
     }
   }
@@ -95,7 +92,7 @@ export const DeletePrivacyPolicy = createAsyncThunk(
     } catch (error) {
       console.error("Delete Privacy Policy Error:", error.message);
       return rejectWithValue(
-        error.response?.data || { message: "Unexpected error occurred" }
+        error.response?.data || { message: "Failed to delete privacy policy" }
       );
     }
   }
@@ -108,45 +105,77 @@ const privacyPolicySlice = createSlice({
     allPrivacyPolicy: [],
     loading: false,
     error: null,
+    message: "",
   },
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+      state.message = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createPrivacyPolicy.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.message = "Accepting Privacy Policy";
       })
       .addCase(createPrivacyPolicy.fulfilled, (state, action) => {
-        // state.privacyPolicy = action.payload;
         state.loading = false;
-        state.message = "Create Privacy Policy SuccessFully";
+        state.error = null;
       })
       .addCase(createPrivacyPolicy.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
-        state.message =
-          action.payload?.message || "Failed To Create Privacy Policy";
+        state.message = action.payload?.message || "Failed to create privacy policy";
       })
 
-      // all reason
+      // Edit privacy policy
+      .addCase(EditPrivacyPolicy.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(EditPrivacyPolicy.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(EditPrivacyPolicy.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+        state.message = action.payload?.message || "Failed to update privacy policy";
+      })
+
+      // Get all privacy policies
       .addCase(getAllPrivacyPolicy.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.message = "Accepting Create Privacy Policy";
       })
       .addCase(getAllPrivacyPolicy.fulfilled, (state, action) => {
-        state.allPrivacyPolicy = action.payload;
+        state.allPrivacyPolicy = action.payload || [];
         state.loading = false;
-        state.message = "Create Privacy Policy SuccessFully";
+        state.error = null;
       })
       .addCase(getAllPrivacyPolicy.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
-        state.message =
-          action.payload?.message || "Failed To Create Privacy Policy";
+        state.message = action.payload?.message || "Failed to fetch privacy policies";
+      })
+
+      // Delete privacy policy
+      .addCase(DeletePrivacyPolicy.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(DeletePrivacyPolicy.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(DeletePrivacyPolicy.rejected, (state, action) => {
+        state.error = action.payload;
+        state.loading = false;
+        state.message = action.payload?.message || "Failed to delete privacy policy";
       });
   },
 });
 
+export const { clearError } = privacyPolicySlice.actions;
 export default privacyPolicySlice.reducer;

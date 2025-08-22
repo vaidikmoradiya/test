@@ -340,7 +340,7 @@ input:checked+.sp_slider:before {
 .sp_view h5 {
     color: black;
     font-weight: 500;
-    padding: 5px 0px;
+    /* padding: 5px 0px; */
 }
 
 
@@ -364,6 +364,11 @@ input:checked+.sp_slider:before {
     min-width: 300px;
 }
 
+@media(max-width:575px) {
+    .sp_view{
+        padding: 15px;
+    }
+}
 @media(max-width:576px) {
     .sp_add_modal .modal-dialog {
         max-width: 90%;
@@ -628,3 +633,148 @@ input:checked+.sp_slider:before {
         max-width: 280px;
     }
 }
+
+
+/********* View Contactus ************/
+.mv_textwrap{
+    word-break: break-all;     
+    white-space: normal;
+}
+/* ******************************* */
+
+
+
+
+/********* View About Us ************/
+.mv_viewaboutus_img{
+    box-shadow: -4px 4px 14px 0px #0000000F;
+}
+.mv_viewaboutus_img img{
+    height: 400px;
+}
+.mv_our_singleimg_row{
+    margin-bottom: 40px;
+}
+.mv_our_multipleimg_row{
+    margin-bottom: 40px;
+}
+.mv_viewaboutus_four_img{
+    box-shadow: -4px 4px 14px 0px #0000000F;
+}
+.mv_viewaboutus_four_img img{
+    height: 200px;
+}
+
+@media(max-width:1440px){
+    .mv_viewaboutus_four_img img {
+        height: 150px;
+    }
+}
+@media(max-width:1199px){
+    .mv_viewaboutus_img img{
+        height: 450px;
+    }
+    .mv_viewaboutus_img{
+        margin-bottom: 10px;
+    }
+    .mv_viewaboutus_four_img img {
+        height: 250px;
+    }
+}
+@media(max-width:1024px){
+    .mv_viewaboutus_img img{
+        height: 450px;
+    }
+    .mv_viewaboutus_four_img img{
+        height: 200px;
+    }
+}
+@media(max-width:575px){
+    .mv_viewaboutus_img img{
+        height: 400px;
+    }
+    .mv_viewaboutus_four_img img{
+        height: 170px;
+    }
+}
+@media(max-width:425px){
+    .mv_viewaboutus_img img{
+        height: 250px;
+    }
+    .mv_our_singleimg_row{
+        margin-bottom: 30px;
+    }
+    .mv_our_multipleimg_row{
+        margin-bottom: 30px;
+    }
+    .mv_viewaboutus_four_img img{
+        height: 120px;
+    }
+}
+@media(max-width:375px){
+    .mv_viewaboutus_img img{
+        height: 220px;
+    }
+    .mv_viewaboutus_four_img img{
+        height: 90px;
+    }
+}
+@media(max-width:320px){
+    .mv_viewaboutus_img img{
+        height: 180px;
+    }
+    .mv_viewaboutus_four_img img{
+        height: 70px;
+    }
+}
+/* ******************************* */
+
+
+/********** Home (About Us) *********/
+.mv_home_aboutus{
+    height: 480px;
+}
+@media(max-width:1440px){
+    .mv_home_aboutus{
+        height: 450px;
+    }
+}
+@media(max-width:1199px){
+    .mv_home_aboutus{
+        height: 320px;
+    }
+}
+@media(max-width:1024px){
+    .mv_home_aboutus{
+        height: 300px;
+    }
+}
+@media(max-width:768px){
+    .mv_home_aboutus{
+        height: 230px;
+    }
+}
+@media(max-width:767px){
+    .mv_home_aboutus{
+        margin-bottom: 10px;
+    }
+    .mv_home_aboutus{
+        height: 350px;
+    }
+}
+@media(max-width:425px){
+    .mv_home_aboutus{
+        height: 280px;
+    }
+}
+@media(max-width:375px){
+    .mv_home_aboutus{
+        height: 230px;
+    }
+}
+@media(max-width:320px){
+    .mv_home_aboutus{
+        height: 180px;
+    }
+}
+/* ******************************* */

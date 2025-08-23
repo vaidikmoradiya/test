@@ -327,34 +327,39 @@ const PrivacyPolicy = () => {
                     <h4 className='text-center'>Add Privacy Policy</h4>
                     <div className='spmodal_main_div'>
                         <small>Title <span className='text-danger'>*</span></small><br></br>
-                        <input 
-                            type='text' 
-                            placeholder='Enter Title' 
-                            className='mb-4' 
-                            name="title" 
-                            value={createPrivacyPolicyFormik.values.title}
-                            onChange={createPrivacyPolicyFormik.handleChange}
-                            onBlur={createPrivacyPolicyFormik.handleBlur}
-                        />
-                        {createPrivacyPolicyFormik.touched.title && createPrivacyPolicyFormik.errors.title && (
-                            <p className="text-danger mb-0 text-start ps-1 pt-1" style={{ fontSize: "14px" }}>
-                                {createPrivacyPolicyFormik.errors.title}
-                            </p>
-                        )}
+                        <div className='mb-4' >
+                            <input 
+                                type='text' 
+                                placeholder='Enter Title' 
+                                name="title" 
+                                className='mb-0'
+                                value={createPrivacyPolicyFormik.values.title}
+                                onChange={createPrivacyPolicyFormik.handleChange}
+                                onBlur={createPrivacyPolicyFormik.handleBlur}
+                            />
+                            {createPrivacyPolicyFormik.touched.title && createPrivacyPolicyFormik.errors.title && (
+                                <p className="text-danger mb-0 text-start ps-1 pt-1" style={{ fontSize: "14px" }}>
+                                    {createPrivacyPolicyFormik.errors.title}
+                                </p>
+                            )}
+                        </div>
                         <small>Description <span className='text-danger'>*</span></small><br></br>
-                        <textarea 
-                            placeholder='Enter Description'
-                            name="description" 
-                            value={createPrivacyPolicyFormik.values.description}
-                            onChange={createPrivacyPolicyFormik.handleChange}
-                            onBlur={createPrivacyPolicyFormik.handleBlur}
-                            rows="4"
-                        />
-                        {createPrivacyPolicyFormik.touched.description && createPrivacyPolicyFormik.errors.description && (
-                            <p className="text-danger mb-0 text-start ps-1 pt-1" style={{ fontSize: "14px" }}>
-                                {createPrivacyPolicyFormik.errors.description}
-                            </p>
-                        )}
+                        <div>
+                            <textarea 
+                                placeholder='Enter Description'
+                                name="description" 
+                                value={createPrivacyPolicyFormik.values.description}
+                                onChange={createPrivacyPolicyFormik.handleChange}
+                                onBlur={createPrivacyPolicyFormik.handleBlur}
+                                rows="4"
+                                className='mb-0'
+                            />
+                            {createPrivacyPolicyFormik.touched.description && createPrivacyPolicyFormik.errors.description && (
+                                <p className="text-danger mb-0 text-start ps-1" style={{ fontSize: "14px" }}>
+                                    {createPrivacyPolicyFormik.errors.description}
+                                </p>
+                            )}
+                        </div>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                         <button type='button' className='ds_user_cancel' onClick={() => handleCloseModal('add')}>Cancel</button>

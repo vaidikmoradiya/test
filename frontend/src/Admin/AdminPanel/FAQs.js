@@ -60,6 +60,13 @@ const FAQs = () => {
         setData(paginatedData);
     }, [currentPage, getFaq, searchInput]);
 
+    // Reset form when modal opens
+    useEffect(() => {
+        if (addShow) {
+            createFaqFormik.resetForm();
+        }
+    }, [addShow]);
+
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
@@ -176,6 +183,27 @@ const FAQs = () => {
         dispatch(getAllFaq());
     }
 
+    // Function to handle opening Add FAQ modal
+    const handleAddShow = () => {
+        setAddShow(true);
+        // Reset form when opening modal
+        createFaqFormik.resetForm();
+    }
+
+    // Function to handle closing Add FAQ modal
+    const handleAddClose = () => {
+        setAddShow(false);
+        // Reset form when closing modal
+        createFaqFormik.resetForm();
+    }
+
+    // Function to handle closing Edit FAQ modal
+    const handleEditClose = () => {
+        setEditShow(false);
+        // Reset edit form to original data
+        editFaqFormik.resetForm();
+    }
+
     return (
         <div className='sp_main sp_height pt-2'>
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
@@ -191,7 +219,7 @@ const FAQs = () => {
                     <Link className='mt-3 me-3' to='/admin/viewfaqs'>
                         <div className='sp_View_btn'><span>View</span></div>
                     </Link>
-                    <Link className='mt-3 ' href='#' onClick={() => setAddShow(true)} >
+                    <Link className='mt-3 ' href='#' onClick={handleAddShow} >
                         <div className='sp_Add_btn'><span>+ Add</span></div>
                     </Link>
                 </div>
@@ -245,14 +273,14 @@ const FAQs = () => {
             {/* add role modal  */}
             <Modal
                 show={addShow}
-                onHide={() => setAddShow(false)}
+                onHide={handleAddClose}
                 aria-labelledby="contained-modal-title-vcenter "
                 className='sp_add_modal'
                 centered
             >
                 <Modal.Header closeButton>
                 </Modal.Header>
-                <form onSubmit={createFaqFormik.handleSubmit}>
+                <form key={`add-faq-form-${addShow}`} onSubmit={createFaqFormik.handleSubmit}>
                     <Modal.Body>
                         <h4 className='text-center'>Add FAQ's</h4>
                         <div className='spmodal_main_div'>
@@ -277,12 +305,14 @@ const FAQs = () => {
                                     onChange={createFaqFormik.handleChange}
                                     onBlur={createFaqFormik.handleBlur}
                                 ></input>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createFaqFormik.errors.faqQuestion}
-                                </p>
+                                {createFaqFormik.touched.faqQuestion && createFaqFormik.errors.faqQuestion && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createFaqFormik.errors.faqQuestion}
+                                    </p>
+                                )}
                             </div>
                             <div className='mb-3'>
                                 <small>Answer</small><br></br>
@@ -291,16 +321,18 @@ const FAQs = () => {
                                     onChange={createFaqFormik.handleChange}
                                     onBlur={createFaqFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createFaqFormik.errors.faqAnswer}
-                                </p>
+                                {createFaqFormik.touched.faqAnswer && createFaqFormik.errors.faqAnswer && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createFaqFormik.errors.faqAnswer}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                            <button className='ds_user_cancel' onClick={() => setAddShow(false)}>Cancel</button>
+                            <button className='ds_user_cancel' onClick={handleAddClose}>Cancel</button>
                             <button type='submit' className='ds_user_add'>Add</button>
                         </div>
                     </Modal.Body>
@@ -310,7 +342,7 @@ const FAQs = () => {
             {/* edit role modal  */}
             <Modal
                 show={editShow}
-                onHide={() => setEditShow(false)}
+                onHide={handleEditClose}
                 aria-labelledby="contained-modal-title-vcenter "
                 className='sp_add_modal'
                 centered
@@ -342,12 +374,14 @@ const FAQs = () => {
                                     onChange={editFaqFormik.handleChange}
                                     onBlur={editFaqFormik.handleBlur}
                                 ></input>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editFaqFormik.errors.faqQuestion}
-                                </p>
+                                {editFaqFormik.touched.faqQuestion && editFaqFormik.errors.faqQuestion && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editFaqFormik.errors.faqQuestion}
+                                    </p>
+                                )}
                             </div>
                             <div className='mb-3'>
                                 <small>Answer</small><br></br>
@@ -356,16 +390,18 @@ const FAQs = () => {
                                     onChange={editFaqFormik.handleChange}
                                     onBlur={editFaqFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {editFaqFormik.errors.faqAnswer}
-                                </p>
+                                {editFaqFormik.touched.faqAnswer && editFaqFormik.errors.faqAnswer && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {editFaqFormik.errors.faqAnswer}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                            <button className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>
+                            <button className='ds_user_cancel' onClick={handleEditClose}>Cancel</button>
                             <button className='ds_user_add'>Update</button>
                         </div>
                     </Modal.Body>

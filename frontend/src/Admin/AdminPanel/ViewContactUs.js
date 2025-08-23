@@ -28,7 +28,7 @@ const ViewContactUs = () => {
             <div className='sp_spec_view' >
                 <h5 >Contact Details</h5>
                 {SingleContactUsData && (
-                    <div className='p-3' style={{ minWidth: '300px' }}>
+                    <div style={{ minWidth: '300px' }}>
                         <div className='d-flex py-1 align-items-center'>
                             <div className='w-50 sp_text_gray'><h6 className='mb-0'>Name :</h6></div>
                             <div className='w-50 '><p className='mb-0 mv_textwrap'>{SingleContactUsData.name}</p></div>

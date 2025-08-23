@@ -474,7 +474,7 @@ input[type="date"]:focus-visible{
 .ds_profile_manage{
     position: absolute;
     top: 50px;
-    left: -10px;
+    left: -30px;
     box-shadow: 1px 1px 20px 0.5px #0000000F;
     background-color: white;
     border-radius: 4px;

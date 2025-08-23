@@ -147,8 +147,8 @@ const TandC = () => {
     })
 
     const editTermConditionVal = {
-        title: editData?.title,
-        description: editData?.description
+        title: editData?.title || "",
+        description: editData?.description || ""
     }
 
     const editTermConditionFormik = useFormik({
@@ -159,12 +159,28 @@ const TandC = () => {
             dispatch(EditTermCondition({values, editData})).then(() => {
                 dispatch(getAllTermCondition());
                 setEditShow(false);
+                // Reset form after successful submission
+                action.resetForm();
+                setEditData("");
             }).catch((error)=>{
                 alert(error)
              })
-             action.resetForm()
         })
     })
+
+    // Function to handle edit modal cancel
+    const handleEditCancel = () => {
+        setEditShow(false);
+        setEditData("");
+        editTermConditionFormik.resetForm();
+        editTermConditionFormik.setTouched({});
+    }
+
+    // Function to handle edit modal open
+    const handleEditOpen = (item) => {
+        setEditData(item);
+        setEditShow(true);
+    }
 
     const handleDeleteTermCondition = () => {
         dispatch(DeleteTermCondition(deleteId));
@@ -187,7 +203,11 @@ const TandC = () => {
                     <Link className='mt-3' to='/admin/viewtandc'>
                         <div className='sp_View_btn'><span>View</span></div>
                     </Link>
-                    <Link className='mt-3 ms-3' href='#' onClick={() => setAddShow(true)} >
+                    <Link className='mt-3 ms-3' href='#' onClick={() => {
+                        setAddShow(true);
+                        createTermConditionFormik.resetForm();
+                        createTermConditionFormik.setTouched({});
+                    }} >
                         <div className='sp_Add_btn'><span>+ Add</span></div>
                     </Link>
                 </div>
@@ -217,7 +237,7 @@ const TandC = () => {
                                         <td>{item.description[0]?.length > 120 ? `${item.description[0]?.slice(0, 120)}...` : item.description[0] ?? ''}</td>
                                         <td>
                                             <div className=' sp_table_action d-flex'>
-                                                <div><img src={editImg} onClick={() => {setEditShow(true); setEditData(item)}}></img></div>
+                                                <div><img src={editImg} onClick={() => handleEditOpen(item)}></img></div>
                                                 <div><img src={deleteImg} onClick={() => {setDeleteShow(true); setDeleteId(item?._id)}}></img></div>
                                             </div>
                                         </td>
@@ -238,7 +258,11 @@ const TandC = () => {
             {/* add role modal  */}
             <Modal
                 show={addShow}
-                onHide={() => setAddShow(false)}
+                onHide={() => {
+                    setAddShow(false);
+                    createTermConditionFormik.resetForm();
+                    createTermConditionFormik.setTouched({});
+                }}
                 aria-labelledby="contained-modal-title-vcenter "
                 className='sp_add_modal'
                 centered
@@ -256,12 +280,14 @@ const TandC = () => {
                                     onChange={createTermConditionFormik.handleChange}
                                     onBlur={createTermConditionFormik.handleBlur}
                                 ></input>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createTermConditionFormik.errors.title}
-                                </p>
+                                {createTermConditionFormik.touched.title && createTermConditionFormik.errors.title && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createTermConditionFormik.errors.title}
+                                    </p>
+                                )}
                             </div>
                             <small>Enter Description</small><br></br>
                             <div className='mb-4'>
@@ -271,12 +297,14 @@ const TandC = () => {
                                     onChange={createTermConditionFormik.handleChange}
                                     onBlur={createTermConditionFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                className="text-danger mb-0 text-start ps-1 pt-1"
-                                style={{ fontSize: "14px" }}
-                                >
-                                {createTermConditionFormik.errors.description}
-                                </p>
+                                {createTermConditionFormik.touched.description && createTermConditionFormik.errors.description && (
+                                    <p
+                                    className="text-danger mb-0 text-start ps-1 pt-1"
+                                    style={{ fontSize: "14px" }}
+                                    >
+                                    {createTermConditionFormik.errors.description}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
@@ -290,7 +318,7 @@ const TandC = () => {
             {/* edit role modal  */}
             <Modal
                 show={editShow}
-                onHide={() => setEditShow(false)}
+                onHide={handleEditCancel}
                 aria-labelledby="contained-modal-title-vcenter "
                 className='sp_add_modal'
                 centered
@@ -308,12 +336,14 @@ const TandC = () => {
                                     onChange={editTermConditionFormik.handleChange}
                                     onBlur={editTermConditionFormik.handleBlur}
                                 ></input>
-                                <p
-                                    className="text-danger mb-0 text-start ps-1 pt-1"
-                                    style={{ fontSize: "14px" }}
-                                    >
-                                    {editTermConditionFormik.errors.title}
-                                </p>
+                                {editTermConditionFormik.touched.title && editTermConditionFormik.errors.title && (
+                                    <p
+                                        className="text-danger mb-0 text-start ps-1 pt-1"
+                                        style={{ fontSize: "14px" }}
+                                        >
+                                        {editTermConditionFormik.errors.title}
+                                    </p>
+                                )}
                             </div>
                             <small>Enter Description</small><br></br>
                             <div>
@@ -323,16 +353,18 @@ const TandC = () => {
                                     onChange={editTermConditionFormik.handleChange}
                                     onBlur={editTermConditionFormik.handleBlur}
                                 ></textarea>
-                                <p
-                                    className="text-danger mb-0 text-start ps-1 pt-1"
-                                    style={{ fontSize: "14px" }}
-                                    >
-                                    {editTermConditionFormik.errors.description}
-                                </p>
+                                {editTermConditionFormik.touched.description && editTermConditionFormik.errors.description && (
+                                    <p
+                                        className="text-danger mb-0 text-start ps-1 pt-1"
+                                        style={{ fontSize: "14px" }}
+                                        >
+                                        {editTermConditionFormik.errors.description}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
-                            <button className='ds_user_cancel' onClick={() => setEditShow(false)}>Cancel</button>
+                            <button type='button' className='ds_user_cancel' onClick={handleEditCancel}>Cancel</button>
                             <button type='submit' className='ds_user_add'>Update</button>
                         </div>
                     </Modal.Body>

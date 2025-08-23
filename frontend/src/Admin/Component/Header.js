@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import "../Css/Umang.css";
 import { IoMenu } from "react-icons/io5";
@@ -65,9 +65,24 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
   const dispatch = useDispatch();
   const profileData = useSelector((state) => state?.profile?.GetSingleUserData);
   const Back_URL = 'http://localhost:5000/';
+  const profileRef = useRef(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfile(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
 
   const toggleSidebar = () => {
@@ -122,7 +137,7 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
         <div className="unavbar_right">
           
           <div className="uuser_profile position-relative">
-            <div className="uavatar ">
+            <div className="uavatar " ref={profileRef}>
               <img
                 src={profileData?.image ? `${Back_URL}${profileData.image}` : profileImg}
                 alt="User avatar"

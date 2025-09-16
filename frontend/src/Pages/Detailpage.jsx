@@ -42,6 +42,8 @@ const Detailpage = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showReviewSuccess, setShowReviewSuccess] = useState(false);
+  const [showReviewError, setShowReviewError] = useState(false);
   const [review, setReview] = useState({
     rating: 0,
     title: '',
@@ -61,6 +63,24 @@ const Detailpage = () => {
     qty: ''
   });
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
   const handleContinue = (e, itemId) => {
     e.preventDefault();
     dispatch(Createcart({
@@ -78,14 +98,113 @@ const Detailpage = () => {
     // Here you can add the logic to submit the review
     console.log('Review submitted:', review);
     var userId = localStorage.getItem('UserId')
+    const alreadyReviewed = Array.isArray(ReviewtData) && ReviewtData.some(r => r?.productId === id && String(r?.userId) === String(userId));
+    if (alreadyReviewed) {
+      setShowReviewError(true);
+      setTimeout(() => setShowReviewError(false), 1800);
+      return;
+    }
     dispatch(CreateReview({ ...review, id, userId })).then((response) => {
-      if (response.payload) {
-        console.log("payload", response.payload);
-        dispatch(GetAllReview())
+      if (response?.meta?.requestStatus === 'fulfilled') {
+        dispatch(GetAllReview());
+        setShowReviewModal(false);
+        setReview({ rating: 0, title: '', comment: '' });
+        setShowReviewSuccess(true);
+        setTimeout(() => setShowReviewSuccess(false), 1800);
+      } else {
+        setShowReviewError(true);
+        setTimeout(() => setShowReviewError(false), 1800);
       }
     })
-    setShowReviewModal(false);
-    setReview({ rating: 0, title: '', comment: '' });
+  };
+
+  const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
+
+  const PaymentSuccessModal = () => (
+    <div className="mv_modal_overlay">
+      <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            background: '#4CAF50',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px'
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
+            </svg>
+          </div>
+          <h3 style={{ marginBottom: '10px', color: '#141414' }}>Payment Successful!</h3>
+          <p style={{ color: '#666', marginBottom: '20px' }}>Your order has been placed successfully. Redirecting to home page...</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const handleBuyNow = async (product) => {
+    const res = await loadRazorpayScript();
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    const subTotal = Number(product?.discountedPrice || 0);
+    const tax = Math.round(subTotal * 0.28);
+    const totalAmount = subTotal + tax;
+
+    const options = {
+      key: "rzp_test_hN631gyZ1XbXvp",
+      amount: parseInt(totalAmount * 100),
+      currency: "INR",
+      name: "Pifron",
+      description: "Pifron Payment",
+      image: "https://yourdomain.com/logo.png",
+      prefill: {},
+      method: {
+        upi: true,
+        card: true,
+        netbanking: true,
+        wallet: true,
+        emi: true,
+      },
+      theme: {
+        color: "#000000",
+      },
+      handler: function (response) {
+        const orderData = {
+          paymentInfo: {
+            razorpay_payment_id: response.razorpay_payment_id,
+          },
+          items: [
+            {
+              id: product?._id,
+              name: product?.productName,
+              price: product?.discountedPrice,
+              quantity: 1,
+            },
+          ],
+          totalPrice: parseInt(totalAmount * 100),
+        };
+        console.log('orderData', orderData);
+
+        setShowPaymentSuccessModal(true);
+        setTimeout(() => {
+          setShowPaymentSuccessModal(false);
+          navigate('/layout/home');
+        }, 2000);
+      },
+      modal: {
+        ondismiss: function () {
+          alert("Payment popup closed");
+        },
+      },
+    };
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   };
 
   // Calculate actual ratings distribution from review data
@@ -118,6 +237,54 @@ const Detailpage = () => {
   const averageRating = calculateAverageRating();
 
   const [showAllReviews, setShowAllReviews] = useState(false);
+
+  const ReviewSuccessModal = () => (
+    <div className="mv_modal_overlay">
+      <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            background: '#4CAF50',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px'
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
+            </svg>
+          </div>
+          <h3 style={{ marginBottom: '10px', color: '#141414' }}>Review submitted!</h3>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ReviewErrorModal = () => (
+    <div className="mv_modal_overlay">
+      <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            background: '#f44336',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px'
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="white" />
+            </svg>
+          </div>
+          <h3 style={{ marginBottom: '10px', color: '#141414' }}>You already reviewed this product</h3>
+        </div>
+      </div>
+    </div>
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Toggle dropdown visibility
@@ -203,7 +370,7 @@ const Detailpage = () => {
                           <img className='mv_star_img' src={require(`../assets/Star.png`)} />
                         </div>
                         <div>
-                          <h1 className="mv_rate_text">{item.rating}</h1>
+                          <h1 className="mv_rate_text">{Number(item?.rating || 0).toFixed(2)}</h1>
                         </div>
                       </div>
                     </div>
@@ -249,10 +416,10 @@ const Detailpage = () => {
 
                   <div className="mv_action_buttons">
                     <div className="row mv_action_btn_main">
-                      <div className="col-lg-4 col-md-6 col-sm-4 col-6">
-                        <button className="mv_buy_now">Buy now</button>
+                      <div className="col-lg-6 col-md-6 col-sm-6 col-6">
+                        <button className="mv_buy_now" onClick={() => handleBuyNow(item)}>Buy now</button>
                       </div>
-                      <div className="col-lg-8 col-md-6 col-sm-8 col-6">
+                      <div className="col-lg-6 col-md-6 col-sm-6 col-6">
                         {item.stockStatus ? (
                           <Link to={`/layout/Cart`}>
                             <button className="mv_add_to_cart" onClick={handleContinue}>Add to cart</button>
@@ -654,6 +821,10 @@ const Detailpage = () => {
           </div>
         </div>
       )}
+
+      {showReviewSuccess && <ReviewSuccessModal />}
+      {showReviewError && <ReviewErrorModal />}
+      {showPaymentSuccessModal && <PaymentSuccessModal />}
 
     </div>
   );

@@ -6,6 +6,7 @@ import { Country, State, City } from 'country-state-city';
 import { GetCartByuser, UpdateCartQuantity, DeleteCartItem, Createcart, ClearAllCart } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
 import { GetBestSeller } from '../Redux-Toolkit/ToolkitSlice/User/TopSellingSlice';
 import { createaddress, getalladdress, updateAddress } from '../Redux-Toolkit/ToolkitSlice/User/AddressSlice';
+import { CreateOrderData } from '../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -104,6 +105,21 @@ const Cart = () => {
         contactNo: '',
         addressType: 'Home'
     });
+    // Validation state for address form
+    const [addressErrors, setAddressErrors] = useState({});
+    const [addressTouched, setAddressTouched] = useState({});
+
+    const validateAddress = (values) => {
+        const errors = {};
+        if (!values.fullName || !values.fullName.trim()) errors.fullName = 'Name is required';
+        if (!values.address || !values.address.trim()) errors.address = 'Address is required';
+        if (!values.pincode || !/^[1-9][0-9]{5}$/.test(values.pincode)) errors.pincode = 'Valid pincode is required';
+        if (!values.country || !values.country.trim()) errors.country = 'Country is required';
+        if (!values.state || !values.state.trim()) errors.state = 'State is required';
+        if (!values.city || !values.city.trim()) errors.city = 'City is required';
+        if (!values.contactNo || !/^[0-9]{10}$/.test(values.contactNo)) errors.contactNo = '10 digit contact no. is required';
+        return errors;
+    };
 
     // Add new state to track if we're editing
     const [isEditing, setIsEditing] = useState(false);
@@ -115,6 +131,15 @@ const Cart = () => {
             ...prev,
             [name]: value
         }));
+        if (addressTouched[name]) {
+            setAddressErrors(validateAddress({ ...addressForm, [name]: value }));
+        }
+    };
+
+    const handleAddressBlur = (e) => {
+        const { name } = e.target;
+        setAddressTouched(prev => ({ ...prev, [name]: true }));
+        setAddressErrors(validateAddress(addressForm));
     };
 
     // Handle address type selection
@@ -128,6 +153,20 @@ const Cart = () => {
     // Handle form submission
     const handleAddressSubmit = async (e) => {
         e.preventDefault();
+        const errors = validateAddress(addressForm);
+        setAddressTouched({
+            fullName: true,
+            address: true,
+            pincode: true,
+            country: true,
+            state: true,
+            city: true,
+            contactNo: true,
+        });
+        setAddressErrors(errors);
+        if (Object.keys(errors).length > 0) {
+            return; // block submit until valid
+        }
         try {
             if (isEditing) {
                 // Update existing address
@@ -406,11 +445,11 @@ const Cart = () => {
             paymentInfo: {
               razorpay_payment_id: response.razorpay_payment_id,
             },
-            items: cartItems,
+            items: CartbyuserData,
             totalPrice: parseInt(totalAmount * 100),
           };
         console.log('sdasd',orderData)
-        // dispatch(CreateOrder(orderData));
+        dispatch(CreateOrderData(orderData));
         
         // Clear cart from backend and localStorage
         dispatch(ClearAllCart());
@@ -502,7 +541,11 @@ const Cart = () => {
 
                                                 <tr key={item.id} className="mv_cart_item">
                                                     <td>
-                                                        <div className="mv_cart_product_info">
+                                                        <div
+                                                            className="mv_cart_product_info"
+                                                            onClick={() => window.location.href = `/layout/Detailpage/${item?.productData?.[0]?._id}`}
+                                                            style={{ cursor: 'pointer' }}
+                                                        >
                                                             <img src={`${Back_URL}${item?.productData[0]?.productImage[0]}`} alt={item.name} className="mv_product_image" />
                                                             <div>
                                                                 <div className="mv_product_name">{item.productData[0]?.productName}</div>
@@ -748,9 +791,13 @@ const Cart = () => {
                                                         name="address"
                                                         value={addressForm.address}
                                                         onChange={handleAddressInputChange}
+                                                        onBlur={handleAddressBlur}
                                                         placeholder="Address (House no, Building, Street, Area)"
                                                         required
                                                     />
+                                                    {addressTouched.address && addressErrors.address && (
+                                                        <p className="mv_input_error">{addressErrors.address}</p>
+                                                    )}
                                                 </div>
                                                 <div className="mv_cart_form_row">
                                                     <div className="mv_form_group">
@@ -760,9 +807,13 @@ const Cart = () => {
                                                             name="pincode"
                                                             value={addressForm.pincode}
                                                             onChange={handleAddressInputChange}
+                                                            onBlur={handleAddressBlur}
                                                             placeholder="Pincode"
                                                             required
                                                         />
+                                                        {addressTouched.pincode && addressErrors.pincode && (
+                                                            <p className="mv_input_error">{addressErrors.pincode}</p>
+                                                        )}
                                                     </div>
                                                     <div className="mv_form_group">
                                                         <label>Country</label>
@@ -771,9 +822,13 @@ const Cart = () => {
                                                             name="country"
                                                             value={addressForm.country}
                                                             onChange={handleAddressInputChange}
+                                                            onBlur={handleAddressBlur}
                                                             placeholder="Country"
                                                             required
                                                         />
+                                                        {addressTouched.country && addressErrors.country && (
+                                                            <p className="mv_input_error">{addressErrors.country}</p>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="mv_cart_form_row">
@@ -784,9 +839,13 @@ const Cart = () => {
                                                             name="state"
                                                             value={addressForm.state}
                                                             onChange={handleAddressInputChange}
+                                                            onBlur={handleAddressBlur}
                                                             placeholder="State"
                                                             required
                                                         />
+                                                        {addressTouched.state && addressErrors.state && (
+                                                            <p className="mv_input_error">{addressErrors.state}</p>
+                                                        )}
                                                     </div>
                                                     <div className="mv_form_group">
                                                         <label>City</label>
@@ -795,9 +854,13 @@ const Cart = () => {
                                                             name="city"
                                                             value={addressForm.city}
                                                             onChange={handleAddressInputChange}
+                                                            onBlur={handleAddressBlur}
                                                             placeholder="City"
                                                             required
                                                         />
+                                                        {addressTouched.city && addressErrors.city && (
+                                                            <p className="mv_input_error">{addressErrors.city}</p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -811,9 +874,13 @@ const Cart = () => {
                                                             name="fullName"
                                                             value={addressForm.fullName}
                                                             onChange={handleAddressInputChange}
+                                                            onBlur={handleAddressBlur}
                                                             placeholder="Full name"
                                                             required
                                                         />
+                                                        {addressTouched.fullName && addressErrors.fullName && (
+                                                            <p className="mv_input_error">{addressErrors.fullName}</p>
+                                                        )}
                                                     </div>
                                                     <div className="mv_form_group">
                                                         <label>Contact No.</label>
@@ -828,6 +895,7 @@ const Cart = () => {
                                                                     setAddressForm(prev => ({ ...prev, contactNo: value }));
                                                                 }
                                                             }}
+                                                            onBlur={handleAddressBlur}
                                                             onKeyPress={e => {
                                                                 if (!/[0-9]/.test(e.key)) {
                                                                     e.preventDefault();
@@ -839,6 +907,9 @@ const Cart = () => {
                                                             placeholder="Contact no"
                                                             required
                                                         />
+                                                        {addressTouched.contactNo && addressErrors.contactNo && (
+                                                            <p className="mv_input_error">{addressErrors.contactNo}</p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -896,7 +967,7 @@ const Cart = () => {
                             </button>
                         </div>
                         <div className="mv_modal_body">
-                            <div className="row">
+                            <div className={`row ${(!addresses || addresses.length !== 1) ? '' : 'justify-content-center'}`}>
                                 {addresses.map((address) => (
                                     <div key={address.id} className="col-md-6 mb-4">
                                         <div

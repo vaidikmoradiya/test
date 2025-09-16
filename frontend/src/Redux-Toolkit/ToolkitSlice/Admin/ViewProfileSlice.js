@@ -131,6 +131,8 @@ export const ChangePassData = createAsyncThunk(
         .addCase(EditUserData.fulfilled, (state, action) => {
           state.loading = false;
           state.success = true;
+          // Update cached profile so Header reflects changes immediately
+          state.GetSingleUserData = action.payload;
           state.message = "Get CateData SuccessFully";
         })
         .addCase(EditUserData.rejected, (state, action) => {

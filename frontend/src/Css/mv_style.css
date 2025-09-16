@@ -48,6 +48,19 @@
     color: #141414;
     margin-bottom: 16px;
 }
+.mv_pro_big_name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Ensure flex container lets name shrink and ellipsis apply */
+.mv_name_dis > div:first-child{
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.mv_name_dis > div:last-child{
+    flex: 0 0 auto;
+}
 .mv_dis_per{
     font-weight: 500;
     font-size: 16px;
@@ -805,7 +818,7 @@
                                                             Cart Page
  ======================================================================================================================================================================== */
 .mv_cart_main_padd{
-    padding: 60px 0px;
+    padding: 60px 0px 0px 0px;
 }
 .mv_page_main_heading{
     font-weight: 600;
@@ -1080,6 +1093,11 @@
     border-radius: 0px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+.mv_input_error {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 6px;
+}
 .mv_modal_header {
     padding: 20px;
     border-bottom: 0.6px solid #14141433;
@@ -1275,6 +1293,11 @@
 }
 
 
+@media (max-width: 1024px){
+    .mv_no_address {
+        font-size: 15px;
+    }
+}
 @media (max-width: 991px){
     .mv_cart_table{
         margin-bottom: 20px;
@@ -1349,6 +1372,15 @@
     }
     .mv_my_address_text_padd {
         padding: 10px;
+    }
+    .mv_product_name{
+        font-size: 15px;
+    }
+    .mv_cart_table thead tr th{
+        font-size: 15px;
+    }
+    .mv_cart_table tbody tr td{
+        font-size: 15px;
     }
 }
 
@@ -3299,6 +3331,16 @@
 
 
 
+@media (max-width: 1440px) {
+    .mv_order_image{
+        width: 100%;
+    }
+}
+@media (max-width: 1400px) {
+    .mv_order_image{
+        width: 105px;
+    }
+}
 @media (max-width: 767px) {
     .mv_profile_card_left {
         justify-content: start;
@@ -3387,7 +3429,14 @@
         padding: 10px;
     }
 }
-
+@media (max-width: 425px){
+    .mv_order_text_qty{
+        font-size: 13px;
+    }
+    .mv_order_qty{
+        font-size: 13px;
+    }
+}
 
 
 
@@ -3676,14 +3725,14 @@
 @media (max-width:1024px){
     .mv_line.line_1 {
         left: 80px;
-        top: 40px;
+        top: 55px;
     }
     .mv_line.line_2{
-        top: 40px;
+        top: 55px;
     }
     .mv_line.line_3{
         left: 64%;
-        top: 40px;
+        top: 55px;
     }
 }
 @media (max-width:768px){
@@ -4176,6 +4225,14 @@
     .mv_track_text_padd {
         padding: 10px 0px !important;
     }
+}
+@media (max-width: 320px){
+    .mv_order_cancelled_back_home {
+        font-size: 14px;
+    }
+    .mv_order_cancelled_track_refund {
+        font-size: 14px;
+    }    
 }
 
 

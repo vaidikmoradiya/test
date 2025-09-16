@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import insta from '../../assets/instagram.svg';
 import facebook from '../../assets/facebook.svg';
 import thread from '../../assets/thread.svg';
+import { useSelector } from 'react-redux';
 
 const Footer = () => {
+    const adminProfile = useSelector((state) => state.profile.GetSingleUserData)
     return (
         <footer className='Footer VK_footer_par'>
             <div className='m_container inter VK_sec_padding'>
@@ -27,7 +29,7 @@ const Footer = () => {
                                         <img src={require('../../assets/email_w_icon.png')} height="18px" width="18px" alt="" />
                                     </div>
                                     <div>
-                                        <p className='mb-0 mv_mo_number'>example123@gmail.com</p>
+                                        <p className='mb-0 mv_mo_number'>{adminProfile?.email || 'example123@gmail.com'}</p>
                                     </div>
                                 </div>
                                 <div className='mv_mo_main'>
@@ -35,7 +37,7 @@ const Footer = () => {
                                         <img src={require('../../assets/phone_w_icon.png')} height="18px" width="18px" alt="" />
                                     </div>
                                     <div>
-                                        <p className='mb-0 mv_mo_number'>+91 3698527412</p>
+                                        <p className='mb-0 mv_mo_number'>{adminProfile?.mobileNo ? `+91 ${adminProfile.mobileNo}` : '+91 3698527412'}</p>
                                     </div>
                                 </div>
                             </div>

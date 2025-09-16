@@ -98,7 +98,9 @@
     bottom: 30%;
     width: 30%;
 }
-
+.mv_slider_small_heading{
+    font-size: 15px;
+}
 .s_slider_caption h3 {
     line-height: 1.5;
 }
@@ -328,7 +330,7 @@
                                                                             Testimonial
 ================================================================================================================================================================ */
 .mv_services_section {
-    padding: 60px 0;
+    padding: 60px 0 0 0;
     background-color: #fff;
 }
 .mv_section_subtitle {
@@ -572,11 +574,18 @@
         bottom: 10%;
         width: 75%;
     }
-
-    .s_slider_caption h3 {
-        line-height: 1;
+    .mv_slider_small_heading{
+        font-size: 13px;
+        margin-bottom: 10px;
     }
-
+    .s_slider_caption h3 {
+        line-height: 1.2;
+        font-size: 18px;
+    }
+    .s_slider_btn {
+        font-size: 15px;
+        padding: 6px 20px;
+    }
     .s_img_content {
         width: 70%;
         top: 10%;

@@ -33,6 +33,8 @@ const settings = {
   slidesToShow: 3,
   slidesToScroll: 1,
   arrows: false,
+  autoplay: true,
+  autoplaySpeed: 2000,
   responsive: [
     {
       breakpoint: 992,
@@ -76,7 +78,7 @@ const Testimonial = () => {
   };
 
   return (
-    <section className="py-5 mv_services_section">
+    <section className="mv_services_section">
       <div className="container text-center mb-5">
         <p className="mv_section_subtitle mb-2">Testimonial</p>
         <h2 className="mv_relay_text">what our customers says</h2>

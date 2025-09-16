@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { GetAllProduct } from '../Redux-Toolkit/ToolkitSlice/User/ProductSlice';
 import { Link } from 'react-router-dom';
-import { Createcart } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
+import { Createcart, GetCartByuser } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
 
 function Productlist() {
     const { id } = useParams();
@@ -102,7 +102,8 @@ function Productlist() {
         dispatch(Createcart({
             id: itemId
         })).then(() => {
-            navigate('/layout/Cart')
+            // stay on the same page; optionally show a toast here
+            dispatch(GetCartByuser());
         }).catch((error) => {
             alert('Failed to add product to cart: ' + error.message);
         });
@@ -148,7 +149,7 @@ function Productlist() {
                                     </Link>
                                     <Link to={`/layout/Detailpage/${item._id}`} className='mv_name_dis text-decoration-none'>
                                         <div>
-                                            <p className='mv_pro_name'>{item.productName}</p>
+                                            <p className='mv_pro_name mv_pro_big_name'>{item.productName}</p>
                                         </div>
                                         {item.discount && (
                                             <div>

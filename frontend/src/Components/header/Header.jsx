@@ -15,6 +15,7 @@ import { GetActiveCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/Catego
 import { GetSubCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice'
 import { GetAllProduct } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
 import { GetCartByuser } from '../../Redux-Toolkit/ToolkitSlice/User/CartSlice'
+import { GetSingleUserData } from '../../Redux-Toolkit/ToolkitSlice/Admin/ViewProfileSlice'
 
 
 const Header = () => {
@@ -73,6 +74,7 @@ const Header = () => {
     const subcategoryData = useSelector((state) => state.subcategory.getSubCategoryData)
     const ProductData = useSelector((state) => state.product.allProductData)
     const cartData = useSelector((state) => state.cart.GetCartData)
+    const adminProfile = useSelector((state) => state.profile.GetSingleUserData)
     // console.log(maincategoryData);
     // console.log(categoryData);
     // console.log(subcategoryData);
@@ -84,6 +86,11 @@ const Header = () => {
         dispatch(GetSubCateData())
         dispatch(GetAllProduct(true))
         dispatch(GetCartByuser())
+        // Load admin profile for header contact details if logged in
+        const adminId = localStorage.getItem('adminId')
+        if (adminId) {
+            dispatch(GetSingleUserData())
+        }
     }, [])
 
     // Handle form input changes
@@ -355,7 +362,7 @@ const Header = () => {
                                     <img src={require('../../assets/phone_icon.png')} height="18px" width="18px" alt="" />
                                 </div>
                                 <div>
-                                    <p className='mb-0 mv_mo_number'>+91 3698527412</p>
+                                    <p className='mb-0 mv_mo_number'>{adminProfile?.mobileNo ? `+91 ${adminProfile.mobileNo}` : '+91 3698527412'}</p>
                                 </div>
                             </div>
                             <div className='mv_mo_main mv_mail_line'>
@@ -363,7 +370,7 @@ const Header = () => {
                                     <img src={require('../../assets/email_icon.png')} height="18px" width="18px" alt="" />
                                 </div>
                                 <div>
-                                    <p className='mb-0 mv_mo_number'>example123@gmail.com</p>
+                                    <p className='mb-0 mv_mo_number'>{adminProfile?.email || 'example123@gmail.com'}</p>
                                 </div>
                             </div>
                         </div>

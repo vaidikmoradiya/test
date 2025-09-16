@@ -86,6 +86,42 @@ export const DeleteOrderData = createAsyncThunk(
   }
 );
 
+export const CreateOrderData = createAsyncThunk(
+  'createorderdata',
+  async (value, { rejectWithValue }) => {
+    console.log(value);
+    try {
+      const user = localStorage.getItem('UserId');
+      const response = await axios.post(`${url}/createOrder`,
+        {
+          userId: user,
+          addressId: value.addressId,
+          product: value.items,
+          discount: value.discount,
+          paymentMethod: value.paymentMethod,
+      }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+      });
+      return response?.data?.data;
+    } catch (error) {
+      console.error("Get CreateOrderData Error:", error.message);
+      if(error.status === 404){
+        console.error("Get CreateOrderData Error:", error?.message);
+        let data = [];
+         return data;
+      }
+      else{
+        alert("Get CreateOrderData " , error.message)
+      }
+      return rejectWithValue(
+        error.response?.data || { message: "Unexpected error occurred" }
+      );
+    }
+  }
+);
+
 
 const OrderSlice = createSlice({
   name: "user",
@@ -138,6 +174,21 @@ const OrderSlice = createSlice({
         state.message = "Get CateData SuccessFully";
       })
       .addCase(DeleteOrderData.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.message = action.payload?.message || "Failed To Get CateData";
+      })
+
+      .addCase(CreateOrderData.pending, (state) => {
+        state.loading = true;
+        state.message = "Accepting Get CateData...";
+      })
+      .addCase(CreateOrderData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = "Get CateData SuccessFully";
+      })
+      .addCase(CreateOrderData.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.message = action.payload?.message || "Failed To Get CateData";

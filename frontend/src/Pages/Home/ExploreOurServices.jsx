@@ -48,7 +48,7 @@ const servicesData = [
 
 const ExploreOurServices = () => {
   return (
-    <section className="mv_services_section">
+    <section className="mv_services_section pb-5">
       <div className="m_container">
         <h5 className="mv_section_subtitle text-center mb-2">Our Service</h5>
         <h2 className="mv_relay_text text-center">Explore Our Services</h2>

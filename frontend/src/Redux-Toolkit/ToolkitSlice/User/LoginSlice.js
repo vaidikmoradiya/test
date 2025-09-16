@@ -85,7 +85,7 @@ export const LoginUser = createAsyncThunk(
     'changepassword',
     async (values, { rejectWithValue }) => {
       try {
-        const token = localStorage.getItem('login');
+        const token = localStorage.getItem('token');
         if (!token) {
           return rejectWithValue({ message: "No authentication token found" });
         }

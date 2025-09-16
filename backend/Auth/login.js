@@ -52,11 +52,10 @@ exports.userRegister = async (req, res) => {
 }
 
 const sendOtpEmail = async (toEmail, otp) => {
-
+console.log(toEmail, otp)
     try {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
-            port: 5000,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS

@@ -1,5 +1,28 @@
 const Stock = require("../Model/stockModel");
 const productModal = require('../Model/productModel');
+const mongoose = require('mongoose');
+
+// Helper: Recalculate and update a product's stockStatus based on total qty in Stock collection
+async function recalculateProductStockStatus(productId) {
+  try {
+    const objectId = new mongoose.Types.ObjectId(productId);
+    const result = await Stock.aggregate([
+      { $match: { product: objectId } },
+      {
+        $group: {
+          _id: '$product',
+          totalQty: { $sum: { $ifNull: ['$qty', 0] } }
+        }
+      }
+    ]);
+
+    const totalQty = result && result.length > 0 ? result[0].totalQty : 0;
+    const hasStock = totalQty > 0;
+    await productModal.findByIdAndUpdate(objectId, { stockStatus: hasStock });
+  } catch (err) {
+    console.error('Failed to recalculate product stock status:', err.message);
+  }
+}
 // Create new stock
 const createStock = async (req, res) => {
   try {
@@ -15,8 +38,8 @@ const createStock = async (req, res) => {
       qty,
     });
 
-    // const savedStock = await newStock.save();
-    const productData = await productModal.findByIdAndUpdate(product, { stockStatus: true });
+    // Update product stockStatus based on current total qty
+    await recalculateProductStockStatus(product);
 
     res.status(201).json({
       success: true,
@@ -50,6 +73,11 @@ const updateStock = async (req, res) => {
       });
     }
 
+    // Recalculate product stock status after update
+    if (updatedStock && updatedStock.product) {
+      await recalculateProductStockStatus(updatedStock.product);
+    }
+
     res.status(200).json({
       success: true,
       message: "Stock updated successfully",
@@ -75,6 +103,11 @@ const deleteStockById = async (req, res) => {
         success: false,
         message: "Stock not found",
       });
+    }
+
+    // Recalculate product stock status after deletion
+    if (deletedStock && deletedStock.product) {
+      await recalculateProductStockStatus(deletedStock.product);
     }
 
     res.status(200).json({

@@ -16,9 +16,10 @@ function Productlist() {
     const [sortMethod, setSortMethod] = useState('default');
     const [activeSortOption, setActiveSortOption] = useState('Sort by');
     const [sortedProducts, setSortedProducts] = useState([]);
+    const [showAll, setShowAll] = useState(false);
 
     const ProductData = useSelector((state) => state.product.allProductData)
-    // console.log("ProductData",ProductData);
+    console.log("ProductData",ProductData);
     
     const dispatch = useDispatch()
     const Back_URL = 'http://localhost:5000/'
@@ -68,6 +69,7 @@ function Productlist() {
         }
         
         setSortedProducts(sortedItems);
+        setShowAll(false);
     };
 
     // Update sortedProducts when ProductData changes
@@ -141,7 +143,7 @@ function Productlist() {
                         </div>
                     </div>
                     <div className="row mv_product_main_mar">
-                        {(sortedProducts.length > 0 ? sortedProducts : ProductData).map((item, index) => (
+                        {(sortedProducts.length > 0 ? (showAll ? sortedProducts : sortedProducts.slice(0, 8)) : (showAll ? ProductData : ProductData.slice(0, 8))).map((item, index) => (
                             <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div className="mv_main_card flex-column justify-content-between d-flex">
                                     <Link to={`/layout/Detailpage/${item._id}`} className='mv_product_img text-decoration-none'>
@@ -165,12 +167,27 @@ function Productlist() {
                                             <p className='mv_dis_price'><strike>₹{item.price}</strike></p>
                                         </div>
                                     </Link>
-                                    <div onClick={(e) => handleContinue(e, item._id)} className='mv_main_add_cart_btn mv_add_cart_btn'>
-                                        <a className='' href="#">Add to Cart</a>
-                                    </div>
+                                    {item.stockStatus ? (
+                                        <div onClick={(e) => handleContinue(e, item._id)} className='mv_main_add_cart_btn mv_add_cart_btn'>
+                                            <a className='' href="#">Add to Cart</a>
+                                        </div>
+                                    ) : (
+                                        <div className='mv_main_add_cart_btn mv_add_cart_btn' style={{ pointerEvents: 'none', border: 'none' }}>
+                                            <span style={{ color: 'red', fontWeight: 600 }}>Not Available</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
+                        {((sortedProducts.length > 0 ? sortedProducts : ProductData)?.length || 0) > 8 && (
+                            <div className='col-12 d-flex justify-content-center mt-3'>
+                                {!showAll ? (
+                                    <button className='mv_view_btn' onClick={() => setShowAll(true)}>View More</button>
+                                ) : (
+                                    <button className='mv_view_btn' onClick={() => setShowAll(false)}>View Less</button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,7 +1,14 @@
 const orderModal = require('../Model/OrderModal');
 const productModal = require('../Model/productModel');
 const mongoose = require('mongoose');
-const Stock = require("../Model/stockModel"); 
+const Stock = require("../Model/stockModel");
+const Razorpay = require('razorpay');
+
+// Initialize Razorpay instance
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+}); 
 
 exports.createOrder = async (req, res) => {
   try {
@@ -46,13 +53,18 @@ exports.createOrder = async (req, res) => {
     });
  
     const tax = 18;
-    const deliveryCharge = 150;
-    const discounted = (subTotal * discount) / 100;
+    const deliveryCharge = 0;
+    console.log("deliveryCharge....",discount);
+    const discounted = Math.round((subTotal * discount) / 100);
+    console.log("discounted....",discounted);
     const discountedPrice = subTotal - discounted;
-    const taxed = (discountedPrice * tax) / 100;
+    console.log("discountedPrice....",discountedPrice);
+    const taxed = Math.round((discountedPrice * tax) / 100);
+    console.log("taxed....",taxed);
     const taxedPrice = discountedPrice + taxed;
-    const totalAmount = taxedPrice + deliveryCharge;
- 
+    console.log("taxedPrice....",taxedPrice);
+    const totalAmount = Math.round(taxedPrice + deliveryCharge);
+    console.log("totalAmount....",totalAmount);
     const options = {
       amount: parseInt(totalAmount) * 100,
       currency: "INR",

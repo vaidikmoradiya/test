@@ -29,6 +29,7 @@ const [filteredData, setFilteredData] = useState([])
 const [searchInput, setSearchInput] = useState("")
 const [filterDate, setFilterDate] = useState("")
 const [deleteId, setDeleteId] = useState(null)
+const prevTotalCountRef = useRef(0);
 
 // Filter state variables
 const [filterOrderStatus, setFilterOrderStatus] = useState("")
@@ -86,6 +87,18 @@ useEffect(() => {
     const endIndex = startIndex + itemPerPage;
     setData(filteredData?.slice(startIndex, endIndex) || []);
 }, [currentPage, filteredData]);
+
+// Auto-jump to last page when order list grows and no search is active
+useEffect(() => {
+    const isSearching = !!searchInput.trim() || !!filterDate;
+    const newCount = (OrderData?.length) || 0;
+    const prevCount = prevTotalCountRef.current;
+    if (!isSearching && newCount > prevCount) {
+        const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+        setCurrentPage(targetPage);
+    }
+    prevTotalCountRef.current = newCount;
+}, [OrderData?.length, searchInput, filterDate]);
 
 var itemPerPage = 10;
 var totalPages = Math.ceil(filteredData?.length / itemPerPage);
@@ -177,10 +190,25 @@ const handleFilterReset = () => {
 };
 
 const handleDelete = () => {
+    const isSearching = !!searchInput.trim() || !!filterDate;
+    const currentFilteredLength = filteredData?.length || 0;
+    const newCount = Math.max(0, currentFilteredLength - 1);
+    const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+    const currentStartIndex = (currentPage - 1) * itemPerPage;
+
     dispatch(DeleteOrderData(deleteId))
         .then(() => {
-            dispatch(GetAllOrderData())
-            setDeletePopup(false)
+            dispatch(GetAllOrderData()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeletePopup(false)
+                setDeleteId(null)
+            })
         })
         .catch((error) => {
             alert(error)
@@ -270,7 +298,7 @@ const STEP = 5;
          )}
 
         {/* PAGINATION CODE */}
-        {!searchInput.trim() && (filteredData?.length > 0) && (
+        {!searchInput.trim() && !filterDate && (filteredData?.length > itemPerPage) && (
             <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                 {renderPagination()}
             </div>

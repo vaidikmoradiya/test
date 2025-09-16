@@ -70,6 +70,11 @@ useEffect(() => {
 }, [currentPage, filteredData, searchInput]);
 
 useEffect(() => {
+    // reset to first page on search change
+    setCurrentPage(1);
+}, [searchInput]);
+
+useEffect(() => {
     setFilteredData(cateMap || []);
 }, [cateMap]);
 
@@ -278,11 +283,22 @@ const CreateCateFormik = useFormik({
             ...values,
             img: imageData
         };
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredData?.filter((element) => {
+            return element?.categoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.mainCategoryData[0]?.mainCategoryName?.toLowerCase().includes(searchInput?.toLowerCase())
+        })?.length) || 0;
+        const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
         dispatch(CreateCateData(submitData))
         .then((response)=>{
             if(response?.meta?.requestStatus === "fulfilled"){
                 handleAddModalClose()
-                dispatch(GetCateData())
+                dispatch(GetCateData()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                })
             }
         })
         action.resetForm()
@@ -410,10 +426,28 @@ const EditCateFormik = useFormik({
 })
 
 const handleDelete = () => {
+    const isSearching = !!searchInput.trim();
+    const currentFilteredLength = (filteredData?.filter((element) => {
+        return element?.categoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+               element?.mainCategoryData[0]?.mainCategoryName?.toLowerCase().includes(searchInput?.toLowerCase())
+    })?.length) || 0;
+    const newCount = Math.max(0, currentFilteredLength - 1);
+    const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+    const currentStartIndex = (currentPage - 1) * itemPerPage;
+
     dispatch(DeleteCateData(deleteId))
     .then(()=>{
-       dispatch(GetCateData())
-       setDeletePopup(false)
+       dispatch(GetCateData()).then(() => {
+         if (!isSearching) {
+            if (currentPage > newTotal) {
+                setCurrentPage(newTotal);
+            } else if (newCount <= currentStartIndex && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+         }
+         setDeletePopup(false)
+         setDeleteId(null)
+       })
     })
     .catch((error)=>{
       alert(error)
@@ -493,7 +527,7 @@ const handleDelete = () => {
         )}
   
         {/* PAGINATION CODE */}
-        {!searchInput.trim() && (filteredData?.length > 0) && (
+        {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
             <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                 {renderPagination()}
             </div>
@@ -689,7 +723,7 @@ const handleDelete = () => {
                 <Modal.Body>
                     <h4 className='text-center'>Delete</h4>
                     <div className='spmodal_main_div'>
-                      <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete Nitish Shah ?</p>
+                      <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete category ?</p>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                        <button onClick={()=> setDeletePopup(false)} className='ds_user_cancel'>Cancel</button>

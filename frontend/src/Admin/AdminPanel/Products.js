@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaAngleLeft, FaAngleRight, FaFilter } from 'react-icons/fa6'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -27,6 +27,7 @@ const Products = () => {
     const [filteredData, setFilteredData] = useState([])
     const [searchInput, setSearchInput] = useState("")
     const [deleteId, setDeleteId] = useState(null)
+    const prevTotalCountRef = useRef(0);
 
     // Filter state variables
     const [filterMainCategory, setFilterMainCategory] = useState("")
@@ -103,6 +104,18 @@ const Products = () => {
         const endIndex = startIndex + itemPerPage;
         setData(filteredData?.slice(startIndex, endIndex) || []);
     }, [currentPage, filteredData]);
+
+    // Auto-jump to last page when product list grows and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (ProductData?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [ProductData?.length, searchInput]);
 
     var itemPerPage = 10;
     var totalPages = Math.ceil(filteredData?.length / itemPerPage);
@@ -225,10 +238,25 @@ const Products = () => {
     const STEP = 5;
 
     const handleDelete = () => {
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredData?.length) || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotalPages = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
         dispatch(DeleteProductData(deleteId))
             .then(() => {
-                dispatch(GetAllProduct())
-                setDeletePopup(false)
+                dispatch(GetAllProduct()).then(() => {
+                    if (!isSearching) {
+                        if (currentPage > newTotalPages) {
+                            setCurrentPage(newTotalPages);
+                        } else if (newCount <= currentStartIndex && currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                        }
+                    }
+                    setDeletePopup(false)
+                    setDeleteId(null)
+                })
             })
             .catch((error) => {
                 alert(error)
@@ -323,7 +351,7 @@ const Products = () => {
             )}
 
         {/* PAGINATION CODE */}
-        {!searchInput.trim() && (filteredData?.length > 0) && (
+        {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
             <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end">
                 {renderPagination()}
             </div>
@@ -417,7 +445,7 @@ const Products = () => {
                  <Modal.Body>
                      <h4 className='text-center'>Delete</h4>
                      <div className='spmodal_main_div'>
-                       <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete Nitish Shah ?</p>
+                       <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete product?</p>
                      </div>
                      <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                         <button onClick={()=> setDeletePopup(false)} className='ds_user_cancel'>Cancel</button>

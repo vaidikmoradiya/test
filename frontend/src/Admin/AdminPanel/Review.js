@@ -23,6 +23,7 @@ const Review = () => {
     const [filteredData, setFilteredData] = useState([])
     const ReviewData = useSelector((state) => state.review.allReviewData)
     console.log("ReviewData", ReviewData);
+    const prevTotalCountRef = useRef(0);
 
     useEffect(() => {
         dispatch(GetAllReview())
@@ -60,6 +61,18 @@ const Review = () => {
             setCurrentPage(page);
         }
     };
+    
+    // Auto-jump to last page when reviews grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (ReviewData?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [ReviewData?.length, searchInput]);
     
     const handlePrev = () => {
         if (currentPage > 1) {
@@ -123,10 +136,25 @@ const Review = () => {
     };
     
     const handleDelete = () => {
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = filteredData?.length || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
         dispatch(DeleteReviewData(deleteId))
             .then(() => {
-                dispatch(GetAllReview())
-                setDeletePopup(false)
+                dispatch(GetAllReview()).then(() => {
+                    if (!isSearching) {
+                        if (currentPage > newTotal) {
+                            setCurrentPage(newTotal);
+                        } else if (newCount <= currentStartIndex && currentPage > 1) {
+                            setCurrentPage(currentPage - 1);
+                        }
+                    }
+                    setDeletePopup(false)
+                    setDeleteId(null)
+                })
             })
             .catch((error) => {
                 alert(error)
@@ -201,7 +229,7 @@ const Review = () => {
         )}
 
        {/* PAGINATION CODE */}
-       {!searchInput.trim() && (filteredData?.length > 0) && (
+       {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                {renderPagination()}
            </div>

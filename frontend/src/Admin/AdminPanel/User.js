@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -19,6 +19,7 @@ const User = () => {
     const navigate = useNavigate();
     const [view, setView] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const prevTotalCountRef = useRef(0);
 
     useEffect(() => {
         dispatch(GetUserData());
@@ -42,6 +43,18 @@ const User = () => {
     const endIndex = startIndex + itemsPerPage;
     const currentUsers = filteredUsers.slice(startIndex, endIndex);
     console.log("sujuuu",currentUsers);
+    
+    // Auto-redirect to the correct page when total count grows (e.g., new user added elsewhere)
+    useEffect(() => {
+        const isSearching = !!searchTerm.trim();
+        const newCount = allUserData.length;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemsPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [allUserData.length, searchTerm]);
     
 
     const handlePageChange = (page) => {
@@ -74,9 +87,23 @@ const User = () => {
 
     const handleDeleteConfirm = async () => {
         try {
+            const isSearching = !!searchTerm.trim();
+            const currentFilteredLength = filteredUsers.length;
+            const newCount = Math.max(0, currentFilteredLength - 1);
+            const newTotalPages = Math.max(1, Math.ceil(newCount / itemsPerPage));
+            const currentStartIndex = (currentPage - 1) * itemsPerPage;
+
             await dispatch(DeleteUserData(selectedUser._id)).unwrap();
             setDeleteShow(false);
-            dispatch(GetUserData()); // Refresh the user list after deletion
+            await dispatch(GetUserData()); // Refresh the user list after deletion
+
+            if (!isSearching) {
+                if (currentPage > newTotalPages) {
+                    setCurrentPage(newTotalPages);
+                } else if (newCount <= currentStartIndex && currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                }
+            }
         } catch (error) {
             console.error("Error deleting user:", error);
         }
@@ -198,7 +225,7 @@ const User = () => {
                     </div>
                     
                     {/* PAGINATION CODE */}
-                    {filteredUsers.length > 0 && (
+                    {!searchTerm.trim() && filteredUsers.length > itemsPerPage && (
                         <div className="py-3 d-flex justify-content-center justify-content-md-end">
                             {renderPagination()}
                         </div>

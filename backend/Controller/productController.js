@@ -14,7 +14,6 @@ exports.createProduct = async (req, res) => {
             discount,
             shortDescription,
             description,
-            stockStatus,
             data
         } = req.body;
 
@@ -104,7 +103,7 @@ exports.createProduct = async (req, res) => {
             unit,
             price,
             discount,
-            stockStatus,
+            stockStatus : false,
             discountedPrice,
             productImage: files.map(file => file.path),
             shortDescription,

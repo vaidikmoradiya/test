@@ -126,10 +126,17 @@ const MainCategory = () => {
         initialValues:mainCateVal,
         validationSchema:MainCateSchema,
         onSubmit:(values , action)=>{
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredMainCate?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
             dispatch(CreateMainCate(values))
             .then(()=>{
-                dispatch(GetMainCateData())
-                setAddShow(false)
+                dispatch(GetMainCateData()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false)
+                })
             }).catch((error)=>{
                 alert(error)
             })
@@ -170,10 +177,25 @@ const MainCategory = () => {
     }
      
     const handleDelete = () => {
+       const isSearching = !!searchInput.trim();
+       const currentFilteredLength = filteredMainCate?.length || 0;
+       const newCount = Math.max(0, currentFilteredLength - 1);
+       const newTotalPages = Math.max(1, Math.ceil(newCount / itemPerPage));
+       const currentStartIndex = (currentPage - 1) * itemPerPage;
+
        dispatch(DeleteMainCate(deleteId))
        .then(()=>{
-          dispatch(GetMainCateData())
-          setDeleteShow(false)
+          dispatch(GetMainCateData()).then(() => {
+            if (!isSearching) {
+              if (currentPage > newTotalPages) {
+                setCurrentPage(newTotalPages);
+              } else if (newCount <= currentStartIndex && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+              }
+            }
+            setDeleteShow(false)
+            setDeleteId(null)
+          })
        })
        .catch((error)=>{
          alert(error)
@@ -239,7 +261,7 @@ const MainCategory = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredMainCate?.length > 0) && (
+            {!searchInput.trim() && (filteredMainCate?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>
@@ -309,7 +331,7 @@ const MainCategory = () => {
                 <Modal.Body>
                     <h4 className='text-center'>Delete</h4>
                     <div className='spmodal_main_div'>
-                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete Nitish Shah ?</p>
+                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete main category ?</p>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                        <button  className='ds_user_cancel' onClick={() => setDeleteShow(false)}>Cancel</button>

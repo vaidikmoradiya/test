@@ -128,10 +128,17 @@ const Unit = () => {
         initialValues:addUnitVal,
         validationSchema:UnitSchema,
         onSubmit:(values , action)=>{
+           const isSearching = !!searchInput.trim();
+           const currentFilteredLength = filteredUnit?.length || 0;
+           const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
            dispatch(CreateUnitData(values))
            .then(()=>{
-               dispatch(GetUnitData())
-               setAddShow(false)
+               dispatch(GetUnitData()).then(() => {
+                   if (!isSearching) {
+                       setCurrentPage(targetPage);
+                   }
+                   setAddShow(false)
+               })
            })
            action.resetForm()
         }
@@ -164,11 +171,25 @@ const Unit = () => {
     }
 
     const handleDeleteUnit = () => {
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = filteredUnit?.length || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotalPages = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
         dispatch(DeleteUnitData(deleteId))
         .then((response) => {
-            dispatch(GetUnitData());
-            setDeleteShow(false);
-            setdeleteId(null);
+            dispatch(GetUnitData()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotalPages) {
+                        setCurrentPage(newTotalPages);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+                setdeleteId(null);
+            });
         })
         .catch((error) => {
             alert("Failed to delete unit. Please try again.");
@@ -235,7 +256,7 @@ const Unit = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredUnit?.length > 0) && (
+            {!searchInput.trim() && (filteredUnit?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>

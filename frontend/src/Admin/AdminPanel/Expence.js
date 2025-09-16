@@ -130,10 +130,17 @@ const Expence = () => {
         initialValues:expenceVal,
         validationSchema:ExpenceSchema,
         onSubmit:(values , action)=>{
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredExpence?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
             dispatch(CreateExpence(values))
             .then(()=>{
-                dispatch(GetExpenceData())
-                setAddShow(false)
+                dispatch(GetExpenceData()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage)
+                    }
+                    setAddShow(false)
+                })
             }).catch((error)=>{
                 alert(error)
             })
@@ -164,10 +171,25 @@ const Expence = () => {
     })
      
     const handleDelete = () => {
+       const isSearching = !!searchInput.trim();
+       const currentFilteredLength = filteredExpence?.length || 0;
+       const newCount = Math.max(0, currentFilteredLength - 1);
+       const newTotalPages = Math.max(1, Math.ceil(newCount / itemPerPage));
+       const currentStartIndex = (currentPage - 1) * itemPerPage;
+
        dispatch(DeleteExpence(deleteId))
        .then(()=>{
-          dispatch(GetExpenceData())
-          setDeleteShow(false)
+          dispatch(GetExpenceData()).then(() => {
+            if (!isSearching) {
+              if (currentPage > newTotalPages) {
+                setCurrentPage(newTotalPages)
+              } else if (newCount <= currentStartIndex && currentPage > 1) {
+                setCurrentPage(currentPage - 1)
+              }
+            }
+            setDeleteShow(false)
+            setDeleteId(null)
+          })
        })
        .catch((error)=>{
          alert(error)
@@ -235,7 +257,7 @@ const Expence = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredExpence?.length > 0) && (
+            {!searchInput.trim() && (filteredExpence?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>
@@ -319,7 +341,7 @@ const Expence = () => {
                 <Modal.Body>
                     <h4 className='text-center'>Delete</h4>
                     <div className='spmodal_main_div'>
-                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete Nitish Shah ?</p>
+                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete expence?</p>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                        <button  className='ds_user_cancel' onClick={() => setDeleteShow(false)}>Cancel</button>

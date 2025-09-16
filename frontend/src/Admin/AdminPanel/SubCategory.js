@@ -153,11 +153,23 @@ const CreateSubCateFormik = useFormik({
     initialValues:createSubCateVal,
     validationSchema:SubCateSchema,
     onSubmit:(values , action)=>{
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredData?.filter((element) => {
+            return element?.subCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.mainCategoryData[0]?.mainCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.categoryData[0]?.categoryName?.toLowerCase().includes(searchInput?.toLowerCase())
+        })?.length) || 0;
+        const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
         dispatch(CreateSubCateData(values))
         .then((response)=>{
             if(response?.meta?.requestStatus === "fulfilled"){
                 setAddPopup(false)
-                dispatch(GetSubCateData())
+                dispatch(GetSubCateData()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                })
             }
         })
         action.resetForm()
@@ -299,10 +311,29 @@ const mainCategoryOptions = [
 ];
 
 const handleDelete = () => {
+    const isSearching = !!searchInput.trim();
+    const currentFilteredLength = (filteredData?.filter((element) => {
+        return element?.subCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+               element?.mainCategoryData[0]?.mainCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+               element?.categoryData[0]?.categoryName?.toLowerCase().includes(searchInput?.toLowerCase())
+    })?.length) || 0;
+    const newCount = Math.max(0, currentFilteredLength - 1);
+    const newTotalPagesCalc = Math.max(1, Math.ceil(newCount / itemPerPage));
+    const currentStartIndex = (currentPage - 1) * itemPerPage;
+
     dispatch(DeleteSubCateData(deleteId))
     .then(()=>{
-       dispatch(GetSubCateData())
-       setDeletePopup(false)
+       dispatch(GetSubCateData()).then(() => {
+         if (!isSearching) {
+            if (currentPage > newTotalPagesCalc) {
+                setCurrentPage(newTotalPagesCalc);
+            } else if (newCount <= currentStartIndex && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+         }
+         setDeletePopup(false)
+         setDeleteId(null)
+       })
     })
     .catch((error)=>{
       alert(error)
@@ -428,7 +459,7 @@ useEffect(() => {
         )}
   
         {/* PAGINATION CODE */}
-        {!searchInput.trim() && (filteredData?.length > 0) && (
+        {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
             <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                 {renderPagination()}
             </div>
@@ -604,7 +635,7 @@ useEffect(() => {
                 <Modal.Body>
                     <h4 className='text-center'>Delete</h4>
                     <div className='spmodal_main_div'>
-                      <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete Nitish Shah ?</p>
+                      <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete sub category?</p>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                        <button onClick={()=> setDeletePopup(false)} className='ds_user_cancel'>Cancel</button>

@@ -407,7 +407,7 @@ const Cart = () => {
         (total, item) => total + (item.productData[0]?.discountedPrice * item.qty),
         0
     );
-    const tax = Math.round(subTotal * 0.28);
+    const tax = Math.round(subTotal * 0.18);
     const totalAmount = subTotal + tax; 
 
     // console.log("totalAmount",totalAmount);
@@ -648,7 +648,7 @@ const Cart = () => {
 
                                         <div className="mv_price_row">
                                             <span className="mv_price_label">Tax (28%)</span>
-                                            <span className="mv_price_value">₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 0.28)}</span>
+                                            <span className="mv_price_value">₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 0.18)}</span>
                                         </div>
 
                                         <div className="mv_price_row mb-3">
@@ -659,7 +659,7 @@ const Cart = () => {
 
                                     <div className="mv_total_row">
                                         <span className='mv_total_amount'>Total Amount</span>
-                                        <span className='mv_total_amount'>₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 1.28)}</span>
+                                        <span className='mv_total_amount'>₹{Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 1) + Math.round(CartbyuserData.reduce((total, item) => total + (item.productData[0]?.discountedPrice * item.qty), 0) * 0.18)}</span>
                                     </div>
 
                                     <button

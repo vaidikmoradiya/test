@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaAngleLeft, FaAngleRight, FaFilter } from 'react-icons/fa6'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -26,6 +26,7 @@ const [filterCategory, setFilterCategory] = useState("");
 const [filterSubCategory, setFilterSubCategory] = useState("");
 const [filterSizeName, setFilterSizeName] = useState("");
 const [deleteId, setdeleteId] = useState(null)
+const prevTotalCountRef = useRef(0);
 
 const sizeData = useSelector((state) => state.size.getsizeData)
 console.log("sizeData", sizeData);
@@ -62,6 +63,18 @@ useEffect(() => {
     // Update totalPages based on filtered results
     setTotalPages(Math.ceil(filtered?.length / itemPerPage) || 1);
 }, [currentPage, filteredData, searchInput]);
+
+// Auto-jump to last page when list grows and no search is active
+useEffect(() => {
+    const isSearching = !!searchInput.trim();
+    const newCount = sizeData?.length || 0;
+    const prevCount = prevTotalCountRef.current;
+    if (!isSearching && newCount > prevCount) {
+        const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+        setCurrentPage(targetPage);
+    }
+    prevTotalCountRef.current = newCount;
+}, [sizeData?.length, searchInput]);
 
 const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -164,11 +177,26 @@ const handleResetFilter = () => {
 };
 
 const handleDeleteUnit = () => {
+    const isSearching = !!searchInput.trim();
+    const currentFilteredLength = filteredData?.length || 0;
+    const newCount = Math.max(0, currentFilteredLength - 1);
+    const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+    const currentStartIndex = (currentPage - 1) * itemPerPage;
+
     dispatch(DeleteSizeData(deleteId))
     .then((response)=>{
         if(response?.meta?.requestStatus === "fulfilled"){
-            dispatch(GetSizeData());
-            setDeletePopup(false);
+            dispatch(GetSizeData()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeletePopup(false);
+                setdeleteId(null);
+            });
         }
     })
 }
@@ -233,7 +261,7 @@ const handleDeleteUnit = () => {
          )}
 
         {/* PAGINATION CODE */}
-        {!searchInput.trim() && (filteredData?.length > 0) && (
+        {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
             <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                 {renderPagination()}
             </div>

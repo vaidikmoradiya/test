@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Css/mv_style.css';
 import phoneIcon from '../assets/phone_icon.png';
 import emailIcon from '../assets/email_icon.png';
 import locationIcon from '../assets/address_icon.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { createContact, resetContactState } from '../Redux-Toolkit/ToolkitSlice/User/ContactusSlice';
+import { GetSingleUserData } from '../Redux-Toolkit/ToolkitSlice/Admin/ViewProfileSlice';
 
 const initialForm = {
   name: '',
@@ -17,6 +18,7 @@ const initialForm = {
 const Contactus = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.contact);
+  const adminProfile = useSelector((state) => state.profile.GetSingleUserData);
   const [form, setForm] = useState(initialForm);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -61,6 +63,14 @@ const Contactus = () => {
       console.error('Failed to submit contact form:', err);
     }
   };
+
+  // Fetch admin profile data on component mount
+  useEffect(() => {
+    const adminId = localStorage.getItem('adminId');
+    if (adminId) {
+      dispatch(GetSingleUserData());
+    }
+  }, [dispatch]);
 
   // Success Modal Component
   const SuccessModal = () => (
@@ -231,14 +241,14 @@ const Contactus = () => {
               <div className="mv_contactus_info_card">
                 <img src={phoneIcon} alt="Phone" className="mv_contactus_info_icon" />
                 <div className="mv_contactus_info_title">Call us</div>
-                <div className="mv_contactus_info_text">+91 3698527412</div>
+                <div className="mv_contactus_info_text">{adminProfile?.mobileNo ? `+91 ${adminProfile.mobileNo}` : '+91 3698527412'}</div>
               </div>
             </div>
             <div className="col-md-4 col-sm-6 col-12 mb-4">
               <div className="mv_contactus_info_card">
                 <img src={emailIcon} alt="Email" className="mv_contactus_info_icon" />
                 <div className="mv_contactus_info_title">Email us</div>
-                <div className="mv_contactus_info_text">example123@gmail.com</div>
+                <div className="mv_contactus_info_text">{adminProfile?.email || 'example123@gmail.com'}</div>
               </div>
             </div>
             <div className="col-md-4 col-sm-6 col-12 mb-4">

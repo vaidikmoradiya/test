@@ -217,15 +217,23 @@ const AboutUs = () => {
                 img: imageData
             };
             
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredAboutUs?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+            
             dispatch(createAboutus(submitData)).then(() => {
-                dispatch(getallAboutUs());
-                setAddShow(false);
-                setSelectedImages([]);
-                action.resetForm();
-                // Reset file input
-                if (addFileInputRef.current) {
-                    addFileInputRef.current.value = '';
-                }
+                dispatch(getallAboutUs()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false);
+                    setSelectedImages([]);
+                    action.resetForm();
+                    // Reset file input
+                    if (addFileInputRef.current) {
+                        addFileInputRef.current.value = '';
+                    }
+                });
             }).catch((error) => {
                 console.error('Error creating about us:', error);
                 alert('Error creating about us. Please try again.');
@@ -276,9 +284,26 @@ const AboutUs = () => {
     const handleDelete = () => {
        dispatch(DeleteAboutusData(deleteId))
        .then(()=>{
-          dispatch(getallAboutUs())
-          setDeleteShow(false)
-          setDeleteId(null);
+          // compute new pagination based on expected count after deletion
+          const isSearching = !!searchInput.trim();
+          const currentFilteredLength = filteredAboutUs?.length || 0;
+          const newCount = Math.max(0, currentFilteredLength - 1);
+          const newTotalPages = Math.max(1, Math.ceil(newCount / itemPerPage));
+
+          dispatch(getallAboutUs()).then(() => {
+            if (!isSearching) {
+              if (currentPage > newTotalPages) {
+                setCurrentPage(newTotalPages);
+              } else {
+                const startIndex = (currentPage - 1) * itemPerPage;
+                if (newCount <= startIndex && currentPage > 1) {
+                  setCurrentPage(currentPage - 1);
+                }
+              }
+            }
+            setDeleteShow(false)
+            setDeleteId(null);
+          })
        })
        .catch((error)=>{
          console.error('Error deleting about us:', error);
@@ -363,7 +388,7 @@ const AboutUs = () => {
           )}
 
           {/* PAGINATION CODE */}
-          {!searchInput.trim() && (filteredAboutUs?.length > 0) && (
+          {!searchInput.trim() && (filteredAboutUs?.length > itemPerPage) && (
             <div className="py-3 d-flex justify-content-center justify-content-md-end">
               {renderPagination()}
             </div>

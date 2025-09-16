@@ -97,7 +97,7 @@ export const CreateOrderData = createAsyncThunk(
           userId: user,
           addressId: value.addressId,
           product: value.items,
-          discount: value.discount,
+          discount: value.discount || 0,
           paymentMethod: value.paymentMethod,
       }, {
         headers: {

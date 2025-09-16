@@ -21,6 +21,7 @@ const ViewProfile = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showProfileSuccessModal, setShowProfileSuccessModal] = useState(false);
   console.log("EditData",EditData);
   const Back_URL = 'http://localhost:5000/'
   
@@ -99,6 +100,32 @@ const ViewProfile = () => {
     </div>
   );
 
+  // Profile Success Modal Component
+  const ProfileSuccessModal = () => (
+    <div className="mv_modal_overlay">
+      <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            background: '#4CAF50',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px'
+          }}>
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
+            </svg>
+          </div>
+          <h3 style={{ marginBottom: '10px', color: '#141414' }}>Profile Updated Successfully!</h3>
+          <p style={{ color: '#666', marginBottom: '20px' }}>Your profile has been updated successfully.</p>
+        </div>
+      </div>
+    </div>
+  );
+
   // Prepare initial values for Formik
   const initialValues = {
     name: [viewProfileData?.firstName, viewProfileData?.lastName].filter(Boolean).join(" ") || "",
@@ -134,8 +161,14 @@ const ViewProfile = () => {
         editData: viewProfileData
       })).then((response)=>{
         console.log("response.type",response.type)
-        if(response.type === "edituserdata/fulfilled")
-        dispatch(GetSingleUserData());
+        if(response.type === "edituserdata/fulfilled") {
+          dispatch(GetSingleUserData());
+          setShowProfileSuccessModal(true);
+          // Auto close success modal after 3 seconds
+          setTimeout(() => {
+            setShowProfileSuccessModal(false);
+          }, 2000);
+        }
       });
     },
   });
@@ -405,6 +438,7 @@ const ViewProfile = () => {
       </div>
       {showSuccessModal && <SuccessModal />}
       {showErrorModal && <ErrorModal />}
+      {showProfileSuccessModal && <ProfileSuccessModal />}
     </div>
   );
 };

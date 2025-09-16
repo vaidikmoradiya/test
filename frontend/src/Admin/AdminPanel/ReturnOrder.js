@@ -34,7 +34,8 @@ const ReturnOrder = () => {
         const name = item.userData && item.userData.length > 0
             ? `${item.userData[0].firstName} ${item.userData[0].lastName}`.toLowerCase()
             : "";
-        return name.includes(searchInput.toLowerCase());
+        const isAlreadyHandled = !!(returnOrderStatus?.[item._id] || clickedButtons?.[item._id]);
+        return name.includes(searchInput.toLowerCase()) && !isAlreadyHandled;
     });
     const totalPages = Math.ceil((filteredReturnOrder?.length || 0) / itemPerPage);
 
@@ -46,7 +47,8 @@ const ReturnOrder = () => {
             const name = item.userData && item.userData.length > 0
                 ? `${item.userData[0].firstName} ${item.userData[0].lastName}`.toLowerCase()
                 : "";
-            return name.includes(searchInput.toLowerCase());
+            const isAlreadyHandled = !!(returnOrderStatus?.[item._id] || clickedButtons?.[item._id]);
+            return name.includes(searchInput.toLowerCase()) && !isAlreadyHandled;
         });
         setData(filtered?.slice(startIndex, endIndex));
     }, [currentPage, returnOrderData, searchInput]);

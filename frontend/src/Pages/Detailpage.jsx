@@ -107,6 +107,7 @@ const Detailpage = () => {
     dispatch(CreateReview({ ...review, id, userId })).then((response) => {
       if (response?.meta?.requestStatus === 'fulfilled') {
         dispatch(GetAllReview());
+        dispatch(GetProductById(id)); // Refresh product data to get updated rating
         setShowReviewModal(false);
         setReview({ rating: 0, title: '', comment: '' });
         setShowReviewSuccess(true);
@@ -370,7 +371,7 @@ const Detailpage = () => {
                           <img className='mv_star_img' src={require(`../assets/Star.png`)} />
                         </div>
                         <div>
-                          <h1 className="mv_rate_text">{Number(item?.rating || 0).toFixed(2)}</h1>
+                          <h1 className="mv_rate_text">{Number(averageRating || 0).toFixed(2)}</h1>
                         </div>
                       </div>
                     </div>

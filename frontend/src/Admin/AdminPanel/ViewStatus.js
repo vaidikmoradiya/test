@@ -4,8 +4,10 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { FaAngleLeft, FaAngleRight, FaFilter } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { GetReturnOrderData } from '../../Redux-Toolkit/ToolkitSlice/Admin/ReturnOrderSlice';
 
 const ViewStatus = () => {
 
@@ -13,6 +15,7 @@ const [show, setShow] = useState(false)
 const [deletePopup, setDeletePopup] = useState(false)
 const [currentPage,setCurrentPage] = useState(1);
 const navigate = useNavigate()
+const dispatch = useDispatch()
 const dateRef = useRef()
 const [selectedDate, setSelectedDate] = useState('');
 
@@ -28,6 +31,12 @@ const [tempFilterStatus, setTempFilterStatus] = useState('');
 
 const returnOrderData = useSelector((state)=> state?.returnOrder?.ReturnOrderData)
 const returnOrderStatus = useSelector((state) => state?.returnOrder?.ReturnOrderStatus);
+
+useEffect(() => {
+    if (!returnOrderData || returnOrderData.length === 0) {
+        dispatch(GetReturnOrderData());
+    }
+}, []);
 
 // Filter the data based on filter values (applied filters only)
 const filteredData = returnOrderData?.filter(item => {

@@ -110,6 +110,21 @@
     text-decoration: none;
     cursor: pointer;
 }
+.mv_view_btn{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    color: rgba(30, 33, 49, 1);
+    width: 130px;
+    height: 44px;
+    margin-right: 20px;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+}
+.mv_view_btn:hover {
+    background-color: #1E2131;
+    border: 1px solid #1E2131;
+    color: white;
+}
 .mv_add_cart_btn a{
     color: #1E2131 !important;
     text-decoration: none;
@@ -1849,6 +1864,7 @@
     vertical-align: bottom;
     color: #FFFFFF;
     text-align: center;
+    margin-bottom: 10px;
 }
 .mv_value_text{
     font-weight: 500;
@@ -1856,6 +1872,7 @@
     vertical-align: bottom;
     color: #FFFFFF;
     text-align: center;
+    margin-bottom: 0px;
 }
 .mv_our_story_padd{
     padding: 50px 0px;
@@ -1913,11 +1930,26 @@
     .mv_about_image_container {
         margin-bottom: 10px;
     }
+    .mv_value_number{
+        font-size: 27px;
+    }
+    .mv_value_text{
+        font-size: 18px;
+    }
+    .mv_values_padd{
+        padding: 30px 0px;
+    }
 }
 
 @media (max-width: 768px){
     .mv_our_story_grid img{
         height: 240px;
+    }
+    .mv_value_number{
+        font-size: 25px;
+    }
+    .mv_value_text{
+        font-size: 18px;
     }
 }
 @media (max-width: 767px) {
@@ -1940,6 +1972,12 @@
     }
     .mv_card_title {
         font-size: 20px;
+    }
+    .mv_value_number{
+        margin-bottom: 0px;
+    }
+    .mv_value_text{
+        margin-bottom: 15px;
     }
 }
 @media (max-width: 575px) {
@@ -1999,6 +2037,12 @@
     .mv_about_section_row{
         margin-bottom: 30px;
     }
+    .mv_value_number{
+        font-size: 22px;
+    }
+    .mv_value_text{
+        font-size: 15px;
+    }
 }
 @media (max-width: 375px){
     .mv_our_story_grid img{
@@ -2012,6 +2056,9 @@
     } */
     .mv_our_story_grid img{
         height: 100px;
+    }
+    .mv_value_text{
+        line-height: 20px;
     }
 }
 
@@ -2355,6 +2402,13 @@
     .mv_faq_accordion_answer{
         padding: 10px 0px !important;
         font-size: 14px;
+    }
+    .mv_faq_title {
+        font-size: 25px;
+    }
+    .mv_faq_subtitle{
+        font-size: 15px;
+        line-height: 20px;
     }
 }
 @media (max-width: 425px){

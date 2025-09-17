@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../Css/Sujal.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -23,10 +23,23 @@ const CancleOrder = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchInput, setSearchInput] = useState('');
+    const prevTotalCountRef = useRef(0);
 
     useEffect(() => {
         setCurrentPage(1);
     }, [searchInput]);
+
+    // Auto-jump to last page when cancel orders grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (CancelOrderData?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [CancelOrderData?.length, searchInput]);
 
     const filteredData = CancelOrderData?.filter(item => {
         const fullName = `${item.userData?.[0]?.firstName} ${item.userData?.[0]?.lastName}`.toLowerCase();
@@ -122,7 +135,7 @@ const CancleOrder = () => {
                     <img src={search} alt="" className='ds_page_icon' />
                 </div>
             </div>
-            {searchInput.trim() && (paginatedData?.length === 0) ? (
+            {(paginatedData?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -156,7 +169,7 @@ const CancleOrder = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredData?.length > 0) && (
+            {!searchInput.trim() && (filteredData?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>

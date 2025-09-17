@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../Css/Sujal.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -23,6 +23,7 @@ const FAQs = () => {
     const [deleteId, setDeleteId] = useState(null);
     const [editData, setEditData] = useState("")
     const [data, setData] = useState([])
+    const prevTotalCountRef = useRef(0);
 
     const dispatch = useDispatch();
     const getFaq = useSelector((state) => state?.faq?.allFaq);
@@ -41,6 +42,18 @@ const FAQs = () => {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchInput])
+
+    // Auto-jump to last page when FAQs grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (getFaq?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [getFaq?.length, searchInput]);
 
     const filteredFaq = getFaq?.filter((element) => {
         return element?.faqQuestion?.toLowerCase().includes(searchInput?.toLowerCase()) ||
@@ -145,10 +158,18 @@ const FAQs = () => {
         initialValues:faqVal,
         validationSchema: FaqSchema,
         onSubmit: ((values, action) => {
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredFaq?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
             dispatch(createFaq(values)) 
             .then(() => {
-                dispatch(getAllFaq());
-                setAddShow(false);
+                dispatch(getAllFaq()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false);
+                });
             }).catch ((error) =>
                 console.log(error)
             );
@@ -178,9 +199,24 @@ const FAQs = () => {
     });
 
     const handleDeleteFaq = () => {
-        dispatch(DeleteFaq(deleteId));
-        setDeleteShow(false);
-        dispatch(getAllFaq());
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredFaq?.length) || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
+        dispatch(DeleteFaq(deleteId)).then(() => {
+            dispatch(getAllFaq()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+            });
+        });
     }
 
     // Function to handle opening Add FAQ modal
@@ -225,7 +261,7 @@ const FAQs = () => {
                 </div>
 
             </div>
-            {searchInput.trim() && (data?.length === 0) ? (
+            {(data?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -265,7 +301,7 @@ const FAQs = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredFaq?.length > 0) && (
+            {!searchInput.trim() && (filteredFaq?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>

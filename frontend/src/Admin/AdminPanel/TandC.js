@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../Css/Sujal.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -23,6 +23,7 @@ const TandC = () => {
     const [searchInput, setSearchInput] = useState("");
     const [data, setData] = useState([]);
     var itemPerPage = 10;
+    const prevTotalCountRef = useRef(0);
 
     const dispatch = useDispatch();
     const gettTermCondition = useSelector((state) => state?.termCondition?.allTermCondition);
@@ -34,6 +35,18 @@ const TandC = () => {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchInput])
+
+    // Auto-jump to last page when terms & conditions grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (gettTermCondition?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [gettTermCondition?.length, searchInput]);
 
     const filteredTermCondition = gettTermCondition?.filter((element) => {
         const search = searchInput?.toLowerCase();
@@ -136,9 +149,17 @@ const TandC = () => {
         initialValues: termConditionVal,
         validationSchema: termConditionSchema,
         onSubmit: ((values, action) => {
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredTermCondition?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
             dispatch(createTermCondition(values)).then(() => {
-                dispatch(getAllTermCondition());
-                setAddShow(false)
+                dispatch(getAllTermCondition()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false);
+                });
             }).catch((error) => {
                 alert(error)
             })
@@ -183,9 +204,24 @@ const TandC = () => {
     }
 
     const handleDeleteTermCondition = () => {
-        dispatch(DeleteTermCondition(deleteId));
-        setDeleteShow(false)
-        dispatch(getAllTermCondition());
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredTermCondition?.length) || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
+        dispatch(DeleteTermCondition(deleteId)).then(() => {
+            dispatch(getAllTermCondition()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+            });
+        });
     }
 
     return (
@@ -213,7 +249,7 @@ const TandC = () => {
                 </div>
 
             </div>
-            {searchInput.trim() && (data?.length === 0) ? (
+            {(data?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -250,7 +286,7 @@ const TandC = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredTermCondition?.length > 0) && (
+            {!searchInput.trim() && (filteredTermCondition?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>
@@ -384,7 +420,7 @@ const TandC = () => {
                 <Modal.Body>
                     <h4 className='text-center'>Delete</h4>
                     <div className='spmodal_main_div'>
-                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete reason for cancellation ?</p>
+                        <p className='mb-0 sp_text_gray text-center'>Are you sure you want to delete terms & conditions?</p>
                     </div>
                     <div className='d-flex justify-content-center py-2 mt-sm-3 mt-3'>
                         <button className='ds_user_cancel'  onClick={() => setDeleteShow(false)}>Cancel</button>

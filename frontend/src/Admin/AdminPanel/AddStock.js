@@ -9,6 +9,7 @@ import { GetAllProduct } from "../../Redux-Toolkit/ToolkitSlice/User/ProductSlic
 import { CreateStock, GetAllStock } from "../../Redux-Toolkit/ToolkitSlice/Admin/StockSlice";
 import { StockSchema } from "../Formik";
 import { Link } from 'react-router-dom';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const AddStock = () => {
 
@@ -23,6 +24,7 @@ const AddStock = () => {
 
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(()=>{
       dispatch(GetCateData())
@@ -80,6 +82,150 @@ useEffect(() => {
   }
 }, [CreateStockFormik.values.cateName, subCateData]);
 
+// Filter products by selected main/category/subcategory
+useEffect(() => {
+  const mainId = CreateStockFormik.values.mainCateId;
+  const catId = CreateStockFormik.values.cateName;
+  const subId = CreateStockFormik.values.SubcateName;
+
+  // If no filters selected, do not show any products initially
+  if (!mainId && !catId && !subId) {
+    setFilteredProducts([]);
+    if (CreateStockFormik.values.product) {
+      CreateStockFormik.setFieldValue('product', '');
+    }
+    return;
+  }
+
+  const matchesMain = (p) =>
+    !mainId ||
+    p.mainCategoryId === mainId ||
+    p.mainCategoryData?.[0]?._id === mainId;
+
+  const matchesCat = (p) =>
+    !catId ||
+    p.categoryId === catId ||
+    p.categoryData?.[0]?._id === catId;
+
+  const matchesSub = (p) =>
+    !subId ||
+    p.subCategoryId === subId ||
+    p.subCategoryData?.[0]?._id === subId;
+
+  const next = (ProductData || []).filter((p) => matchesMain(p) && matchesCat(p) && matchesSub(p));
+  setFilteredProducts(next);
+
+  // If current selected product no longer matches, clear it
+  if (CreateStockFormik.values.product) {
+    const stillValid = next.some(
+      (p) => p._id === CreateStockFormik.values.product
+    );
+    if (!stillValid) {
+      CreateStockFormik.setFieldValue('product', '');
+    }
+  }
+}, [CreateStockFormik.values.mainCateId, CreateStockFormik.values.cateName, CreateStockFormik.values.SubcateName, ProductData]);
+
+// Reusable Custom Select (aligned with Category page)
+const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [container, setContainer] = useState(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (container && !container.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [container]);
+
+  const selected = options.find(opt => opt.value === value);
+
+  return (
+    <div ref={setContainer} style={{ position: 'relative', width: '100%' }}>
+      <div
+        className='mv_category_modal_select'
+        role="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        tabIndex={0}
+        onClick={() => setIsOpen(prev => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+          if (e.key === 'Escape') setIsOpen(false);
+        }}
+      >
+        <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+          {selected && selected.value !== '' ? selected.label : placeholder}
+        </span>
+        <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+      </div>
+      {isOpen && (
+        <ul
+          role="listbox"
+          style={{
+            position: 'absolute',
+            zIndex: 20,
+            left: 0,
+            right: 0,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 0,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+            maxHeight: 220,
+            overflowY: 'auto',
+            margin: 0,
+            paddingLeft: 0,
+            listStyle: 'none',
+          }}
+        >
+          {options.filter(o => o.value !== '').map(opt => (
+            <li
+              className='mv_category_modal_select_option'
+              key={opt.value}
+              role="option"
+              aria-selected={opt.value === value}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onChange(opt.value);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '3px 12px',
+                borderRadius: 0,
+                background: opt.value === value ? '#1E2131' : 'transparent',
+                color: opt.value === value ? '#fff' : '',
+                cursor: 'pointer',
+              }}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const mainCategoryOptions = [
+  { value: '', label: 'Select MainCategory' },
+  ...((Array.isArray(mainCateData) ? mainCateData : []).map(m => ({ value: m?._id || '', label: m?.mainCategoryName || '' })))
+];
+const categoryOptions = [
+  { value: '', label: 'Select Category' },
+  ...((Array.isArray(filteredCategories) ? filteredCategories : []).map(c => ({ value: c?._id || '', label: c?.categoryName || '' })))
+];
+const subCategoryOptions = [
+  { value: '', label: 'Select SubCategory' },
+  ...((Array.isArray(filteredSubCategories) ? filteredSubCategories : []).map(sc => ({ value: sc?._id || '', label: sc?.subCategoryName || '' })))
+];
+const productOptions = [
+  { value: '', label: 'Select Product' },
+  ...((Array.isArray(filteredProducts) ? filteredProducts : []).map(p => ({ value: p?._id || '', label: p?.productName || '' })))
+];
+
   return (
   
       <div className="sp_height">
@@ -98,66 +244,66 @@ useEffect(() => {
                 <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                   <div className="form-group">
                   <label className='ds_login_label'>Main Category</label>
-                  <select name='mainCateId' value={CreateStockFormik?.values.mainCateId} onChange={CreateStockFormik?.handleChange} onBlur={CreateStockFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="" disabled>Select MainCategory</option>
-                                {mainCateData?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.mainCategoryName}</option>
-                                    )
-                                })}
-                            </select>
-                            {CreateStockFormik.touched.mainCateId && CreateStockFormik.errors.mainCateId && (
-                                <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.mainCateId}</div>
-                            )}
+                  <div className='mt-2'>
+                    <CustomSelect
+                      options={mainCategoryOptions}
+                      value={CreateStockFormik?.values.mainCateId}
+                      onChange={(val) => CreateStockFormik.setFieldValue('mainCateId', val)}
+                      placeholder="Select MainCategory"
+                    />
+                  </div>
+                  {CreateStockFormik.touched.mainCateId && CreateStockFormik.errors.mainCateId && (
+                    <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.mainCateId}</div>
+                  )}
                   </div>
                 </div>
                 <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                   <div className="form-group">
                     <label className="ds_login_label">Category</label>
-                    <select name='cateName' value={CreateStockFormik?.values.cateName} onChange={CreateStockFormik?.handleChange} onBlur={CreateStockFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="">Select Category</option>
-                                {filteredCategories?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.categoryName}</option>
-                                    )
-                                })}
-                            </select>
-                            {CreateStockFormik.touched.cateName && CreateStockFormik.errors.cateName && (
-                                <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.cateName}</div>
-                            )}
+                    <div className='mt-2'>
+                      <CustomSelect
+                        options={categoryOptions}
+                        value={CreateStockFormik?.values.cateName}
+                        onChange={(val) => CreateStockFormik.setFieldValue('cateName', val)}
+                        placeholder="Select Category"
+                      />
+                    </div>
+                    {CreateStockFormik.touched.cateName && CreateStockFormik.errors.cateName && (
+                      <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.cateName}</div>
+                    )}
                   </div>
                 </div>
                 <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                   <div className="form-group">
                   <label className='ds_login_label'>Sub Category</label>
-                  <select name='SubcateName' value={CreateStockFormik?.values.SubcateName} onChange={CreateStockFormik?.handleChange} onBlur={CreateStockFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="">Select Category</option>
-                                {filteredSubCategories?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.subCategoryName}</option>
-                                    )
-                                })}
-                            </select>
-                            {CreateStockFormik.touched.SubcateName && CreateStockFormik.errors.SubcateName && (
-                                <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.SubcateName}</div>
-                            )}
+                  <div className='mt-2'>
+                    <CustomSelect
+                      options={subCategoryOptions}
+                      value={CreateStockFormik?.values.SubcateName}
+                      onChange={(val) => CreateStockFormik.setFieldValue('SubcateName', val)}
+                      placeholder="Select SubCategory"
+                    />
+                  </div>
+                  {CreateStockFormik.touched.SubcateName && CreateStockFormik.errors.SubcateName && (
+                    <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.SubcateName}</div>
+                  )}
                   </div>
                 </div>
                 <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                 <div className="form-group">
-                            <label className='ds_login_label' >Product</label>
-                            <select name='product' value={CreateStockFormik?.values.product} onChange={CreateStockFormik?.handleChange} onBlur={CreateStockFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                <option value="">Select Category</option>
-                                {ProductData?.map((element)=>{
-                                    return(
-                                        <option value={element?._id}>{element?.productName}</option>
-                                    )
-                                })}
-                            </select>
-                      {CreateStockFormik.touched.product && CreateStockFormik.errors.product && (
-                        <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.product}</div>
-                      )}
-                      </div>
+                  <label className='ds_login_label' >Product</label>
+                  <div className='mt-2'>
+                    <CustomSelect
+                      options={productOptions}
+                      value={CreateStockFormik?.values.product}
+                      onChange={(val) => CreateStockFormik.setFieldValue('product', val)}
+                      placeholder="Select Product"
+                    />
+                  </div>
+                  {CreateStockFormik.touched.product && CreateStockFormik.errors.product && (
+                    <div className="text-danger mt-1" style={{fontSize:"12px"}}>{CreateStockFormik.errors.product}</div>
+                  )}
+                </div>
                 </div>
                 {/* <div className="col-xl-4 col-lg-6 px-3 mt-sm-4 mt-3">
                   <div className="form-group">

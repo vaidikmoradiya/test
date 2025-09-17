@@ -222,7 +222,7 @@ useEffect(() => {
     }
 }, [EditSubCateFormik.values.mainCateId, cateMap]);
 
-// Reusable Custom Select (same as Category page)
+// Reusable Custom Select (aligned with Category page)
 const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [container, setContainer] = useState(null);
@@ -279,7 +279,7 @@ const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
         >
           {options.filter(o => o.value !== '').map(opt => (
             <li
-              className='mv_cancel_modal_select_option'
+              className='mv_category_modal_select_option'
               key={opt.value}
               role="option"
               aria-selected={opt.value === value}
@@ -291,7 +291,7 @@ const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
               style={{
                 padding: '3px 12px',
                 borderRadius: 0,
-                background: opt.value === value ? '#1967d2' : 'transparent',
+                background: opt.value === value ? '#1E2131' : 'transparent',
                 color: opt.value === value ? '#fff' : '',
                 cursor: 'pointer',
               }}
@@ -308,6 +308,17 @@ const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
 const mainCategoryOptions = [
   { value: '', label: 'Select MainCategory' },
   ...((Array.isArray(mainCateData) ? mainCateData : []).map(m => ({ value: m?._id || '', label: m?.mainCategoryName || '' })))
+];
+
+const categoryFilterOptions = [
+  { value: '', label: 'Select Category' },
+  ...((Array.isArray(filteredFilterCategories) ? filteredFilterCategories : []).map(c => ({ value: c?._id || '', label: c?.categoryName || '' })))
+];
+
+const statusOptions = [
+  { value: '', label: 'Select Status' },
+  { value: 'Available', label: 'Available' },
+  { value: 'Unavailable', label: 'Unavailable' }
 ];
 
 const handleDelete = () => {
@@ -413,7 +424,7 @@ useEffect(() => {
                    <div onClick={()=> setAddPopup(true)} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
                 </div>
         </div>
-        {searchInput.trim() && (data?.length === 0) ? (
+        {(data?.length === 0) ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
             </div>
@@ -473,51 +484,39 @@ useEffect(() => {
         </Offcanvas.Header>
         <Offcanvas.Body className='px-3 mx-2'>
            <div className='d-flex flex-column h-100'>
-              <div className="form-group mt-2">
-                    <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                    <select 
-                        className='ds_user_select w-100 mt-2' 
-                        style={{fontSize:"15px"}}
-                        value={filterMainCategory}
-                        onChange={(e) => setFilterMainCategory(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {mainCateData?.map((element) => (
-                          <option key={element._id} value={element._id}>
-                              {element.mainCategoryName}
-                          </option>
-                      ))}
-                    </select>
-               </div>
-               <div className="form-group mt-4">
-                    <label className='ds_login_label' style={{fontSize:"15px"}}>Category</label>
-                    <select 
-                        className='ds_user_select w-100 mt-2' 
-                        style={{fontSize:"15px"}}
-                        value={filterCategory}
-                        onChange={(e) => setFilterCategory(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {filteredFilterCategories?.map((element) => (
-                          <option key={element._id} value={element._id}>
-                              {element.categoryName}
-                          </option>
-                      ))}
-                    </select>
-               </div>
-              <div className="form-group mt-4">
-                 <label className='ds_login_label' style={{fontSize:"15px"}}>Status</label>
-                 <select 
-                     className='ds_user_select w-100 mt-2' 
-                     style={{fontSize:"15px"}}
-                     value={filterStatus}
-                     onChange={(e) => setFilterStatus(e.target.value)}
-                 >
-                   <option value="">Select</option>
-                   <option value="Available">Available</option>
-                   <option value="Unavailable">Unavailable</option>
-                 </select>
+             <div className="form-group mt-2">
+                   <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
+                   <div className='mt-2'>
+                     <CustomSelect
+                       options={mainCategoryOptions}
+                       value={filterMainCategory}
+                       onChange={(val) => setFilterMainCategory(val)}
+                       placeholder="Select MainCategory"
+                     />
+                   </div>
               </div>
+              <div className="form-group mt-4">
+                   <label className='ds_login_label' style={{fontSize:"15px"}}>Category</label>
+                   <div className='mt-2'>
+                     <CustomSelect
+                       options={categoryFilterOptions}
+                       value={filterCategory}
+                       onChange={(val) => setFilterCategory(val)}
+                       placeholder="Select Category"
+                     />
+                   </div>
+              </div>
+             <div className="form-group mt-4">
+                <label className='ds_login_label' style={{fontSize:"15px"}}>Status</label>
+                <div className='mt-2'>
+                  <CustomSelect
+                    options={statusOptions}
+                    value={filterStatus}
+                    onChange={(val) => setFilterStatus(val)}
+                    placeholder="Select Status"
+                  />
+                </div>
+             </div>
              <div className='mt-auto mb-2 d-flex justify-content-between '>
                 <button onClick={handleResetFilter} className='ds_off_cancel'>Reset</button>
                 <button onClick={handleApplyFilter} className='ds_off_apply'>Apply</button>

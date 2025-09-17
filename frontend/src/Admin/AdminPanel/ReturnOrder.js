@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import search from '../Image/Savani/search_icon.svg'
@@ -16,6 +16,7 @@ const ReturnOrder = () => {
     const [clickedButtons, setClickedButtons] = useState({});
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const prevTotalCountRef = useRef(0);
     
     const returnOrderData = useSelector((state)=> state?.returnOrder?.ReturnOrderData)
     const returnOrderStatus = useSelector((state) => state?.returnOrder?.ReturnOrderStatus);
@@ -52,6 +53,18 @@ const ReturnOrder = () => {
         });
         setData(filtered?.slice(startIndex, endIndex));
     }, [currentPage, returnOrderData, searchInput]);
+
+    // Auto-jump to last page when return orders grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (returnOrderData?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [returnOrderData?.length, searchInput]);
     
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -121,12 +134,27 @@ const ReturnOrder = () => {
     };
     
     const handleStatusClick = (orderId, status) => {
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = filteredReturnOrder?.length || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
         dispatch(EditReturnOrder({ id: orderId, status }));
         dispatch(setReturnOrderStatus({ orderId, status }));
         setClickedButtons(prev => ({
             ...prev,
             [orderId]: true
         }));
+
+        // Adjust current page after status change
+        if (!isSearching) {
+            if (currentPage > newTotal) {
+                setCurrentPage(newTotal);
+            } else if (newCount <= currentStartIndex && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+        }
     };
 
   return (
@@ -151,7 +179,7 @@ const ReturnOrder = () => {
                 </div>
         </div>
 
-        {searchInput.trim() && (data?.length === 0) ? (
+        {(data?.length === 0) ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%', minHeight: '700px' }}>
                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
             </div>
@@ -219,7 +247,7 @@ const ReturnOrder = () => {
         )}
 
        {/* PAGINATION CODE */}
-       {!searchInput.trim() && (filteredReturnOrder?.length > 0) && (
+       {!searchInput.trim() && (filteredReturnOrder?.length > itemPerPage) && (
            <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end ">
                {renderPagination()}
            </div>

@@ -84,16 +84,29 @@ const Header = ({ mainToggle, setMainToggle, userType = 'admin' }) => {
     };
   }, []);
 
+  // close offcanvas when switching to larger screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 576 && show) {
+        setShow(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [show]);
+
 
   const toggleSidebar = () => {
-    // if (window.innerWidth >= 576) {
-    //   const sidebar = document.getElementById("sidebar");
-    //   sidebar.classList.toggle("ucollapsed");
-    // } else {
-    //   handleShow();
-    // }
-    setMainToggle(!mainToggle)
-    setShow(true);
+    if (window.innerWidth >= 576) {
+      // For larger screens, toggle the sidebar collapse
+      setMainToggle(!mainToggle);
+    } else {
+      // For smaller screens, show the offcanvas
+      handleShow();
+    }
   };
 
   const [activeLocation,setActiveLocation] = useState('dashboard');

@@ -13,6 +13,7 @@ import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { GetAllProduct, EditStatusProductData, DeleteProductData } from '../../Redux-Toolkit/ToolkitSlice/User/ProductSlice'
 import { Link } from 'react-router-dom';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const Products = () => {
 
@@ -183,6 +184,106 @@ const Products = () => {
         return [...new Set(categories)];
     };
 
+  // Reusable Custom Select (aligned with Category page)
+  const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef(null);
+    const selected = options.find(opt => opt.value === value);
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (containerRef.current && !containerRef.current.contains(event.target)) {
+          setIsOpen(false);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    return (
+      <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+        <div
+          className='mv_category_modal_select'
+          role="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          tabIndex={0}
+          onClick={() => setIsOpen(prev => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+            if (e.key === 'Escape') setIsOpen(false);
+          }}
+        >
+          <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+            {selected && selected.value !== '' ? selected.label : placeholder}
+          </span>
+          <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+        </div>
+        {isOpen && (
+          <ul
+            role="listbox"
+            style={{
+              position: 'absolute',
+              zIndex: 20,
+              left: 0,
+              right: 0,
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: 0,
+              boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+              maxHeight: 220,
+              overflowY: 'auto',
+              margin: 0,
+              paddingLeft: 0,
+              listStyle: 'none',
+            }}
+          >
+            {options.filter(o => o.value !== '').map(opt => (
+              <li
+                className='mv_category_modal_select_option'
+                key={opt.value}
+                role="option"
+                aria-selected={opt.value === value}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(opt.value);
+                  setIsOpen(false);
+                }}
+                style={{
+                  padding: '3px 12px',
+                  borderRadius: 0,
+                  background: opt.value === value ? '#1E2131' : 'transparent',
+                  color: opt.value === value ? '#fff' : '',
+                  cursor: 'pointer',
+                }}
+              >
+                {opt.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
+
+  const mainCategoryOptions = [
+    { value: '', label: 'Select' },
+    ...getUniqueMainCategories().map(c => ({ value: c, label: c }))
+  ];
+  const categoryOptions = [
+    { value: '', label: 'Select' },
+    ...getUniqueCategories().map(c => ({ value: c, label: c }))
+  ];
+  const subCategoryOptions = [
+    { value: '', label: 'Select' },
+    ...getUniqueSubCategories().map(c => ({ value: c, label: c }))
+  ];
+  const statusOptions = [
+    { value: '', label: 'Select' },
+    { value: 'Available', label: 'Available' },
+    { value: 'Unavailable', label: 'Unavailable' }
+  ];
+
     const renderPagination = () => {
         let pages = [];
 
@@ -293,7 +394,7 @@ const Products = () => {
                 </div>
             </div>
 
-            {searchInput.trim() && (data?.length === 0) ? (
+            {(data?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -367,58 +468,47 @@ const Products = () => {
            <div className='d-flex flex-column h-100'>
               <div className="form-group mt-2">
                     <label className='ds_login_label' style={{fontSize:"15px"}}>Main Category</label>
-                    <select 
-                        className='ds_user_select w-100 mt-2' 
-                        style={{fontSize:"15px"}}
+                    <div className='mt-2'>
+                      <CustomSelect
+                        options={mainCategoryOptions}
                         value={tempFilterMainCategory}
-                        onChange={(e) => setTempFilterMainCategory(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {getUniqueMainCategories().map((category, index) => (
-                          <option key={index} value={category}>{category}</option>
-                      ))}
-                    </select>
+                        onChange={(val) => setTempFilterMainCategory(val)}
+                        placeholder="Select"
+                      />
+                    </div>
                </div>
                <div className="form-group mt-4">
                     <label className='ds_login_label' style={{fontSize:"15px"}}>Category</label>
-                    <select 
-                        className='ds_user_select w-100 mt-2' 
-                        style={{fontSize:"15px"}}
+                    <div className='mt-2'>
+                      <CustomSelect
+                        options={categoryOptions}
                         value={tempFilterCategory}
-                        onChange={(e) => setTempFilterCategory(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {getUniqueCategories().map((category, index) => (
-                          <option key={index} value={category}>{category}</option>
-                      ))}
-                    </select>
+                        onChange={(val) => setTempFilterCategory(val)}
+                        placeholder="Select"
+                      />
+                    </div>
                </div>
                <div className="form-group mt-4">
                     <label className='ds_login_label' style={{fontSize:"15px"}}>Sub Category</label>
-                    <select 
-                        className='ds_user_select w-100 mt-2' 
-                        style={{fontSize:"15px"}}
+                    <div className='mt-2'>
+                      <CustomSelect
+                        options={subCategoryOptions}
                         value={tempFilterSubCategory}
-                        onChange={(e) => setTempFilterSubCategory(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {getUniqueSubCategories().map((category, index) => (
-                          <option key={index} value={category}>{category}</option>
-                      ))}
-                    </select>
+                        onChange={(val) => setTempFilterSubCategory(val)}
+                        placeholder="Select"
+                      />
+                    </div>
                </div>
               <div className="form-group mt-4">
                  <label className='ds_login_label' style={{fontSize:"15px"}}>Status</label>
-                 <select 
-                     className='ds_user_select w-100 mt-2' 
-                     style={{fontSize:"15px"}}
+                 <div className='mt-2'>
+                   <CustomSelect
+                     options={statusOptions}
                      value={tempFilterStatus}
-                     onChange={(e) => setTempFilterStatus(e.target.value)}
-                 >
-                   <option value="">Select</option>
-                   <option value="Available">Available</option>
-                   <option value="Unavailable">Unavailable</option>
-                 </select>
+                     onChange={(val) => setTempFilterStatus(val)}
+                     placeholder="Select"
+                   />
+                 </div>
               </div>
               <div className="form-group mt-4">
                   <label className="ds_login_label mb-3" style={{ fontSize: '15px' }}>

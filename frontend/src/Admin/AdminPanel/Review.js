@@ -182,7 +182,7 @@ const Review = () => {
                 </div>
         </div>
 
-        {searchInput.trim() && (paginatedData?.length === 0) ? (
+        {(paginatedData?.length === 0) ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                 <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
             </div>

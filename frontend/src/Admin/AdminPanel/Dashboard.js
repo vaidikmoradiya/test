@@ -396,11 +396,11 @@ const Dashboard = () => {
             <div className="col-lg-6 p-2 ">
               <div className="h-100 w-100">
                 <div className="bg-light p-lg-4 p-3 rounded w-100">
-                  <div className="align-items-center  mb-3 d-flex justify-content-between">
-                    <h6 className="w-100 text-nowrap  fw-semibold mb-0 text-dark">
+                  <div className="align-items-center mb-3 mv_main_income_expense">
+                    <h6 className="w-100 text-nowrap fw-semibold mb-0 text-dark mv_income_expense_title">
                       Income & Expence
                     </h6>
-                    <div className="d-flex justify-content-between">
+                    <div className="mv_sub_income_expense">
                       <div className=" d-flex justify-content-end align-items-center">
                         <div
                           className="me-2 rounded-circle"

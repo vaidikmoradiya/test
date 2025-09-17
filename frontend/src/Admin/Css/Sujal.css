@@ -24,7 +24,14 @@
 .sp_height:hover::-webkit-scrollbar {
     display: block;
 }
-
+.mv_main_income_expense{
+    display: flex;
+    justify-content: space-between;
+}
+.mv_sub_income_expense{
+    display: flex;
+    justify-content: space-between;
+}
 
 /* Track */
 .sp_height::-webkit-scrollbar-track {
@@ -364,6 +371,46 @@ input:checked+.sp_slider:before {
     min-width: 300px;
 }
 
+@media(max-width:1440px){
+    .mv_main_income_expense{
+        display: block;
+        justify-content: space-between;
+    }
+    .mv_sub_income_expense{
+        display: flex;
+        justify-content: flex-start;
+    }
+}
+@media(max-width:1399px){
+    .mv_main_income_expense{
+        display: flex;
+        justify-content: space-between;
+    }
+    .mv_sub_income_expense{
+        display: flex;
+        justify-content: flex-start;
+    }
+}
+@media(max-width:1200px){
+    .mv_main_income_expense{
+        display: block;
+        justify-content: space-between;
+    }
+    .mv_sub_income_expense{
+        display: flex;
+        justify-content: flex-start;
+    }
+}
+@media(max-width:991px){
+    .mv_main_income_expense{
+        display: flex;
+        justify-content: space-between;
+    }
+    .mv_sub_income_expense{
+        display: flex;
+        justify-content: flex-start;
+    }
+}
 @media(max-width:575px) {
     .sp_view{
         padding: 15px;
@@ -430,6 +477,19 @@ input:checked+.sp_slider:before {
     }
 }
 
+@media (max-width:425px){
+    .mv_main_income_expense{
+        display: block;
+        justify-content: space-between;
+    }
+    .mv_sub_income_expense{
+        display: flex;
+        justify-content: flex-start;
+    }
+    .mv_income_expense_title{
+        margin-bottom: 10px !important;
+    }
+}
 @media (max-width:374px) {
     .sp_cancle_btn {
         width: 100px;
@@ -478,6 +538,9 @@ input:checked+.sp_slider:before {
 }
 
 .sp_activeSidebar .umenu_item img {
+    margin: 0px;
+}
+.sp_activeSidebar .umenu_item svg {
     margin: 0px;
 }
 

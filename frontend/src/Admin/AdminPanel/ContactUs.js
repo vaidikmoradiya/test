@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../Css/Sujal.css'
 import viewImg from '../Image/Sujal/view.png'
 import editImg from '../Image/Sujal/edit.svg'
@@ -20,6 +20,7 @@ const ContactUs = () => {
   const itemPerPage = 10;
   const dispatch = useDispatch()
   const [deleteId, setDeleteId] = useState(null)
+  const prevTotalCountRef = useRef(0);
 
   const contactUsData = useSelector((state)=> state?.contact?.getContactData)
   console.log("contactUsData",contactUsData);
@@ -31,6 +32,18 @@ const ContactUs = () => {
   useEffect(() => {
     setCurrentPage(1)
   }, [searchInput])
+
+  // Auto-jump to last page when contact us data grows and no search is active
+  useEffect(() => {
+    const isSearching = !!searchInput.trim();
+    const newCount = (contactUsData?.length) || 0;
+    const prevCount = prevTotalCountRef.current;
+    if (!isSearching && newCount > prevCount) {
+      const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+      setCurrentPage(targetPage);
+    }
+    prevTotalCountRef.current = newCount;
+  }, [contactUsData?.length, searchInput]);
 
   const filteredContactUs = contactUsData?.filter((item) => {
     return (
@@ -128,10 +141,24 @@ const ContactUs = () => {
   };
 
   const handleDelete = () => {
+    const isSearching = !!searchInput.trim();
+    const currentFilteredLength = (filteredContactUs?.length) || 0;
+    const newCount = Math.max(0, currentFilteredLength - 1);
+    const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+    const currentStartIndex = (currentPage - 1) * itemPerPage;
+
     dispatch(DeleteContactUsData(deleteId))
         .then(() => {
-            dispatch(GetContactusData())
-            setDeleteShow(false)
+            dispatch(GetContactusData()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+            });
         })
         .catch((error) => {
             alert(error)
@@ -151,7 +178,7 @@ const ContactUs = () => {
          </div>
 
       </div>
-      {searchInput.trim() && (data?.length === 0) ? (
+      {(data?.length === 0) ? (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
           <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
         </div>
@@ -192,7 +219,7 @@ const ContactUs = () => {
       )}
 
       {/* PAGINATION CODE */}
-      {!searchInput.trim() && (filteredContactUs?.length > 0) && (
+      {!searchInput.trim() && (filteredContactUs?.length > itemPerPage) && (
         <div className="py-3 d-flex justify-content-center justify-content-md-end">
           {renderPagination()}
         </div>

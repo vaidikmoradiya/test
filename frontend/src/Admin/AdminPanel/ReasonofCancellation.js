@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../Css/Sujal.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -22,6 +22,7 @@ const ReasonofCancellation = () => {
     const [searchInput, setSearchInput] = useState("");
     const [data, setData] = useState([]);
     const dispatch = useDispatch();
+    const prevTotalCountRef = useRef(0);
     const reasonCancel = useSelector((state) => state?.reasonCancel?.allReason);
     var itemPerPage = 10;
 
@@ -32,6 +33,18 @@ const ReasonofCancellation = () => {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchInput])
+
+    // Auto-jump to last page when reason cancellations grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (reasonCancel?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [reasonCancel?.length, searchInput]);
 
     const filteredReasonCancel = reasonCancel?.filter((element) => {
         return element?.reasonCancel?.toLowerCase().includes(searchInput?.toLowerCase())
@@ -124,10 +137,17 @@ const ReasonofCancellation = () => {
         initialValues: reasonCancelVal,
         validationSchema: reasonCancellationSchema,
         onSubmit: (values, action) => {
-            console.log(values);
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredReasonCancel?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
             dispatch(createReasonCancellation(values)).then(() => {
-                dispatch(getAllReasonCancellation());
-                setAddShow(false);
+                dispatch(getAllReasonCancellation()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false);
+                });
             }).catch((error) => {
                 alert(error)
             })
@@ -135,10 +155,24 @@ const ReasonofCancellation = () => {
         }
     })
     const handleDeleteRole = () => {
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredReasonCancel?.length) || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
         dispatch(DeleteReasonCancellation(deleteId))
         .then(()=>{
-            dispatch(getAllReasonCancellation())
-            setDeleteShow(false)
+            dispatch(getAllReasonCancellation()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+            });
          })
          .catch((error)=>{
            alert(error)
@@ -195,7 +229,7 @@ const ReasonofCancellation = () => {
                 </div>
                 
             </div>
-            {searchInput.trim() && (data?.length === 0) ? (
+            {(data?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -235,7 +269,7 @@ const ReasonofCancellation = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredReasonCancel?.length > 0) && (
+            {!searchInput.trim() && (filteredReasonCancel?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>

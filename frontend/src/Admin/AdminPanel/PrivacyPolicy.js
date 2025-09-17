@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import '../Css/Sujal.css'
 import editImg from '../Image/Sujal/edit.svg'
 import deleteImg from '../Image/Sujal/delete.svg'
@@ -23,6 +23,7 @@ const PrivacyPolicy = () => {
     const [searchInput, setSearchInput] = useState("");
     const [data, setData] = useState([]);
     var itemPerPage = 10;
+    const prevTotalCountRef = useRef(0);
 
     const dispatch = useDispatch();
     const getPrivacyPolicy = useSelector((state) => state?.privacyPolicy?.allPrivacyPolicy);
@@ -37,6 +38,18 @@ const PrivacyPolicy = () => {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchInput])
+
+    // Auto-jump to last page when privacy policies grow and no search is active
+    useEffect(() => {
+        const isSearching = !!searchInput.trim();
+        const newCount = (getPrivacyPolicy?.length) || 0;
+        const prevCount = prevTotalCountRef.current;
+        if (!isSearching && newCount > prevCount) {
+            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+            setCurrentPage(targetPage);
+        }
+        prevTotalCountRef.current = newCount;
+    }, [getPrivacyPolicy?.length, searchInput]);
 
     // Auto-hide success/error messages after 5 seconds
     useEffect(() => {
@@ -149,6 +162,10 @@ const PrivacyPolicy = () => {
         initialValues: privacyPolicyVal,
         validationSchema: privacyPolicySchema,
         onSubmit: ((values, action) => {
+            const isSearching = !!searchInput.trim();
+            const currentFilteredLength = filteredPrivacyPolicy?.length || 0;
+            const targetPage = !isSearching ? Math.max(1, Math.ceil((currentFilteredLength + 1) / itemPerPage)) : currentPage;
+
             // Convert description to array if it's a string
             const formattedValues = {
                 ...values,
@@ -156,8 +173,12 @@ const PrivacyPolicy = () => {
             };
             
             dispatch(createPrivacyPolicy(formattedValues)).then(() => {
-                dispatch(getAllPrivacyPolicy());
-                setAddShow(false);
+                dispatch(getAllPrivacyPolicy()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                    setAddShow(false);
+                });
                 action.resetForm();
             }).catch((error) => {
                 console.log(error);
@@ -192,9 +213,24 @@ const PrivacyPolicy = () => {
     }) 
 
     const handleDeletePrivacyPolicy = () => {
-        dispatch(DeletePrivacyPolicy(deleteId));
-        setDeleteShow(false);
-        dispatch(getAllPrivacyPolicy());
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredPrivacyPolicy?.length) || 0;
+        const newCount = Math.max(0, currentFilteredLength - 1);
+        const newTotal = Math.max(1, Math.ceil(newCount / itemPerPage));
+        const currentStartIndex = (currentPage - 1) * itemPerPage;
+
+        dispatch(DeletePrivacyPolicy(deleteId)).then(() => {
+            dispatch(getAllPrivacyPolicy()).then(() => {
+                if (!isSearching) {
+                    if (currentPage > newTotal) {
+                        setCurrentPage(newTotal);
+                    } else if (newCount <= currentStartIndex && currentPage > 1) {
+                        setCurrentPage(currentPage - 1);
+                    }
+                }
+                setDeleteShow(false);
+            });
+        });
     }
 
     const handleEditClick = (item) => {
@@ -259,7 +295,7 @@ const PrivacyPolicy = () => {
                         <span className='visually-hidden'>Loading...</span>
                     </div>
                 </div>
-            ) : searchInput.trim() && (data?.length === 0) ? (
+            ) : (data?.length === 0) ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>
@@ -307,7 +343,7 @@ const PrivacyPolicy = () => {
             )}
 
             {/* PAGINATION CODE */}
-            {!searchInput.trim() && (filteredPrivacyPolicy?.length > 0) && (
+            {!searchInput.trim() && (filteredPrivacyPolicy?.length > itemPerPage) && (
                 <div className="py-3 d-flex justify-content-center justify-content-md-end">
                     {renderPagination()}
                 </div>

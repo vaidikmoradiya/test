@@ -176,7 +176,7 @@ const User = () => {
                     <img src={search} alt="" className='ds_page_icon' />
                 </div>
             </div>
-            {searchTerm.trim() && filteredUsers.length === 0 ? (
+            {currentUsers.length === 0 ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
                 </div>

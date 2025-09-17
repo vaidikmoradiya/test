@@ -18,6 +18,7 @@ const navigate = useNavigate()
 const dispatch = useDispatch()
 const dateRef = useRef()
 const [selectedDate, setSelectedDate] = useState('');
+const prevTotalCountRef = useRef(0);
 
 // Filter states
 const [filterProductName, setFilterProductName] = useState('');
@@ -37,6 +38,18 @@ useEffect(() => {
         dispatch(GetReturnOrderData());
     }
 }, []);
+
+// Auto-jump to last page when return orders grow and no filters are active
+useEffect(() => {
+    const isFiltering = !!(filterProductName || filterDate || filterStatus);
+    const newCount = (returnOrderData?.length) || 0;
+    const prevCount = prevTotalCountRef.current;
+    if (!isFiltering && newCount > prevCount) {
+        const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+        setCurrentPage(targetPage);
+    }
+    prevTotalCountRef.current = newCount;
+}, [returnOrderData?.length, filterProductName, filterDate, filterStatus]);
 
 // Filter the data based on filter values (applied filters only)
 const filteredData = returnOrderData?.filter(item => {
@@ -247,9 +260,12 @@ const handleClearFilter = () => {
            </table>
        </div>
 
-       <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end px-5">
-           {renderPagination()}
-       </div>
+       {/* PAGINATION CODE */}
+       {!(filterProductName || filterDate || filterStatus) && (filteredData?.length > itemPerPage) && (
+           <div className="py-3 mt-3 d-flex justify-content-center justify-content-md-end px-5">
+               {renderPagination()}
+           </div>
+       )}
 
 {/* ************ Offcanvas *************** */}
 <Offcanvas show={show} onHide={()=> setShow(false)} className="ds_offcanvas" placement='end' >

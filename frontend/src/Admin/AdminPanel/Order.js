@@ -253,7 +253,7 @@ const STEP = 5;
                       </div>
               </div>
 
-         {searchInput.trim() && (data?.length === 0) ? (
+         {(data?.length === 0) ? (
              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80%' }}>
                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>No data available</div>
              </div>

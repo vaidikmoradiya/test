@@ -16,6 +16,7 @@ const ViewReview = () => {
 
 const navigate = useNavigate()
 const [deletePopup, setDeletePopup] = useState(false)
+const [descMaxLen, setDescMaxLen] = useState(20)
 const Back_URL = 'http://localhost:5000/'
 const editid = localStorage.getItem("Getid")
 const dispatch = useDispatch()
@@ -26,6 +27,21 @@ console.log("SingleReviewData", SingleReviewData);
 useEffect(() => {
     dispatch(GetSingleReviewData(editid))
 }, [editid])
+
+useEffect(() => {
+    const calcLen = (w) => {
+        if (w <= 375) return 14;
+        if (w <= 575) return 20;
+        if (w <= 1024) return 30;
+        if (w <= 1440) return 20;
+        if (w <= 1920) return 30;
+        return 20;
+    };
+    const updateLen = () => setDescMaxLen(calcLen(window.innerWidth));
+    updateLen();
+    window.addEventListener('resize', updateLen);
+    return () => window.removeEventListener('resize', updateLen);
+}, [])
 
   return (
     <div>
@@ -66,14 +82,19 @@ useEffect(() => {
                           <div className="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-7">
                                 <div>
                                     <img src={item.userData?.[0]?.image ? `${Back_URL}${item.userData[0].image}` : profile} alt="" className='ds_viewprofile' />
-                                    <p className='mt-2 pt-1 mb-2'>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</p>
+                                    <p className='mt-2 pt-1 mb-2'>
+                                      {(item.userData?.[0]?.firstName || 'NAN')} {(item.userData?.[0]?.lastName || '')}
+                                    </p>
                                     <p className='mb-0 '>{new Date(item.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</p>
                                     <p className='pt-2 mb-0'>
                                       {[1,2,3,4,5].map((star) => (
                                         <FaStar key={star} className={`ds_review_star ${star <= item.rate ? 'ds_review_color' : ''}`} />
                                       ))}
                                     </p>
-                                    <p className='pt-2'>{item.description}</p>
+                                    <p className='pt-2 text-wrap'>{(() => {
+                                      const raw = Array.isArray(item?.description) ? (item?.description?.[0] || '') : (item?.description || '');
+                                      return raw.length > descMaxLen ? `${raw.slice(0, descMaxLen)}...` : raw;
+                                    })()}</p>
                                 </div>
                           </div>
                       </div>

@@ -705,6 +705,15 @@
     font-size: 0.85rem;
   }
 }
+@media (max-width: 425px){
+  .udash_table td {
+    font-size: 16px;
+  }
+  
+  .udash_table th {
+    font-size: 16px;
+  }
+}
 
 /* Add these new responsive styles for 768px to 1250px */
 @media (min-width: 768px) and (max-width: 1250px) {

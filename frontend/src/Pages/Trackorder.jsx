@@ -34,6 +34,19 @@ const Trackorder = () => {
     comment: ''
   });
 
+  // Lock background scroll when any modal is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    if (showCancelModal || showOrderCancelledModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalOverflow || '';
+    }
+    return () => {
+      document.body.style.overflow = originalOverflow || '';
+    };
+  }, [showCancelModal, showOrderCancelledModal]);
+
   const allReasonCancel = useSelector((state) => state?.reasonCancel?.allReason);
   const cancelOptions = [
     { value: '', label: 'Select' },

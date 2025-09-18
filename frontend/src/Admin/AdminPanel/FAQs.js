@@ -12,6 +12,7 @@ import { FaqSchema } from '../Formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { createFaq, DeleteFaq, EditFaq, getAllFaq } from '../../Redux-Toolkit/ToolkitSlice/Admin/FaqSlice';
 import { GetFaqCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/FaqCategorySlice';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const FAQs = () => {
     const [addShow, setAddShow] = useState(false);
@@ -240,6 +241,93 @@ const FAQs = () => {
         editFaqFormik.resetForm();
     }
 
+    // Reusable Custom Select (aligned with Category page)
+    const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+      const [isOpen, setIsOpen] = useState(false);
+      const containerRef = useRef(null);
+      const selected = options.find(opt => opt.value === value);
+
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (containerRef.current && !containerRef.current.contains(event.target)) {
+            setIsOpen(false);
+          }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+      }, []);
+
+      return (
+        <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+          <div
+            className='mv_category_modal_select'
+            role="button"
+            aria-haspopup="listbox"
+            aria-expanded={isOpen}
+            tabIndex={0}
+            onClick={() => setIsOpen(prev => !prev)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+              if (e.key === 'Escape') setIsOpen(false);
+            }}
+          >
+            <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+              {selected && selected.value !== '' ? selected.label : placeholder}
+            </span>
+            <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+          </div>
+          {isOpen && (
+            <ul
+              role="listbox"
+              style={{
+                position: 'absolute',
+                zIndex: 20,
+                left: 0,
+                right: 0,
+                background: '#fff',
+                border: '1px solid #ddd',
+                borderRadius: 0,
+                boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+                maxHeight: 220,
+                overflowY: 'auto',
+                margin: 0,
+                paddingLeft: 0,
+                listStyle: 'none',
+              }}
+            >
+              {options.filter(o => o.value !== '').map(opt => (
+                <li
+                  className='mv_category_modal_select_option'
+                  key={opt.value}
+                  role="option"
+                  aria-selected={opt.value === value}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    onChange(opt.value);
+                    setIsOpen(false);
+                  }}
+                  style={{
+                    padding: '3px 12px',
+                    borderRadius: 0,
+                    background: opt.value === value ? '#1E2131' : 'transparent',
+                    color: opt.value === value ? '#fff' : '',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {opt.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      );
+    };
+
+    const faqCategoryOptions = [
+      { value: '', label: 'Select FaqCategory' },
+      ...(faqCateData?.map(element => ({ value: element?._id, label: element?.categoryName })) || [])
+    ];
+
     return (
         <div className='sp_main sp_height pt-2'>
             <div className='d-flex flex-wrap justify-content-between align-items-center'>
@@ -322,14 +410,14 @@ const FAQs = () => {
                         <div className='spmodal_main_div'>
                             <div className="form-group  mb-4 pt-3">
                                 <label className='ds_login_label' style={{fontSize:"15px"}}>FaqCategory</label>
-                                <select name='categoryName' value={createFaqFormik?.values.categoryName} onChange={createFaqFormik?.handleChange} onBlur={createFaqFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                    <option value="" disabled>Select FaqCategory</option>
-                                    {faqCateData?.map((element)=>{
-                                        return(
-                                            <option value={element?._id}>{element?.categoryName}</option>
-                                        )
-                                    })}
-                                </select>
+                                <div className='mt-2'>
+                                  <CustomSelect
+                                    options={faqCategoryOptions}
+                                    value={createFaqFormik?.values.categoryName}
+                                    onChange={(val) => createFaqFormik.setFieldValue('categoryName', val)}
+                                    placeholder="Select FaqCategory"
+                                  />
+                                </div>
                                 {createFaqFormik.touched.categoryName && createFaqFormik.errors.categoryName && (
                                         <div className="text-danger mt-1" style={{fontSize:"12px"}}>{createFaqFormik.errors.categoryName}</div>
                                 )}
@@ -391,14 +479,14 @@ const FAQs = () => {
                         <div className='spmodal_main_div'>
                             <div className="form-group  mb-4 pt-3">
                                 <label className='ds_login_label' style={{fontSize:"15px"}}>FaqCategory</label>
-                                <select name='categoryName' value={editFaqFormik?.values.categoryName} onChange={editFaqFormik?.handleChange} onBlur={editFaqFormik?.handleBlur} className='ds_user_select w-100 mt-2' style={{fontSize:"15px"}}>
-                                    <option value="" disabled>Select FaqCategory</option>
-                                    {faqCateData?.map((element)=>{
-                                        return(
-                                            <option value={element?._id}>{element?.categoryName}</option>
-                                        )
-                                    })}
-                                </select>
+                                <div className='mt-2'>
+                                  <CustomSelect
+                                    options={faqCategoryOptions}
+                                    value={editFaqFormik?.values.categoryName}
+                                    onChange={(val) => editFaqFormik.setFieldValue('categoryName', val)}
+                                    placeholder="Select FaqCategory"
+                                  />
+                                </div>
                                 {editFaqFormik.touched.categoryName && editFaqFormik.errors.categoryName && (
                                         <div className="text-danger mt-1" style={{fontSize:"12px"}}>{editFaqFormik.errors.categoryName}</div>
                                 )}

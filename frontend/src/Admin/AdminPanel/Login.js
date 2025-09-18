@@ -12,6 +12,8 @@ const Login = () => {
 const [type, setType] = useState("password")
 const [type2, setType2] = useState("password")
 const [toggle, setToggle] = useState("login")
+const [showSuccessModal, setShowSuccessModal] = useState(false)
+const [showErrorModal, setShowErrorModal] = useState(false)
 const inputs = useRef([]);
 const dispatch = useDispatch()
 const navigate = useNavigate()
@@ -32,13 +34,27 @@ const LoginFormik = useFormik({
     validationSchema:LoginSchema,
     onSubmit:(values , action)=>{
        dispatch(LoginAdmin(values))
-       .then(() => {
-         navigate("/admin/dashboard", { replace: true });
-       })
-       .catch((error) => {
-         console.error("Login failed:", error);
-       });  
-       action.resetForm();   
+      .then((response) => {
+        if (response?.meta?.requestStatus === "fulfilled") {
+          setShowSuccessModal(true);
+          setTimeout(() => {
+            navigate("/admin/dashboard", { replace: true });
+          }, 2000);
+          action.resetForm();
+        } else {
+          setShowErrorModal(true);
+          setTimeout(() => {
+            setShowErrorModal(false);
+          }, 2000);
+        }
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+        setShowErrorModal(true);
+        setTimeout(() => {
+          setShowErrorModal(false);
+        }, 2000);
+      });   
     }
 })
 
@@ -252,6 +268,53 @@ const handleResendOtp = () => {
                 </div>
             </div>
        </div>
+       {showSuccessModal && (
+         <div className="mv_modal_overlay">
+           <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+             <div style={{ marginBottom: '20px' }}>
+               <div style={{
+                 width: '60px',
+                 height: '60px',
+                 background: '#4CAF50',
+                 borderRadius: '50%',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 margin: '0 auto 20px'
+               }}>
+                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
+                 </svg>
+               </div>
+               <h3 style={{ marginBottom: '10px', color: '#141414' }}>Login Successful!</h3>
+             </div>
+           </div>
+         </div>
+       )}
+       {showErrorModal && (
+         <div className="mv_modal_overlay">
+           <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+             <div style={{ marginBottom: '20px' }}>
+               <div style={{
+                 width: '60px',
+                 height: '60px',
+                 background: '#f44336',
+                 borderRadius: '50%',
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 margin: '0 auto 20px'
+               }}>
+                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="white" />
+                 </svg>
+               </div>
+               <h3 style={{ marginBottom: '10px', color: '#141414' }}>Login Failed</h3>
+               <p style={{ color: '#666', marginBottom: '20px' }}>Invalid email or password. Please try again.</p>
+             </div>
+           </div>
+         </div>
+       )}
     </div>
   )
 }

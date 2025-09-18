@@ -10,8 +10,9 @@
 .mv_relay_main{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
     margin-top: 60px;
+    margin-bottom: 20px;
+    align-items: center;
 }
 .mv_relay_text{
     font-weight: 600;
@@ -19,10 +20,23 @@
     line-height: 40px;
     letter-spacing: 0.42px;
     color: #141414;
-    margin-bottom: 40px;
+    word-wrap: break-word;
+    margin-bottom: 0px;
 }
 .mv_product_main_mar{
     padding-bottom: 60px;
+}
+.mv_clear_filter_btn{
+    border: 1px solid rgba(20, 20, 20, 0.5);
+    color: rgba(30, 33, 49, 1);
+    border-radius: 4px;
+    background-color: transparent;
+    transition: 0.3s ease-in-out;
+}
+.mv_clear_filter_btn:hover {
+    background-color: #1E2131;
+    border: 1px solid #1E2131;
+    color: white;
 }
 .mv_main_card{
     padding: 20px;
@@ -133,6 +147,8 @@
 .mv_dropdown {
     position: relative;
     display: inline-block;
+    display: flex;
+    justify-content: end;
 }
 .mv_dropbtn {
     background: #1414140F;
@@ -221,7 +237,8 @@
 
 @media(max-width:575px) {
     .mv_dropbtn{
-        padding: 5px 10px;
+        padding: 5px 6px;
+        font-size: 14px;
     }
     .mv_dropcon{
         left: -77%;
@@ -231,8 +248,7 @@
         line-height: 20px;
     }
     .mv_relay_text{
-        margin-bottom: 20px;
-        font-size: 25px;
+        font-size: 22px;
         line-height: 30px;
     }
     .mv_product_main_mar{

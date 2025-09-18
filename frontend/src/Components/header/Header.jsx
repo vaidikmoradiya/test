@@ -37,6 +37,28 @@ const Header = () => {
     // const [category, setCategory] = useState([]);
     // const [subCategory, setSubCategory] = useState([]);
     const [noResultsFound, setNoResultsFound] = useState(false);
+    // submenu toggle state (all screens)
+    const [activeMainCatId, setActiveMainCatId] = useState(null);
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 992 : false);
+    const navMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 992);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // close submenu on outside click (all screens)
+    useEffect(() => {
+        const handleDocClick = (e) => {
+            if (!navMenuRef?.current) return;
+            if (!navMenuRef.current.contains(e.target)) {
+                setActiveMainCatId(null);
+            }
+        };
+        document.addEventListener('click', handleDocClick);
+        return () => document.removeEventListener('click', handleDocClick);
+    }, []);
 
     const [isSearching, setIsSearching] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -633,7 +655,13 @@ const Header = () => {
                                                                                 .filter(subCat => subCat.categoryId === category._id && subCat?.status)
                                                                                 .map((subCat) => (
                                                                                     <li key={subCat._id} className='py-1'>
-                                                                                        {subCat.subCategoryName}
+                                                                                        <Link 
+                                                                                            to={`/layout/Productlist?subcategory=${subCat._id}&subcategoryName=${encodeURIComponent(subCat.subCategoryName)}`}
+                                                                                            className='text-decoration-none text-dark'
+                                                                                            style={{ cursor: 'pointer' }}
+                                                                                        >
+                                                                                            {subCat.subCategoryName}
+                                                                                        </Link>
                                                                                     </li>
                                                                                 ))}
                                                                         </ul>

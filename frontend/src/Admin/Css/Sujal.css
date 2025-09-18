@@ -796,6 +796,8 @@ input:checked+.sp_slider:before {
 /********** Home (About Us) *********/
 .mv_home_aboutus{
     height: 480px;
+    padding: 10px;
+    box-shadow: -4px 4px 14px 0px #0000000F !important;
 }
 @media(max-width:1440px){
     .mv_home_aboutus{

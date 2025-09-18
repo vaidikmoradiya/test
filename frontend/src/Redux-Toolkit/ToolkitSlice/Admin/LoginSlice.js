@@ -13,11 +13,11 @@ export const LoginAdmin = createAsyncThunk(
       });
       localStorage.setItem("login", response?.data?.token);
       localStorage.setItem("adminId", response?.data?.user?._id);
-      alert("Login SuccessFully")
+      // alert("Login SuccessFully")
       return response.data;
     } catch (error) {
       console.error("LoginAdmin Error:", error.message);
-      alert("Login", error.message);
+      // alert("Login", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

@@ -13,6 +13,7 @@ import search from '../Image/Savani/search_icon.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { DeleteOrderData, GetAllOrderData } from '../../Redux-Toolkit/ToolkitSlice/User/OrderSlice'
 import { Link } from 'react-router-dom';
+import arrowdown from '../../Admin/Image/Savani/arrow.svg';
 
 const Order = () => {
 
@@ -221,6 +222,95 @@ const handleDatePicker = () => {
     }
 }
 
+// Reusable Custom Select (aligned with Category page)
+const CustomSelect = ({ options, value, onChange, placeholder = 'Select' }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef(null);
+  const selected = options.find(opt => opt.value === value);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+      <div
+        className='mv_category_modal_select'
+        role="button"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        tabIndex={0}
+        onClick={() => setIsOpen(prev => !prev)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') setIsOpen(prev => !prev);
+          if (e.key === 'Escape') setIsOpen(false);
+        }}
+      >
+        <span style={{ color: selected && selected.value !== '' ? '#111' : '#14141499' }}>
+          {selected && selected.value !== '' ? selected.label : placeholder}
+        </span>
+        <span style={{ marginLeft: 8 }}><img src={arrowdown}/></span>
+      </div>
+      {isOpen && (
+        <ul
+          role="listbox"
+          style={{
+            position: 'absolute',
+            zIndex: 20,
+            left: 0,
+            right: 0,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 0,
+            boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+            maxHeight: 220,
+            overflowY: 'auto',
+            margin: 0,
+            paddingLeft: 0,
+            listStyle: 'none',
+          }}
+        >
+          {options.filter(o => o.value !== '').map(opt => (
+            <li
+              className='mv_category_modal_select_option'
+              key={opt.value}
+              role="option"
+              aria-selected={opt.value === value}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onChange(opt.value);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '3px 12px',
+                borderRadius: 0,
+                background: opt.value === value ? '#1E2131' : 'transparent',
+                color: opt.value === value ? '#fff' : '',
+                cursor: 'pointer',
+              }}
+            >
+              {opt.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const orderStatusOptions = [
+  { value: '', label: 'Select' },
+  { value: 'Pending', label: 'Pending' },
+  { value: 'Delivered', label: 'Delivered' },
+  { value: 'Cancelled', label: 'Cancelled' }
+];
+
 const MIN = 100;
 const MAX = 5000;
 const STEP = 5;
@@ -314,17 +404,14 @@ const STEP = 5;
            <div className='d-flex flex-column h-100'>
               <div className="form-group mt-2">
                     <label className='ds_login_label' style={{fontSize:"15px"}}>Order Status</label>
-                    <select
-                        className='ds_user_select w-100 mt-2'
-                        style={{ fontSize: "15px" }}
+                    <div className='mt-2'>
+                      <CustomSelect
+                        options={orderStatusOptions}
                         value={tempFilterOrderStatus}
-                        onChange={(e) => setTempFilterOrderStatus(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Delivered">Delivered</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
+                        onChange={(val) => setTempFilterOrderStatus(val)}
+                        placeholder="Select"
+                      />
+                    </div>
                </div>
                <div className="form-group mt-4">
                   <label className="ds_login_label mb-3" style={{ fontSize: '15px' }}>

@@ -5,24 +5,33 @@ const mongoose = require('mongoose');
 exports.createReview = async (req, res) => {
     try {
         const { userId, productId, rate, description } = req.body;
-
+ 
         let Data = await reviewModal.findOne({ userId, productId });
-
+ 
         if (Data) {
             return res.status(400).json({ status: false, message: 'Review Already Exist....' })
         }
-
+       
+        // Handle uploaded images
+        const images = [];
+        if (req.files && req.files.length > 0) {
+            req.files.forEach(file => {
+                images.push(file.path.replace(/\\/g, '/'));
+            });
+        }
+ 
         reviewData = await reviewModal.create({
             userId,
             productId,
             rate,
-            description
+            description,
+            images
         });
-
+ 
         const allReviews = await reviewModal.find({ productId });
         const totalRating = allReviews.reduce((sum, review) => sum + review.rate, 0);
         const rating = totalRating / allReviews.length;
-
+ 
         // Step 3: Update product rating
         await productModel.findByIdAndUpdate(productId, { rating });
         return res.status(201).json({ status: true, message: 'Review Create successfully....', data: reviewData })
@@ -31,17 +40,26 @@ exports.createReview = async (req, res) => {
         return res.status(500).json({ status: false, message: error.message })
     }
 }
+ 
 
 exports.updateReview = async (req, res) => {
     try {
-
         const id = req.params.id;
         let reviewData = await reviewModal.findById(id);
-
+ 
         if (!reviewData) {
             return res.status(400).json({ status: false, message: 'Review is not Exist....' })
         }
-
+       
+        // Handle uploaded images
+        if (req.files && req.files.length > 0) {
+            const images = [];
+            req.files.forEach(file => {
+                images.push(file.path.replace(/\\/g, '/'));
+            });
+            req.body.images = images;
+        }
+ 
         reviewData = await reviewModal.findByIdAndUpdate(id, { ...req.body }, { new: true });
         console.log(reviewData);
         const productId = reviewData?.productId;
@@ -49,7 +67,7 @@ exports.updateReview = async (req, res) => {
         const totalRating = allReviews.reduce((sum, review) => sum + review.rate, 0);
         const rating = totalRating / allReviews.length;
         await productModel.findByIdAndUpdate(productId, { rating });
-        return res.status(200).json({ status: true, message: 'Address Updated Successfully......', data: reviewData })
+        return res.status(200).json({ status: true, message: 'Review Updated Successfully......', data: reviewData })
     } catch (error) {
         console.log(error);
         return res.status(500).json({ status: false, message: error.message });

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 import {
   AreaChart,
   Area,
@@ -240,12 +240,14 @@ const Dashboard = () => {
         <div className="col-xxl-8 col-12">
           <div className=" metrics-container py-4  ">
             <div className="row gx-1 w-100">
-              {metrics.map((item, idx) => (
+              {dashboardData.map((item, idx) => (
                 <div className="col-xxl-3 col-sm-6 p-2" key={idx}>
                   <div className="metric-card" style={item.bg ? { backgroundColor: item.bg } : {}}>
                     <div className="metric-header">
                       <div className="metric-title">{item.title}</div>
-                      <div className="metric-icon">{item.icon}</div>
+                      <div className="metric-icon">
+                        {parseFloat(item.trend) >= 0 ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
+                      </div>
                     </div>
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="metric-value">{item.value}</div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GetProductById } from '../Redux-Toolkit/ToolkitSlice/User/DetailPageSlice';
@@ -51,6 +51,8 @@ const Detailpage = () => {
   });
 
   const [reviewdata, SetReviewData] = useState();
+  const [selectedImages, setSelectedImages] = useState([]);
+  const addFileInputRef = useRef(null);
   
   useEffect(() => {
     const data = ReviewtData.filter(item => item.productId === id)
@@ -93,6 +95,23 @@ const Detailpage = () => {
     });
   };
 
+  const handleImageSelect = (e, isEdit) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setSelectedImages(prev => [...prev, ...files]);
+    }
+  };
+
+  const handleBrowseClick = (isEdit) => {
+    if (addFileInputRef.current) {
+      addFileInputRef.current.click();
+    }
+  };
+
+  const removeImage = (index, isEdit) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     // Here you can add the logic to submit the review
@@ -104,12 +123,13 @@ const Detailpage = () => {
       setTimeout(() => setShowReviewError(false), 1800);
       return;
     }
-    dispatch(CreateReview({ ...review, id, userId })).then((response) => {
+    dispatch(CreateReview({ ...review, id, userId, images: selectedImages })).then((response) => {
       if (response?.meta?.requestStatus === 'fulfilled') {
         dispatch(GetAllReview());
         dispatch(GetProductById(id)); // Refresh product data to get updated rating
         setShowReviewModal(false);
         setReview({ rating: 0, title: '', comment: '' });
+        setSelectedImages([]);
         setShowReviewSuccess(true);
         setTimeout(() => setShowReviewSuccess(false), 1800);
       } else {
@@ -287,6 +307,15 @@ const Detailpage = () => {
     </div>
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  // Pincode validation states
+  const [pincode, setPincode] = useState('');
+  const [pincodeValidation, setPincodeValidation] = useState({
+    isValid: false,
+    isLoading: false,
+    data: null,
+    error: null
+  });
 
   // Toggle dropdown visibility
   const toggleDropdown = (e) => {
@@ -332,6 +361,57 @@ const Detailpage = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Function to validate pincode
+  const validatePincode = async (pincodeValue) => {
+    if (!pincodeValue || pincodeValue.length !== 6) {
+      setPincodeValidation({
+        isValid: false,
+        isLoading: false,
+        data: null,
+        error: 'Please enter a valid 6-digit pincode'
+      });
+      return;
+    }
+
+    setPincodeValidation(prev => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      const response = await fetch(`${Back_URL}api/validatePincode/${pincodeValue}`);
+      const result = await response.json();
+      console.log("pincode validation result..........", result);
+
+      if (result.success && result.data) {
+        setPincodeValidation({
+          isValid: true,
+          isLoading: false,
+          data: result.data,
+          error: null
+        });
+      } else {
+        setPincodeValidation({
+          isValid: false,
+          isLoading: false,
+          data: null,
+          error: result.message || 'Invalid pincode. Please check and try again.'
+        });
+      }
+    } catch (error) {
+      console.error('Pincode validation error:', error);
+      setPincodeValidation({
+        isValid: false,
+        isLoading: false,
+        data: null,
+        error: 'Failed to validate pincode. Please try again.'
+      });
+    }
+  };
+
+  // Handle pincode check button click
+  const handlePincodeCheck = (e) => {
+    e.preventDefault();
+    validatePincode(pincode);
+  };
 
   return (
     <div className="">
@@ -406,13 +486,45 @@ const Detailpage = () => {
 
                   <div className='mv_main_pincode'>
                     <div className='mv_main_pin_input'>
-                      <input className='mv_pin_input' type="text" placeholder='Enter delivery Pincode' />
-                      <div><a className='mv_check' href="">Check</a></div>
+                      <input 
+                        className='mv_pin_input' 
+                        type="text" 
+                        placeholder='Enter delivery Pincode' 
+                        value={pincode}
+                        onChange={(e) => setPincode(e.target.value)}
+                        maxLength={6}
+                      />
+                      <div>
+                        <button 
+                          className='mv_check' 
+                          onClick={handlePincodeCheck}
+                          disabled={pincodeValidation.isLoading}
+                          style={{ 
+                            background: 'none', 
+                            border: 'none', 
+                            cursor: pincodeValidation.isLoading ? 'not-allowed' : 'pointer',
+                            opacity: pincodeValidation.isLoading ? 0.6 : 1
+                          }}
+                        >
+                          {pincodeValidation.isLoading ? 'Checking...' : 'Check'}
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <p className='mv_deli_date'>Delivery by 7 Oct, Monday</p>
-                      <p className='mv_deli_time'>if ordered before 5:11PM</p>
-                    </div>
+                    
+                    {/* Pincode validation results */}
+                    {pincodeValidation.error && (
+                      <div style={{ color: '#f44336', fontSize: '14px', marginTop: '8px' }}>
+                        {pincodeValidation.error}
+                      </div>
+                    )}
+                    
+                    {pincodeValidation.isValid && pincodeValidation.data && (
+                      <div style={{ marginTop: '8px' }}>
+                        <div style={{ color: '#4CAF50', fontSize: '14px', marginBottom: '4px' }}>
+                          ✓ Delivery available to {pincodeValidation.data.PostOffice[0].District}, {pincodeValidation.data.PostOffice[0].State}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mv_action_buttons">
@@ -808,6 +920,37 @@ const Detailpage = () => {
                     placeholder="Write your review"
                     required
                   />
+                </div>
+                <div className="form-group position-relative">
+                  <label className='ds_login_label' >Image</label>
+                  <div style={{ background: '#1414140F', borderRadius: '4px', display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: "4px", padding: "8px 12px", minHeight: "40px" }}>
+                    {selectedImages.map((image, index) => (
+                      <div key={index} 
+                        style={{ 
+                          background: '#14141426', 
+                          borderRadius: '2px',
+                          padding: '0px 10px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          fontSize: '14px',
+                        }}>
+                        <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+                            {image.name}
+                        </span>
+                        <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index, false)}>✕</span>
+                      </div>
+                    ))}
+                  </div>
+                  <input
+                    type="file"
+                    ref={addFileInputRef}
+                    name="img"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => handleImageSelect(e, false)}
+                    className='d-none'
+                  />
+                  <div className='ds_user_browse ds_cursor' onClick={() => handleBrowseClick(false)}>Browse</div>
                 </div>
               </div>
               <div className="mv_modal_footer">

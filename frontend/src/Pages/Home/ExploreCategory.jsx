@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // Import images statically
 import cat1 from '../../assets/cat1.png';
@@ -11,6 +12,7 @@ import cat3 from '../../assets/cat3.png';
 import cat4 from '../../assets/cat4.png';
 import cat5 from '../../assets/cat5.png';
 import { GetActiveCateData } from '../../Redux-Toolkit/ToolkitSlice/Admin/CategorySlice';
+import { GetSubCateDataByCategoryId } from '../../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice';
 
 const ExploreCategory = () => {
     const CustomPrevArrow = (props) => {
@@ -101,7 +103,11 @@ const ExploreCategory = () => {
         ]
     };
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const categoryData = useSelector((state) => state.category.getCategoryData)
+    const subCategoryData = useSelector((state) => state.subcategory.getSubCategoryDataByCategoryId)
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [showSubcategories, setShowSubcategories] = useState(false);
     // console.log(categoryData);
 
     useEffect(() => {
@@ -109,6 +115,25 @@ const ExploreCategory = () => {
   }, [])
 
   const Back_URL = 'http://localhost:5000/'
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    dispatch(GetSubCateDataByCategoryId(category._id));
+    setShowSubcategories(true);
+  };
+
+  const handleCategoryDirectClick = (category) => {
+    navigate(`/layout/Productlist?categoryId=${category._id}&categoryName=${encodeURIComponent(category.categoryName)}`);
+  };
+
+  const handleSubcategoryClick = (subcategory) => {
+    navigate(`/layout/Productlist?subcategory=${subcategory._id}&subcategoryName=${encodeURIComponent(subcategory.subCategoryName)}`);
+  };
+
+  const handleBackToCategories = () => {
+    setShowSubcategories(false);
+    setSelectedCategory(null);
+  };
 
     // Category data with imported images
     const categories = [
@@ -124,28 +149,67 @@ const ExploreCategory = () => {
         <div className="s_category-section">
             <div className='container-fluid'>
                 <div className="text-center">
-                    <p className="mv_section_subtitle">Category</p>
-                    <h2 className="mv_relay_text">Explore categories</h2>
+                    <p className="mv_section_subtitle">
+                        {showSubcategories ? 'Subcategory' : 'Category'}
+                    </p>
+                    <h2 className="mv_relay_text">
+                        {showSubcategories ? `Subcategories in ${selectedCategory?.categoryName}` : 'Explore categories'}
+                    </h2>
+                    {showSubcategories && (
+                        <button 
+                            className="btn btn-outline-secondary btn-sm mt-2"
+                            onClick={handleBackToCategories}
+                        >
+                            ← Back to Categories
+                        </button>
+                    )}
                 </div>
                 
                 <div className="s_category-slider">
                     <Slider className='mv_slider_arrow' {...settings}>
-                        {categoryData.map(category => (
-                            <div key={category.id} className="s_category-item">
-                                <div className="s_category-card bg-white rounded shadow-sm p-4 m-2">
-                                    <div className="text-center">
-                                        <div className='d-flex justify-content-center'>
-                                          <img 
-                                              src={Back_URL + category.image} 
-                                              className="img-fluid mb-3 text-center" 
-                                              style={{ maxHeight: "100px", objectFit: "contain" }}
-                                          />
+                        {showSubcategories ? (
+                            subCategoryData.map(subcategory => (
+                                <div key={subcategory._id} className="s_category-item">
+                                    <div 
+                                        className="s_category-card bg-white rounded shadow-sm p-4 m-2"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => handleSubcategoryClick(subcategory)}
+                                    >
+                                        <div className="text-center">
+                                            <div className='d-flex justify-content-center'>
+                                              <img 
+                                                  src={Back_URL + subcategory.image} 
+                                                  className="img-fluid mb-3 text-center" 
+                                                  style={{ maxHeight: "100px", objectFit: "contain" }}
+                                              />
+                                            </div>
+                                            <h6 className="fw-medium">{subcategory.subCategoryName}</h6>
                                         </div>
-                                        <h6 className="fw-medium">{category.categoryName}</h6>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            categoryData.map(category => (
+                                <div key={category._id} className="s_category-item">
+                                    <div 
+                                        className="s_category-card bg-white rounded shadow-sm p-4 m-2"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => handleCategoryDirectClick(category)}
+                                    >
+                                        <div className="text-center">
+                                            <div className='d-flex justify-content-center'>
+                                              <img 
+                                                  src={Back_URL + category.image} 
+                                                  className="img-fluid mb-3 text-center" 
+                                                  style={{ maxHeight: "100px", objectFit: "contain" }}
+                                              />
+                                            </div>
+                                            <h6 className="fw-medium">{category.categoryName}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </Slider>
                 </div>
             </div>

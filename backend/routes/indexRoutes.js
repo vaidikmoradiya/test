@@ -6,7 +6,7 @@ const upload = require('../helper/imageUplode');
 const { createMainCategory, upadteMainCategoryById, getAllMainCategory, getMainCategoryById, deleteMainCategoryById } = require('../Controller/mainCategoryController');
 const { createCategory, updateCategory, getCategoryById, getAllCategory, deleteCategoryById } = require('../Controller/categoryController');
 const { createRole, updateRole, getAllRole, getRoleById, deleteRoleById } = require('../Controller/roleController');
-const { createSubCategory, updateSubCategory, getSubCategoryById, getAllSubCategory, deleteSubCategoryById } = require('../Controller/subCategoryController');
+const { createSubCategory, updateSubCategory, getSubCategoryById, getAllSubCategory, deleteSubCategoryById, getSubCategoryByCategoryId } = require('../Controller/subCategoryController');
 const { createUnit, updateUnit, deleteUnitById, getUnitById, getAllUnit } = require('../Controller/unitCotroller');
 const { createSize, updateSizeById, deleteSizeById, getSizeById, getAllSize } = require('../Controller/sizeController');
 const { createProduct, getAllProduct, getProductById, updateProduct, deleteProduct, updateProductStatus } = require('../Controller/productController');
@@ -27,6 +27,7 @@ const { createRetrunOrder, updateRetrunOrder, getAllReturnOrder, getReturnOrderB
 const { createCancleOrder, updateCancleOrder, getAllCancleOrder, getCancleOrderById, deleteCancleOrder } = require('../Controller/cancleOrderController');
 const { getAllServices, getServiceById, createService, updateService, deleteService } = require('../Controller/serviceController');
 const { createExpence,getAllExpences,getExpenceById,updateExpence,deleteExpence } = require('../Controller/expenceController');
+const { validatePincode } = require('../Controller/pincodeController');
  
 const indexRoute = express.Router();
 
@@ -75,6 +76,7 @@ indexRoute.post('/createSubCategory', auth(['Admin', 'User']), upload.single('im
 indexRoute.put('/updateSubCategory/:id', auth(['Admin', 'User']), upload.single('image'), updateSubCategory);
 indexRoute.get('/getSubCategoryById/:id', getSubCategoryById);
 indexRoute.get('/getAllSubCategory', getAllSubCategory);
+indexRoute.get('/getSubCategoryByCategoryId/:categoryId', getSubCategoryByCategoryId);
 indexRoute.delete('/deleteSubCategoryById/:id', auth(['Admin', 'User']), deleteSubCategoryById);
 
 // Unit Route
@@ -171,10 +173,10 @@ indexRoute.delete('/deletecart/:id', deleteCart)
 indexRoute.delete('/clearAllCart/:userId', clearAllCart)
 
 // review Route 
-indexRoute.post('/createReview', auth(['Admin', 'User']), createReview);
+indexRoute.post('/createReview', auth(['Admin', 'User']), upload.array('reviewImage', 5), createReview);
 indexRoute.get('/getAllReview', getAllReview);
 indexRoute.get('/getReviewById/:id', getReviewById)
-indexRoute.put('/updateReview/:id', auth(['Admin', 'User']), updateReview)
+indexRoute.put('/updateReview/:id', auth(['Admin', 'User']), upload.array('reviewImage', 5), updateReview)
 indexRoute.delete('/deleteReview/:id', auth(['Admin', 'User']), deleteReview)
 indexRoute.get('/getCompanyProfile', getCompnayProfile)
 
@@ -230,5 +232,8 @@ indexRoute.get('/expence', auth(['Admin']), getAllExpences);
 indexRoute.get('/expence/:id', auth(['Admin']), getExpenceById);
 indexRoute.put('/expence/:id', auth(['Admin']), updateExpence);
 indexRoute.delete('/expence/:id', auth(['Admin']), deleteExpence);
+
+// pincode validation route
+indexRoute.get('/validatePincode/:pincode', validatePincode);
 
 module.exports = indexRoute;

@@ -377,7 +377,7 @@ const STEP = 5;
                                 <td>
                                     <div className='sp_table_action d-flex'>
                                         <div onClick={() => {localStorage.setItem("Getid" , order._id); navigate("/admin/vieworder");}}><img src={eye} alt='view' ></img></div>
-                                        <div onClick={() => { setDeletePopup(true); setSelectedOrder(order); setDeleteId(order?._id) }}><img src={deleteImg} alt='delete'></img></div>
+                                        {/* <div onClick={() => { setDeletePopup(true); setSelectedOrder(order); setDeleteId(order?._id) }}><img src={deleteImg} alt='delete'></img></div> */}
                                     </div>
                                 </td>
                             </tr>

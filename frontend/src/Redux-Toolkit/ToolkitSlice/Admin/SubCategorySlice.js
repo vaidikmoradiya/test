@@ -30,6 +30,29 @@ export const GetSubCateData = createAsyncThunk(
   }
 );
 
+export const GetSubCateDataByCategoryId = createAsyncThunk(
+  'getsubcatedatabycategoryid',
+  async (categoryId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${url}/getSubCategoryByCategoryId/${categoryId}`);
+      return response?.data?.data;
+    } catch (error) {
+      console.error("Get SubCateData By CategoryId Error:", error.message);
+      if(error.status === 404){
+        console.error("Get SubCateData By CategoryId Error:", error?.message);
+        let data = [];
+         return data;
+      }
+      else{
+        alert("Get SubCateData By CategoryId " , error.message)
+      }
+      return rejectWithValue(
+        error.response?.data || { message: "Unexpected error occurred" }
+      );
+    }
+  }
+);
+
 export const CreateSubCateData = createAsyncThunk(
   'createsubcatedata',
   async (values, { rejectWithValue }) => {
@@ -155,6 +178,7 @@ const SubCategorySlice = createSlice({
     name: "subcategory",
     initialState: {
       getSubCategoryData:[],
+      getSubCategoryDataByCategoryId:[],
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -173,6 +197,22 @@ const SubCategorySlice = createSlice({
           state.loading = false;
           state.success = false;
           state.message = action.payload?.message || "Failed To Get MainCateData";
+        })
+
+        .addCase(GetSubCateDataByCategoryId.pending, (state) => {
+          state.loading = true;
+          state.message = "Accepting Get SubCateData By CategoryId...";
+        })
+        .addCase(GetSubCateDataByCategoryId.fulfilled, (state, action) => {
+          state.loading = false;
+          state.success = true;
+          state.getSubCategoryDataByCategoryId = action.payload;
+          state.message = "Get SubCateData By CategoryId SuccessFully";
+        })
+        .addCase(GetSubCateDataByCategoryId.rejected, (state, action) => {
+          state.loading = false;
+          state.success = false;
+          state.message = action.payload?.message || "Failed To Get SubCateData By CategoryId";
         })
 
         .addCase(CreateSubCateData.pending, (state) => {

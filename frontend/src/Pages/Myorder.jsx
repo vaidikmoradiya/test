@@ -193,13 +193,32 @@ const Myorder = () => {
     title: '',
     comment: ''
   });
+  const [selectedImages, setSelectedImages] = useState([]);
+  const addFileInputRef = useRef(null);
+
+  const handleImageSelect = (e, isEdit) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setSelectedImages(prev => [...prev, ...files]);
+    }
+  };
+
+  const handleBrowseClick = (isEdit) => {
+    if (addFileInputRef.current) {
+      addFileInputRef.current.click();
+    }
+  };
+
+  const removeImage = (index, isEdit) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     // You can handle review submission here
     console.log('Review submitted:', review);
     var userId = localStorage.getItem('UserId')
-    dispatch(CreateReview({...review,id: productid,userId})).then((response)=>{
+    dispatch(CreateReview({...review,id: productid,userId, images: selectedImages})).then((response)=>{
       if(response){
         console.log("payload",response);
         dispatch(GetAllReview())
@@ -207,6 +226,7 @@ const Myorder = () => {
     })
     setShowReviewModal(false);
     setReview({ rating: 0, title: '', comment: '' });
+    setSelectedImages([]);
   };
 
   const handleAddressInputChange = (e) => {
@@ -474,7 +494,17 @@ const Myorder = () => {
   useEffect(() => {
     dispatch(GetUserData())
     dispatch(GetAllOrderData())
+    dispatch(GetAllReview())
   },[])
+
+  // All reviews
+  const allReviews = useSelector(state => state.review.allReviewData)
+
+  // Check if current user already reviewed a given product
+  const hasUserReviewed = (productId) => {
+    if (!Array.isArray(allReviews)) return false;
+    return allReviews.some(r => String(r?.productId) === String(productId) && String(r?.userId) === String(userid));
+  };
 
   // Scroll lock when any modal is open
   useEffect(() => {
@@ -593,6 +623,37 @@ const Myorder = () => {
                       required
                       style={{width: '100%', minHeight: 100, marginTop: 8}}
                     />
+                  </div>
+                  <div className="form-group position-relative">
+                    <label className='ds_login_label' >Image</label>
+                    <div style={{ background: '#1414140F', borderRadius: '4px', display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: "4px", padding: "8px 12px", minHeight: "40px" }}>
+                      {selectedImages.map((image, index) => (
+                        <div key={index} 
+                          style={{ 
+                            background: '#14141426', 
+                            borderRadius: '2px',
+                            padding: '0px 10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontSize: '14px',
+                            }}>
+                          <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+                              {image.name}
+                          </span>
+                          <span style={{ color: 'red', marginLeft: 8, fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }} onClick={() => removeImage(index, false)}>✕</span>
+                        </div>
+                      ))}
+                    </div>
+                    <input
+                      type="file"
+                      ref={addFileInputRef}
+                      name="img"
+                      multiple
+                      accept="image/*"
+                      onChange={(e) => handleImageSelect(e, false)}
+                      className='d-none'
+                    />
+                    <div className='ds_user_browse ds_cursor' onClick={() => handleBrowseClick(false)}>Browse</div>
                   </div>
                 </div>
                 <div className="mv_review_modal_footer">
@@ -884,7 +945,9 @@ const Myorder = () => {
                                         <div className="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3 d-flex flex-column justify-content-between align-items-end" style={{ minHeight: '100px' }}>
                                           <div className="mv_order_action mt-auto">
                                             {item.orderStatus === 'Pending' && <Link  to={`/layout/Trackorder/${item._id}`} className="mv_order_action_link" >Track Order</Link>}
-                                            {item.orderStatus === 'Delivered' && <Link  to={``} className="mv_order_action_link" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowReviewModal(true); setProductid(it?.details._id) }}>Submit Review</Link>}
+                                            {item.orderStatus === 'Delivered' && !hasUserReviewed(it?.details._id) && (
+                                              <Link to={``} className="mv_order_action_link" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowReviewModal(true); setProductid(it?.details._id) }}>Submit Review</Link>
+                                            )}
                                             {item.orderStatus === 'Cancelled' && <Link  to={`/layout/Trackrefund/${item._id}`} className="mv_order_action_link" >Track Refund</Link>}
                                           </div>
                                         </div>

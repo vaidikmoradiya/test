@@ -5,13 +5,17 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { GetAllProduct } from '../Redux-Toolkit/ToolkitSlice/User/ProductSlice';
 import { Link } from 'react-router-dom';
 import { Createcart, GetCartByuser } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
+import { GetSubCateDataByCategoryId } from '../Redux-Toolkit/ToolkitSlice/Admin/SubCategorySlice';
 
 function Productlist() {
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const subcategoryId = searchParams.get('subcategory');
     const subcategoryName = searchParams.get('subcategoryName');
+    const categoryId = searchParams.get('categoryId');
+    const categoryName = searchParams.get('categoryName');
     console.log('Subcategory ID:', subcategoryId, 'Subcategory Name:', subcategoryName);
+    console.log('Category ID:', categoryId, 'Category Name:', categoryName);
 
     const navigate = useNavigate();
     
@@ -23,7 +27,9 @@ function Productlist() {
     const [showAll, setShowAll] = useState(false);
 
     const ProductData = useSelector((state) => state.product.allProductData)
+    const subCategoryData = useSelector((state) => state.subcategory.getSubCategoryDataByCategoryId)
     console.log("ProductData",ProductData);
+    console.log("SubCategoryData",subCategoryData);
     
     const dispatch = useDispatch()
     const Back_URL = 'http://localhost:5000/'
@@ -32,19 +38,38 @@ function Productlist() {
         dispatch(GetAllProduct(true))
     }, [])
 
-    // Filter products by subcategory when subcategoryId is present
+    // Fetch subcategories when categoryId is present
     useEffect(() => {
-        if (ProductData && subcategoryId) {
-            const filtered = ProductData.filter(product => 
-                product.subCategoryId === subcategoryId
-            );
+        if (categoryId) {
+            dispatch(GetSubCateDataByCategoryId(categoryId));
+        }
+    }, [categoryId, dispatch]);
+
+    // Filter products by subcategory or category
+    useEffect(() => {
+        if (ProductData) {
+            let filtered = [];
+            
+            if (subcategoryId) {
+                // Filter by specific subcategory
+                filtered = ProductData.filter(product => 
+                    product.subCategoryId === subcategoryId
+                );
+            } else if (categoryId && subCategoryData.length > 0) {
+                // Filter by all subcategories of the selected category
+                const subcategoryIds = subCategoryData.map(sub => sub._id);
+                filtered = ProductData.filter(product => 
+                    subcategoryIds.includes(product.subCategoryId)
+                );
+            } else {
+                // Show all products
+                filtered = ProductData;
+            }
+            
             setFilteredProducts(filtered);
             setSortedProducts(filtered);
-        } else {
-            setFilteredProducts(ProductData);
-            setSortedProducts(ProductData);
         }
-    }, [ProductData, subcategoryId]);
+    }, [ProductData, subcategoryId, categoryId, subCategoryData]);
 
     // Toggle dropdown visibility
     const toggleDropdown = (e) => {
@@ -58,7 +83,7 @@ function Productlist() {
         setActiveSortOption(displayText);
         setIsDropdownOpen(false);
         
-        const baseList = subcategoryId ? filteredProducts : ProductData;
+        const baseList = (subcategoryId || categoryId) ? filteredProducts : ProductData;
         let sortedItems = [...baseList];
         
         switch (method) {
@@ -93,8 +118,8 @@ function Productlist() {
 
     // Update sortedProducts when filteredProducts changes
     useEffect(() => {
-        setSortedProducts(subcategoryId ? filteredProducts : ProductData);
-    }, [filteredProducts, ProductData, subcategoryId]);
+        setSortedProducts((subcategoryId || categoryId) ? filteredProducts : ProductData);
+    }, [filteredProducts, ProductData, subcategoryId, categoryId]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -139,7 +164,9 @@ function Productlist() {
                             <div className='row mv_relay_main'>
                                 <div className='col-8'>
                                     <h2 className='mv_relay_text'>
-                                        {subcategoryName ? subcategoryName : 'All Products'}
+                                        {subcategoryName ? subcategoryName : 
+                                         categoryName ? `${categoryName} Products` : 
+                                         'All Products'}
                                     </h2>
                                 </div>
                                 <div className="mv_dropdown col-4">
@@ -161,24 +188,21 @@ function Productlist() {
                                     )}
                                 </div>
                             </div>
-                            {subcategoryName && (
+                            {(subcategoryName || categoryName) && (
                                 <div className='d-flex align-items-center gap-3 mb-3'>
                                     <p className='text-muted mb-0'>
-                                        Showing products in {subcategoryName} category
+                                        {subcategoryName ? 
+                                            `Showing products in ${subcategoryName} subcategory` :
+                                            `Showing products in ${categoryName} category`
+                                        }
                                     </p>
-                                    <Link 
-                                        to="/layout/Productlist" 
-                                        className='mv_clear_filter_btn btn'
-                                    >
-                                        Clear Filter
-                                    </Link>
                                 </div>
                             )}
                         </div>
                     </div>
                     <div className="row mv_product_main_mar">
                         {(() => {
-                            const baseList = subcategoryId ? filteredProducts : ProductData;
+                            const baseList = (subcategoryId || categoryId) ? filteredProducts : ProductData;
                             const productsToShow = showAll ? baseList : baseList?.slice(0, 8);
 
                             if (!baseList || baseList.length === 0) {
@@ -227,7 +251,7 @@ function Productlist() {
                             ));
                         })()}
                         {(() => {
-                            const baseList = subcategoryId ? filteredProducts : ProductData;
+                            const baseList = (subcategoryId || categoryId) ? filteredProducts : ProductData;
                             return (baseList?.length || 0) > 8 && (
                                 <div className='col-12 d-flex justify-content-center mt-3'>
                                     {!showAll ? (

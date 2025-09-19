@@ -8,7 +8,7 @@ export const GetAllReview = createAsyncThunk(
   'getallreview',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getAllreview`, {
+      const response = await axios.get(`${url}/getAllReview`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -63,17 +63,27 @@ export const CreateReview = createAsyncThunk(
   async (value, { rejectWithValue }) => {
     try {
       console.log('reviewvalue',value);
-      const response = await axios.post(`${url}/createReview`,{
-        userId: value.userId,
-        productId : value.id,
-        rate: value.rating,
-        description:value.comment
-      } ,{
+      
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('userId', value.userId);
+      formData.append('productId', value.id);
+      formData.append('rate', value.rating);
+      formData.append('description', value.comment);
+      
+      // Append images if they exist
+      if (value.images && value.images.length > 0) {
+        value.images.forEach((image, index) => {
+          formData.append('reviewImage', image);
+        });
+      }
+      
+      const response = await axios.post(`${url}/createReview`, formData, {
         headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
         }
       });
-      // console.log("nlololoojlolj",response.data.data);
       return response?.data?.data;
     } catch (error) {
       console.error("CreateReview Error:", error.message);

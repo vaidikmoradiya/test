@@ -114,24 +114,89 @@ exports.getBestSellerProducts = async (req, res) => {
  
 exports.getDashboard = async (req, res) => {
   try {
-    const totalSales = await orderModal.countDocuments();
-    const totalOrder = await productModal.countDocuments();
-    const totalReturn = await returnModal.countDocuments();
-    const activeUser = await userModal.find({ role: 'User' }).countDocuments();
+    const now = new Date();
+    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+ 
+    // ===== Lifetime totals =====
+    const totalOrders = await orderModal.countDocuments();
+    const totalProducts = await productModal.countDocuments();
+    const totalUsers = await userModal.countDocuments({ role: "User" });
+ 
+    // Count lifetime return orders
+    const totalReturns = await orderModal.countDocuments({
+      orderStatus: { $in: ["Return Pending", "Return Accepted", "Return Rejected"] }
+    });
+ 
+    // ===== Current month data =====
+    const currentOrders = await orderModal.countDocuments({ createdAt: { $gte: firstDayCurrentMonth, $lte: now } });
+    const currentReturns = await orderModal.countDocuments({
+      createdAt: { $gte: firstDayCurrentMonth, $lte: now },
+      orderStatus: { $in: ["Return Pending", "Return Accepted", "Return Rejected"] }
+    });
+    const currentProducts = await productModal.countDocuments({ createdAt: { $gte: firstDayCurrentMonth, $lte: now } });
+    const currentUsers = await userModal.countDocuments({ role: "User", createdAt: { $gte: firstDayCurrentMonth, $lte: now } });
+ 
+    // ===== Previous data (before this month) =====
+    const prevOrders = await orderModal.countDocuments({ createdAt: { $lt: firstDayCurrentMonth } });
+    const prevReturns = await orderModal.countDocuments({
+      createdAt: { $lt: firstDayCurrentMonth },
+      orderStatus: { $in: ["Return Pending", "Return Accepted", "Return Rejected"] }
+    });
+    const prevProducts = await productModal.countDocuments({ createdAt: { $lt: firstDayCurrentMonth } });
+    const prevUsers = await userModal.countDocuments({ role: "User", createdAt: { $lt: firstDayCurrentMonth } });
+ 
+    // ===== Growth calculation =====
+    const calcGrowth = (current, prev) => {
+      if (prev === 0) {
+        if (current === 0) return "0%";
+        return `${(current * 100).toFixed(2)}%`;
+      }
+      const growth = ((current - prev) / prev) * 100;
+      return `${growth >= 0 ? "+" : ""}${growth.toFixed(2)}%`;
+    };
+ 
+    // ===== Return trend (how many returns out of total orders) =====
+    const returnRate = totalOrders > 0 ? ((totalReturns / totalOrders) * 100).toFixed(2) : "0.00";
+ 
+    // ===== Reshape into metrics format =====
+    const metrics = [
+      {
+        title: "Total Orders",
+        value: totalOrders,
+        trend: calcGrowth(currentOrders, prevOrders),
+      },
+      {
+        title: "Total Products",
+        value: totalProducts,
+        trend: calcGrowth(currentProducts, prevProducts),
+      },
+      {
+        title: "Return Orders",
+        value: totalReturns,
+        trend: `${returnRate}%`, // returns as percentage of total orders
+      },
+      {
+        title: "Active Users",
+        value: totalUsers,
+        trend: calcGrowth(currentUsers, prevUsers),
+      }
+    ];
+ 
     return res.status(200).json({
       success: true,
-      message: "Best seller products retrieved successfully",
-      data: { totalSales, totalOrder, totalReturn, activeUser }
+      message: "Dashboard data retrieved successfully",
+      data: metrics
     });
+ 
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Error retrieving dashboard Data products",
+      message: "Error retrieving dashboard data",
       error: error.message
     });
   }
-}
+};
  
 exports.getOrderSummary = async (req, res) => {
   try {

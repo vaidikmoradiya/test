@@ -447,8 +447,9 @@ const Cart = () => {
             },
             items: CartbyuserData,
             totalPrice: parseInt(totalAmount * 100),
+            addressId: selectedAddress._id,
           };
-        console.log('sdasd',orderData)
+        console.log('sdasd........',orderData)
         dispatch(CreateOrderData(orderData));
         
         // Clear cart from backend and localStorage

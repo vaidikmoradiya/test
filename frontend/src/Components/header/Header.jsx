@@ -626,7 +626,7 @@ const Header = () => {
                     <div className="m_container">
                         <Row className='m-0'>
                             <Col className='p-0'>
-                                <div className='VK_header_nav d-flex overflow-hidden'>
+                                <div className='VK_header_nav d-flex overflow-hidden' ref={navMenuRef}>
                                     {IsScroll && (
                                         <button className='border-0' onClick={() => handleNavScroll('left')}>
                                             <FaAngleLeft />
@@ -637,8 +637,20 @@ const Header = () => {
                                         onScroll={checkScroll}>
                                         {maincategoryData && maincategoryData.filter((mc) => mc?.status).map((mainCat, index) => (
                                             <li key={mainCat._id} className='VK_sub_menu'>
-                                                {mainCat.mainCategoryName}
-                                                <div className={'VK_mega_menu'}>
+                                                <span
+                                                    onClick={() => {
+                                                        if (isMobile) {
+                                                            setActiveMainCatId(prev => prev === mainCat._id ? null : mainCat._id);
+                                                        }
+                                                    }}
+                                                    style={{ cursor: isMobile ? 'pointer' : 'default' }}
+                                                >
+                                                    {mainCat.mainCategoryName}
+                                                </span>
+                                                <div
+                                                    className={'VK_mega_menu'}
+                                                    style={isMobile ? { display: activeMainCatId === mainCat._id ? 'block' : 'none' } : undefined}
+                                                >
                                                     <div className={ 'VK_mega_menu_div_parent'}>
                                                         {categoryData && categoryData
                                                             .filter(cat => cat.mainCategoryId === mainCat._id)

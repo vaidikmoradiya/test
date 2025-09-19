@@ -24,6 +24,7 @@ const Review = () => {
     const ReviewData = useSelector((state) => state.review.allReviewData)
     console.log("ReviewData", ReviewData);
     const prevTotalCountRef = useRef(0);
+    const Back_URL = 'http://localhost:5000/'
 
     useEffect(() => {
         dispatch(GetAllReview())
@@ -192,6 +193,7 @@ const Review = () => {
                    <thead className=''>
                        <tr className=''>
                            <th>ID</th>
+                           <th>Image</th>
                            <th>Customer Name</th>
                            <th>Product</th>
                            <th>Date</th>
@@ -204,6 +206,9 @@ const Review = () => {
                        {paginatedData?.map((item, index) => (
                            <tr key={item._id || index}>
                                <td>{((currentPage - 1) * itemPerPage) + (index + 1)}</td>
+                               <td className='sp_table_img'>
+                                 <img src={`${Back_URL}${item.images}`} alt={item.firstName} />
+                               </td>
                                <td>{item.userData?.[0]?.firstName} {item.userData?.[0]?.lastName}</td>
                                <td>{item.productData?.[0]?.productName}</td>
                                <td>{new Date(item.createdAt).toLocaleDateString('en-GB').replace(/\//g, '/')}</td>
@@ -214,7 +219,7 @@ const Review = () => {
                                     ))}
                                   </div>
                                </td>
-                               <td>{item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description[0] ?? ''}</td>
+                               <td>{item.description && item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description || ''}</td>
                                <td>
                                    <div className='sp_table_action d-flex'>
                                        <div onClick={()=> {navigate("/admin/viewreview"); localStorage.setItem("Getid" , item._id);}}> <img src={eye} alt="view" /> </div>

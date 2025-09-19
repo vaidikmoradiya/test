@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+ 
 const reviewSchema = mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -14,10 +14,14 @@ const reviewSchema = mongoose.Schema({
     },
     description:{
         type:String
+    },
+    images: {
+        type: [String],
+        default: []
     }
 }, {
     timestamps: true,
     versionKey: false
 });
-
+ 
 module.exports = mongoose.model('review', reviewSchema);

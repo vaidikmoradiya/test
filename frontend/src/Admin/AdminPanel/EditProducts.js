@@ -153,7 +153,7 @@ const editProductVal = {
   cateName:singleProductData[0]?.categoryId,
   SubcateName:singleProductData[0]?.subCategoryId,
   productName:singleProductData[0]?.productName,
-  sizeName:singleProductData[0]?.sizeNameId,
+  sizeName:singleProductData[0]?.sizeNameId || '',
   size:singleProductData[0]?.size,  
   unit: (() => {
     const unitData = singleProductData[0]?.unit;
@@ -166,7 +166,13 @@ const editProductVal = {
       return [];
     }
   })(),
-  stockStatus:singleProductData[0]?.stockStatus,
+  stockStatus: (() => {
+    const s = singleProductData[0]?.stockStatus;
+    if (s === true) return 'true';
+    if (s === false) return 'false';
+    if (s === 'true' || s === 'false') return s;
+    return '';
+  })(),
   price:singleProductData[0]?.price,
   discount:singleProductData[0]?.discount,
   productImage: singleProductData[0]?.productImage || [],

@@ -15,7 +15,9 @@ exports.auth = (roles = []) => {
 
                 let checkToken = jwt.verify(token, process.env.SECRET_KEY)
 
-                let checkUser = await user.findById(checkToken)
+                // tokens are signed with an object payload like { _id: userId }
+                const userIdFromToken = checkToken?._id || checkToken?.id || checkToken;
+                let checkUser = await user.findById(userIdFromToken)
 
                 req.user = checkUser;
 

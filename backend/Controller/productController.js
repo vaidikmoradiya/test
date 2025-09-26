@@ -161,9 +161,42 @@ exports.getAllProduct = async (req, res) => {
                     foreignField: "_id",
                     as: "sizeData"
                 }
+            },
+            // Join stocks and compute availability status based on total quantity
+            {
+                $lookup: {
+                    from: 'stocks',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'stockDocs'
+                }
+            },
+            {
+                $addFields: {
+                    // status true if total qty across stockDocs > 0
+                    stock: {
+                        $gt: [
+                            {
+                                $sum: {
+                                    $map: {
+                                        input: '$stockDocs',
+                                        as: 's',
+                                        in: { $ifNull: ['$$s.qty', 0] }
+                                    }
+                                }
+                            },
+                            0
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    stockDocs: 0
+                }
             }
         );
-
+ 
         const productdata = await product.aggregate(pipeline);
         
         if (!productdata.length > 0) {

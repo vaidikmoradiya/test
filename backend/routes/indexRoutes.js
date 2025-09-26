@@ -181,7 +181,7 @@ indexRoute.delete('/deleteReview/:id', auth(['Admin', 'User']), deleteReview)
 indexRoute.get('/getCompanyProfile', getCompnayProfile)
 
 // return order Route
-indexRoute.post('/returnorderOTP', auth(['Admin', 'User']), returnOrderOTP);
+indexRoute.post('/returnorderOTP', returnOrderOTP);
 indexRoute.post('/createReturnOrder', auth(['Admin', 'User']), createRetrunOrder);
 indexRoute.put('/updateReturnOrder/:id', auth(['Admin', 'User']), updateRetrunOrder);
 indexRoute.get('/getAllReturnOrder', getAllReturnOrder);

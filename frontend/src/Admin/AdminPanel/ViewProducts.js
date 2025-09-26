@@ -84,7 +84,7 @@ useEffect(() => {
                             </tr>
                             <tr>
                                 <td className='ds_first_td' >Size Name</td>
-                                <td className='ds_second_td'>{item.sizeData[0].sizeName}</td>
+                                <td className='ds_second_td'>{item?.sizeData[0]?.sizeName}</td>
                             </tr>
                             <tr>
                                 <td className='ds_first_td' >Size</td>

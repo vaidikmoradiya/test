@@ -53,7 +53,7 @@ const Myorder = () => {
   const Back_URL = 'http://localhost:5000/'
  
   const [activeTab, setActiveTab] = useState('order');
-  const [orderFilter, setOrderFilter] = useState('All Orders');
+  const [orderFilter, setOrderFilter] = useState(() => localStorage.getItem('orderFilter') || 'All Orders');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState({
     firstName: currentUser.firstName || '',
@@ -497,6 +497,11 @@ const Myorder = () => {
     dispatch(GetAllReview())
   },[])
 
+  // Persist order filter selection
+  useEffect(() => {
+    localStorage.setItem('orderFilter', orderFilter);
+  }, [orderFilter]);
+
   // All reviews
   const allReviews = useSelector(state => state.review.allReviewData)
 
@@ -871,22 +876,19 @@ const Myorder = () => {
                                   </div>
                                 </div>
                               </div>
-                              {allorder
-                                .filter(order => {
+                              {(() => {
+                                const sortedOrders = Array.isArray(allorder) ? [...allorder].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
+                                const visibleOrders = sortedOrders.filter(order => {
                                   if (orderFilter === 'All Orders') return true;
                                   return order.orderStatus === orderFilter;
-                                }).length === 0 ? (
+                                });
+                                return visibleOrders.length === 0 ? (
                                 <div style={{ textAlign: 'center', margin: '40px 0' }}>
                                   <img src={require('../assets/no_order.png')} alt="No order found" style={{ width: 150, marginBottom: 16 }} />
                                 </div>
                               ) : (
-                                allorder
-                                  .filter(order => {
-                                    if (orderFilter === 'All Orders') return true;
-                                    return order.orderStatus === orderFilter;
-                                  })
-                                  .map((item, index) => (
-                                  <div key={item.id} className="mv_order_card" onClick={(e) => {
+                                visibleOrders.map((item, index) => (
+                                  <div key={item._id || index} className="mv_order_card" onClick={(e) => {
                                     // Prevent navigation when clicking on action links
                                     if (e.target.closest('.mv_order_action')) {
                                       return;
@@ -955,7 +957,8 @@ const Myorder = () => {
                                     ))}
                                   </div>
                                 ))
-                              )}
+                              )
+                              })()}
                             </>
                             )}
                             {activeTab === 'address' && (

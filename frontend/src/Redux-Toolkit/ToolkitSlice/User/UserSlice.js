@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const url = "http://localhost:5000/api";
-const token = localStorage.getItem("login");
 
 export const GetUserData = createAsyncThunk(
   'getuserdata',
   async (_, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(`${url}/getAllUsers`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -45,6 +45,7 @@ export const updateUserData = createAsyncThunk(
 
     console.log('useruser',value);
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.put(`${url}/updateUserById/`+value.id,formData, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -72,6 +73,7 @@ export const DeleteUserData = createAsyncThunk(
   'deleteuserdata',
   async (deleteId, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.delete(`${url}/deleteUserById/${deleteId}`, {
         headers: {
             Authorization: `Bearer ${token}`,

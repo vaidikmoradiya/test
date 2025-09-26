@@ -237,7 +237,7 @@ function Productlist() {
                                                 <p className='mv_dis_price'><strike>₹{item.price}</strike></p>
                                             </div>
                                         </Link>
-                                        {item.stockStatus ? (
+                                        {item.stock ? (
                                             <div onClick={(e) => handleContinue(e, item._id)} className='mv_main_add_cart_btn mv_add_cart_btn'>
                                                 <a className='' href="#">Add to Cart</a>
                                             </div>

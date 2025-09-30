@@ -9,21 +9,21 @@ import { createaddress, getalladdress, updateAddress } from '../Redux-Toolkit/To
 import { CreateOrderData } from '../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
 
 const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.onload = () => {
-      resolve(true);
-    };
-    script.onerror = () => {
-      resolve(false);
-    };
-    document.body.appendChild(script);
-  });
+    return new Promise((resolve) => {
+        if (window.Razorpay) {
+            resolve(true);
+            return;
+        }
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => {
+            resolve(true);
+        };
+        script.onerror = () => {
+            resolve(false);
+        };
+        document.body.appendChild(script);
+    });
 };
 
 const Cart = () => {
@@ -58,7 +58,7 @@ const Cart = () => {
     useEffect(() => {
         SetAddressData(AlladdressData);
         if (CartbyuserData && CartbyuserData.length > 0) {
-            localStorage.setItem('CartbyuserData',JSON.stringify(CartbyuserData))
+            localStorage.setItem('CartbyuserData', JSON.stringify(CartbyuserData))
         } else if (CartbyuserData && CartbyuserData.length === 0) {
             localStorage.removeItem('CartbyuserData');
             localStorage.removeItem('selectedaddress');
@@ -89,12 +89,12 @@ const Cart = () => {
     const [addresses, setAddresses] = useState();
     const [selectedAddress, setSelectedAddress] = useState("");
 
-    useEffect(()=>{
-        const add =  JSON.parse(localStorage.getItem('selectedaddress')) ;
-        const saved =  add ? add : addressData?.[0];
+    useEffect(() => {
+        const add = JSON.parse(localStorage.getItem('selectedaddress'));
+        const saved = add ? add : addressData?.[0];
         setSelectedAddress(saved)
         setAddresses(addressData);
-    },[addressData])
+    }, [addressData])
     const [addressForm, setAddressForm] = useState({
         fullName: '',
         address: '',
@@ -170,11 +170,11 @@ const Cart = () => {
         try {
             if (isEditing) {
                 // Update existing address
-                const result = await dispatch(updateAddress({ 
-                    id: editId, 
-                    data: addressForm 
+                const result = await dispatch(updateAddress({
+                    id: editId,
+                    data: addressForm
                 })).unwrap();
-                
+
                 dispatch(getalladdress());
                 setShowAddressModal(false);
                 setIsEditing(false);
@@ -191,13 +191,13 @@ const Cart = () => {
                 });
             } else {
                 // Check for duplicate address only for new addresses
-                const isDuplicate = addressData.some(addr => 
-                    addr.address === addressForm.address && 
+                const isDuplicate = addressData.some(addr =>
+                    addr.address === addressForm.address &&
                     addr.pincode === addressForm.pincode &&
                     addr.city === addressForm.city &&
                     addr.state === addressForm.state
                 );
-    
+
                 if (isDuplicate) {
                     // First close the address modal
                     setShowAddressModal(false);
@@ -219,7 +219,7 @@ const Cart = () => {
                     }, 300);
                     return;
                 }
-    
+
                 // Create new address
                 const result = await dispatch(createaddress(addressForm)).unwrap();
                 dispatch(getalladdress());
@@ -247,14 +247,14 @@ const Cart = () => {
     useEffect(() => {
         let timer;
         if (showErrorModal) {
-          timer = setTimeout(() => {
-            setShowErrorModal(false);
-          }, 2000);
+            timer = setTimeout(() => {
+                setShowErrorModal(false);
+            }, 2000);
         }
         return () => {
-          if (timer) {
-            clearTimeout(timer);
-          }
+            if (timer) {
+                clearTimeout(timer);
+            }
         };
     }, [showErrorModal]);
 
@@ -273,8 +273,8 @@ const Cart = () => {
         setIsEditing(true);
         setEditId(address._id);
         setShowAddressModal(true);
-      };
-      const handleAddNewAddress = () => {
+    };
+    const handleAddNewAddress = () => {
         setAddressForm({
             fullName: '',
             address: '',
@@ -289,12 +289,12 @@ const Cart = () => {
         setIsEditing(false);
         setEditId(null);
         setShowAddressModal(true);
-      };
+    };
 
     // Handle address selection
     const handleAddressSelect = (address) => {
         setSelectedAddress(address);
-        localStorage.setItem('selectedaddress',JSON.stringify(address))
+        localStorage.setItem('selectedaddress', JSON.stringify(address))
         setShowAddressSelectionModal(false);
     };
 
@@ -381,135 +381,135 @@ const Cart = () => {
             alert('Failed to add product to cart: ' + error.message);
         });
     };
-        
-   const handleCheckout = async () => {
-    // Check if cart is empty
-    if (!CartbyuserData || CartbyuserData.length === 0) {
-        setErrorMessage('Your cart is empty. Please add items before checkout');
-        setShowErrorModal(true);
-        return;
-    }
 
-    // Check if address is selected
-    if (!selectedAddress) {
-        setErrorMessage('Please select a delivery address before checkout');
-        setShowErrorModal(true);
-        return;
-    }
+    const handleCheckout = async () => {
+        // Check if cart is empty
+        if (!CartbyuserData || CartbyuserData.length === 0) {
+            setErrorMessage('Your cart is empty. Please add items before checkout');
+            setShowErrorModal(true);
+            return;
+        }
 
-    const res = await loadRazorpayScript();
-    if (!res) {
-        alert("Razorpay SDK failed to load. Are you online?");
-        return;
-    }
+        // Check if address is selected
+        if (!selectedAddress) {
+            setErrorMessage('Please select a delivery address before checkout');
+            setShowErrorModal(true);
+            return;
+        }
 
-    const subTotal = CartbyuserData.reduce(
-        (total, item) => total + (item.productData[0]?.discountedPrice * item.qty),
-        0
-    );
-    const tax = Math.round(subTotal * 0.18);
-    const totalAmount = subTotal + tax; 
+        const res = await loadRazorpayScript();
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+        }
 
-    // console.log("totalAmount",totalAmount);
-    // console.log("subTotal",subTotal);
-    // console.log("tax",tax);
+        const subTotal = CartbyuserData.reduce(
+            (total, item) => total + (item.productData[0]?.discountedPrice * item.qty),
+            0
+        );
+        const tax = Math.round(subTotal * 0.18);
+        const totalAmount = subTotal + tax;
 
-    const options = {
-        key: "rzp_test_hN631gyZ1XbXvp",
-        amount: parseInt(totalAmount * 100),
-        currency: "INR",
-        name: "Pifron",
-        description: "Pifron Payment",
-        image: "https://yourdomain.com/logo.png",
-        prefill: {
-        //   name: values.firstName,
-        //   email: values.email,
-        //   contact: values.phoneNo,
-        },
-        method: {
-          upi: true,
-          card: true,
-          netbanking: true,
-          wallet: true,
-          emi: true,
-        },
-        // notes: {
-        //   upi_id: upiId,
-        // },
-        theme: {
-          color: "#000000",
-        },
-        handler: function (response) {
-          const orderData = {
-            // shippingInfo: values,
-            paymentInfo: {
-              razorpay_payment_id: response.razorpay_payment_id,
+        // console.log("totalAmount",totalAmount);
+        // console.log("subTotal",subTotal);
+        // console.log("tax",tax);
+
+        const options = {
+            key: "rzp_test_hN631gyZ1XbXvp",
+            amount: parseInt(totalAmount * 100),
+            currency: "INR",
+            name: "Pifron",
+            description: "Pifron Payment",
+            image: "https://yourdomain.com/logo.png",
+            prefill: {
+                //   name: values.firstName,
+                //   email: values.email,
+                //   contact: values.phoneNo,
             },
-            items: CartbyuserData,
-            totalPrice: parseInt(totalAmount * 100),
-            addressId: selectedAddress._id,
-          };
-        console.log('sdasd........',orderData)
-        dispatch(CreateOrderData(orderData));
-        
-        // Clear cart from backend and localStorage
-        dispatch(ClearAllCart());
-        localStorage.removeItem('CartbyuserData');
-        localStorage.removeItem('selectedaddress');
-        
-        setShowPaymentSuccessModal(true);
-        setTimeout(() => {
-          setShowPaymentSuccessModal(false);
-          navigate('/layout/home');
-        }, 2000);
-        },
-        modal: {
-          ondismiss: function () {
-            alert("Payment popup closed");
-          },
-        },
-      };
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    //   setShowThankYou(true);
-   }
+            method: {
+                upi: true,
+                card: true,
+                netbanking: true,
+                wallet: true,
+                emi: true,
+            },
+            // notes: {
+            //   upi_id: upiId,
+            // },
+            theme: {
+                color: "#000000",
+            },
+            handler: function (response) {
+                const orderData = {
+                    // shippingInfo: values,
+                    paymentInfo: {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                    },
+                    items: CartbyuserData,
+                    totalPrice: parseInt(totalAmount * 100),
+                    addressId: selectedAddress._id,
+                };
+                console.log('sdasd........', orderData)
+                dispatch(CreateOrderData(orderData));
+
+                // Clear cart from backend and localStorage
+                dispatch(ClearAllCart());
+                localStorage.removeItem('CartbyuserData');
+                localStorage.removeItem('selectedaddress');
+
+                setShowPaymentSuccessModal(true);
+                setTimeout(() => {
+                    setShowPaymentSuccessModal(false);
+                    navigate('/layout/home');
+                }, 2000);
+            },
+            modal: {
+                ondismiss: function () {
+                    alert("Payment popup closed");
+                },
+            },
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+        //   setShowThankYou(true);
+    }
 
     // Add state for payment success modal
     const [showPaymentSuccessModal, setShowPaymentSuccessModal] = useState(false);
 
     // Add SuccessModal component (copy from Login.jsx, rename to PaymentSuccessModal)
     const PaymentSuccessModal = () => (
-      <div className="mv_modal_overlay">
-        <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{
-              width: '60px',
-              height: '60px',
-              background: '#4CAF50',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px'
-            }}>
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
-              </svg>
+        <div className="mv_modal_overlay">
+            <div className="mv_modal_content" style={{ maxWidth: '400px', textAlign: 'center', padding: '30px' }}>
+                <div style={{ marginBottom: '20px' }}>
+                    <div style={{
+                        width: '60px',
+                        height: '60px',
+                        background: '#4CAF50',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 20px'
+                    }}>
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="white" />
+                        </svg>
+                    </div>
+                    <h3 style={{ marginBottom: '10px', color: '#141414' }}>Payment Successful!</h3>
+                    <p style={{ color: '#666', marginBottom: '20px' }}>Your order has been placed successfully. Redirecting to home page...</p>
+                </div>
             </div>
-            <h3 style={{ marginBottom: '10px', color: '#141414' }}>Payment Successful!</h3>
-            <p style={{ color: '#666', marginBottom: '20px' }}>Your order has been placed successfully. Redirecting to home page...</p>
-          </div>
         </div>
-      </div>
     );
 
     return (
         <>
             <div className='mv_cart_main_padd'>
                 <div className="m_container">
-                <p className='mv_page_main_heading'>Cart</p>
+                    <p className='mv_page_main_heading'>Cart</p>
 
-                <div className="row mv_main_product">
+                    <div className="row mv_main_product">
                         <div className="col-lg-8 col-md-12 col-sm-12">
                             <div className="cart-container mv_cart_container">
                                 <table className="mv_cart_table">
@@ -526,8 +526,8 @@ const Cart = () => {
                                         {CartbyuserData.length === 0 ? (
                                             // Empty cart state - show empty table body
                                             <tr>
-                                                <td colSpan="5" style={{ 
-                                                    textAlign: 'center', 
+                                                <td colSpan="5" style={{
+                                                    textAlign: 'center',
                                                     padding: '50px 0',
                                                     color: '#666',
                                                     fontSize: '16px'
@@ -677,8 +677,8 @@ const Cart = () => {
                                 </div>
                             </div>
                         </div>
-                    
-                </div>
+
+                    </div>
                 </div>
             </div>
 
@@ -732,9 +732,15 @@ const Cart = () => {
                                             <p className='mv_dis_price'><strike>${item.productDetails?.price}</strike></p>
                                         </div>
                                     </div>
-                                    <div className='mv_main_add_cart_btn mv_add_cart_btn'>
-                                        <a className='' href="#" onClick={(e) => handleContinue(e, item._id)}>Add to Cart</a>
-                                    </div>
+                                    {item.stock ? (
+                                        <div onClick={(e) => handleContinue(e, item._id)} className='mv_main_add_cart_btn mv_add_cart_btn'>
+                                            <a className='' href="#">Add to Cart</a>
+                                        </div>
+                                    ) : (
+                                        <div className='mv_main_add_cart_btn mv_add_cart_btn' style={{ pointerEvents: 'none', border: 'none' }}>
+                                            <span style={{ color: 'red', fontWeight: 600 }}>Not Available</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}

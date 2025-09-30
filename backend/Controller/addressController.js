@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 exports.createAddress = async (req, res) => {
     try {
         const { userId , address , pincode, country ,state ,city,fullName,contactNo,addressType } = req.body;
+        console.log(req.body);
+        
 
         let Data = await addressModal.findOne({ userId, address });
-
+        console.log('data',Data)
         if (Data) {
             return res.status(400).json({ status: false, message: 'Address Already Exist....' })
         }

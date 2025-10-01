@@ -50,7 +50,7 @@ indexRoute.get('/getRoleById/:id', auth(['Admin', 'User']), getRoleById);
 indexRoute.delete('/deleteRoleById/:id', auth(['Admin', 'User']), deleteRoleById);
 
 // User Routes
-indexRoute.get('/getAllUsers', auth(['Admin', 'User']), getAllUser);
+indexRoute.get('/getAllUsers', getAllUser);
 indexRoute.get('/getUserById/:id', auth(['Admin', 'User']), getUserById);
 indexRoute.put('/updateUserById/:id', auth(['Admin', 'User']),upload.single('image'), updateUserById);
 indexRoute.delete('/deleteUserById/:id', auth(['Admin', 'User']), deleteUserById);
@@ -102,10 +102,10 @@ indexRoute.put('/updateProductStatus/:id', auth(['Admin', 'User']), updateProduc
 indexRoute.delete('/deleteProduct/:id', auth(['Admin', 'User']), deleteProduct);
 
 // stock Route
-indexRoute.post('/createStock', auth(['Admin', 'User']), createStock);
+indexRoute.post('/createStock', createStock);
 indexRoute.put('/updateStock/:id', auth(['Admin', 'User']), updateStock);
 indexRoute.delete('/deleteStockById/:id', auth(['Admin', 'User']), deleteStockById);
-indexRoute.get('/getAllStocks', auth(['Admin', 'User']), getAllStocks);
+indexRoute.get('/getAllStocks', getAllStocks);
 indexRoute.get('/getStockById/:id', auth(['Admin', 'User']), getStockById);
 
 // Reason Cancellation Routes

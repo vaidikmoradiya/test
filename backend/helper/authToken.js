@@ -4,16 +4,21 @@ const jwt = require('jsonwebtoken');
 exports.auth = (roles = []) => {
     return async (req, res, next) => {
         let authorization = req.headers['authorization']
-
         if (authorization) {
             try {
-                let token = await authorization.split(' ')[1]
+                const token = authorization.startsWith("Bearer ")
+                    ? authorization.split(" ")[1]
+                    : authorization;
 
                 if (!token) {
                     return res.status(404).json({ status: 404, success: false, message: "Token Is Required" })
                 }
 
+                console.log('token', process.env.SECRET_KEY)
+                
                 let checkToken = jwt.verify(token, process.env.SECRET_KEY)
+
+                console.log('token1', checkToken)
 
                 // tokens are signed with an object payload like { _id: userId }
                 const userIdFromToken = checkToken?._id || checkToken?.id || checkToken;

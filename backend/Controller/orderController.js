@@ -233,10 +233,61 @@ exports.getAllOrder = async (req, res) => {
     if (orderData.length <= 0 ) {
       return res.status(404).json({ status: false, message: 'Order Not Found' });
     }
+
+    // Process each order to add progressive status and expected delivery date
+    const processedOrders = orderData.map(order => {
+      const orderDate = new Date(order.createdAt);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      orderDate.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      // Calculate days since order
+      const daysSinceOrder = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+      
+      // Determine progressive status
+      let progressiveStatus = 'Order Confirmed';
+      
+      if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected') {
+        if (daysSinceOrder >= 1) {
+          progressiveStatus = 'Shipped';
+        }
+        if (daysSinceOrder >= 2) {
+          progressiveStatus = 'Out for Delivery';
+        }
+        if (daysSinceOrder >= 3) {
+          progressiveStatus = 'Delivered';
+          order.orderStatus = 'Delivered'; // Update actual order status
+        }
+      }
+     
+     
+      
+      // Calculate expected delivery date (order date + 3 days)
+      const expectedDeliveryDate = new Date(orderDate);
+      expectedDeliveryDate.setDate(orderDate.getDate() + 3);
+      
+      // Add progressive status and expected delivery date to each product
+      order.products = order.products.map(product => ({
+        ...product,
+        progressiveStatus,
+        expectedDeliveryDate: expectedDeliveryDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+        deliveryDate: expectedDeliveryDate.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }).replace(/\s/g, ' ')
+      }));
+      
+      // Add progressive status to order level
+      order.progressiveStatus = progressiveStatus;
+      
+      return order;
+    });
+
     return res.status(200).json({
       status: true,
       message: 'All Orders Found Successfully',
-      data: orderData
+      data: processedOrders
     });
   } catch (error) {
     console.error(error);
@@ -327,6 +378,7 @@ exports.getOrderById = async (req, res) => {
               updatedAt: { $first: '$updatedAt' },
               userData: { $first: '$userData' },
               addressData: { $first: '$addressData' },
+              paymentDetail :{$first: '$paymentDetail'},
               products: {
                 $push: {
                   productId: '$product.productId',
@@ -342,7 +394,50 @@ exports.getOrderById = async (req, res) => {
             return res.status(404).json({ status: false, message: 'Order Not Found' });
         }
 
-        return res.status(200).json({ status: true, message: 'Order Found Successfully....', data: orderData });
+        // Process the order to add progressive status and expected delivery date
+        const order = orderData[0];
+        const orderDate = new Date(order.createdAt);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to start of day
+        orderDate.setHours(0, 0, 0, 0); // Reset time to start of day
+        
+        // Calculate days since order
+        const daysSinceOrder = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+        
+        // Determine progressive status
+        let progressiveStatus = 'Order Confirmed';
+        
+        if (daysSinceOrder >= 1) {
+          progressiveStatus = 'Shipped';
+        }
+        if (daysSinceOrder >= 2) {
+          progressiveStatus = 'Out for Delivery';
+        }
+        if (daysSinceOrder >= 3) {
+          progressiveStatus = 'Delivered';
+          order.orderStatus = 'Delivered'; // Update actual order status
+        }
+        
+        // Calculate expected delivery date (order date + 3 days)
+        const expectedDeliveryDate = new Date(orderDate);
+        expectedDeliveryDate.setDate(orderDate.getDate() + 3);
+        
+        // Add progressive status and expected delivery date to each product
+        order.products = order.products.map(product => ({
+          ...product,
+          progressiveStatus,
+          expectedDeliveryDate: expectedDeliveryDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+          deliveryDate: expectedDeliveryDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          }).replace(/\s/g, ' ')
+        }));
+        
+        // Add progressive status to order level
+        order.progressiveStatus = progressiveStatus;
+
+        return res.status(200).json({ status: true, message: 'Order Found Successfully....', data: [order] });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ status: false, message: error.message });

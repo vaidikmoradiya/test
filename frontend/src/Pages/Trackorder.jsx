@@ -174,8 +174,8 @@ const Trackorder = () => {
     );
   }
 
-  // Assuming you have a status variable to determine the order status
-  const orderStatus = "shipped"; // Example status, replace with actual logic
+  // Get progressive status from order data
+  const orderStatus = TrackOrderData?.[0]?.progressiveStatus?.toLowerCase().replace(/\s+/g, '') || "orderconfirmed";
 
   return (
     <div className='mv_track_order_padd'>
@@ -185,26 +185,26 @@ const Trackorder = () => {
         <div className="py-3 pt-xl-3 mv_subtrack position-relative VK_padding overflow-auto">
           {/* Track line */}
           {/* <div className='mv_back_line'></div> */}
-          <div className={`mv_line line_1 ${["shipped", "outForDelivery", "delivered"].includes(orderStatus) ? "solid" : "dashed"}`}></div>
-          <div className={`mv_line line_2 ${["outForDelivery", "delivered"].includes(orderStatus) ? "solid" : "dashed"}`}></div>
+          <div className={`mv_line line_1 ${["shipped", "outfordelivery", "delivered"].includes(orderStatus) ? "solid" : "dashed"}`}></div>
+          <div className={`mv_line line_2 ${["outfordelivery", "delivered"].includes(orderStatus) ? "solid" : "dashed"}`}></div>
           <div className={`mv_line line_3 ${orderStatus === "delivered" ? "solid" : "dashed"}`}></div>
           
           <div className="d-flex justify-content-between px-md-3 px-lg-5">
             {/* Order Confirmed Step */}
             <div className={`text-center mt-3`}>
-              <img src={require('../assets/ordered confirmed.png')} alt="" className='py-2' style={{ opacity: orderStatus === "shipped" ? 1 : 0.5 }} />
+              <img src={require('../assets/ordered confirmed.png')} alt="" className='py-2' style={{ opacity: ["orderconfirmed", "shipped", "outfordelivery", "delivered"].includes(orderStatus) ? 1 : 0.5 }} />
               <p className='mv_confirmed'>Order Confirmed</p>
             </div>
 
             {/* Shipped Step */}
             <div className={`text-center mt-3`}>
-              <img src={require('../assets/shipped.png')} alt="" className='py-2' style={{ opacity: orderStatus === "shipped" ? 1 : 0.5 }} />
+              <img src={require('../assets/shipped.png')} alt="" className='py-2' style={{ opacity: ["shipped", "outfordelivery", "delivered"].includes(orderStatus) ? 1 : 0.5 }} />
               <p className='mv_confirmed'>Shipped</p>
             </div>
 
             {/* Out for Delivery Step */}
             <div className={`text-center mt-3`}>
-              <img src={require('../assets/Out for Delivery logo.png')} alt="" className='py-2' style={{ opacity: orderStatus === "delivered" ? 1 : 0.5 }} />
+              <img src={require('../assets/Out for Delivery logo.png')} alt="" className='py-2' style={{ opacity: ["outfordelivery", "delivered"].includes(orderStatus) ? 1 : 0.5 }} />
               <p className='mv_confirmed'>Out for Delivery</p>
             </div>
 
@@ -263,7 +263,7 @@ const Trackorder = () => {
                         </div>
                         <div className='mv_track_order_info'>
                           <p className='mb-2 mv_track_order_heading'>Expected Date : </p>
-                          <p className='mb-2 mv_track_order_text'>{item?.expectedDate}</p>
+                          <p className='mb-2 mv_track_order_text'>{it?.deliveryDate}</p>
                         </div>
                       </div>
                     </div>
@@ -296,7 +296,7 @@ const Trackorder = () => {
                         </div>
                         <div className='mv_track_order_info'>
                           <p className='mb-2 mv_track_order_heading'>Transaction ID : </p>
-                          <p className='mb-2 mv_track_order_text'>{item?.transactionId}</p>
+                          <p className='mb-2 mv_track_order_text'>{item?.paymentDetail?.receipt}</p>
                         </div>
                       <div className="mv_track_payment_detail"><span></span></div>
                       <div className="mv_track_payment_transaction"><span></span></div>

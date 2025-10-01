@@ -110,7 +110,7 @@ const Trackreturnrefund = () => {
                           </div>
                           <div className='mv_track_order_info'>
                             <p className='mb-2 mv_track_order_heading'>Expected Date : </p>
-                            <p className='mb-2 mv_track_order_text'>{item?.expectedDate}</p>
+                            <p className='mb-2 mv_track_order_text'>{it?.deliveryDate}</p>
                           </div>
                         </div>
                       </div>

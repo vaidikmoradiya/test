@@ -900,7 +900,7 @@ const Myorder = () => {
                                     <div className="row">
                                       <div className="col-xxl-1 col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3">
                                         <div>
-                                          <p className="mv_order_status" style={{ color: item.statusColor }}>{item.orderStatus}</p>
+                                          <p className="mv_order_status">{item.orderStatus}</p>
                                         </div>
                                       </div>
                                       <div className="col-xxl-9 col-xl-8 col-lg-8 col-md-8 col-sm-6 col-6">

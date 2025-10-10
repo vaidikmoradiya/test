@@ -821,9 +821,9 @@ const Detailpage = () => {
                 )}
               </>
             ) : (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-                <p>No reviews yet for this product.</p>
-                <p>Be the first to share your experience!</p>
+              <div style={{ textAlign: 'center', padding: '20px 0px 20px 0px', color: '#666' }}>
+                <p className='mb-2'>No reviews yet for this product.</p>
+                <p className='mb-0'>Be the first to share your experience!</p>
               </div>
             )}
           </div>

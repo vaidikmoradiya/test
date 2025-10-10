@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { CreateReview, GetAllReview } from '../Redux-Toolkit/ToolkitSlice/User/ReviewSlice';
 import { GetBestSeller } from '../Redux-Toolkit/ToolkitSlice/User/TopSellingSlice';
 import { Createcart, GetCartByuser } from '../Redux-Toolkit/ToolkitSlice/User/CartSlice';
+import { CreateOrderData } from '../Redux-Toolkit/ToolkitSlice/User/OrderSlice';
 
 const Detailpage = () => {
   const { id } = useParams();
@@ -202,15 +203,14 @@ const Detailpage = () => {
           },
           items: [
             {
-              id: product?._id,
-              name: product?.productName,
-              price: product?.discountedPrice,
-              quantity: 1,
+              productId: product?._id,
+              qty: 1,
             },
           ],
           totalPrice: parseInt(totalAmount * 100),
         };
         console.log('orderData', orderData);
+        dispatch(CreateOrderData(orderData));
 
         setShowPaymentSuccessModal(true);
         setTimeout(() => {
@@ -529,9 +529,11 @@ const Detailpage = () => {
 
                   <div className="mv_action_buttons">
                     <div className="row mv_action_btn_main">
-                      <div className="col-lg-6 col-md-6 col-sm-6 col-6">
-                        <button className="mv_buy_now" onClick={() => handleBuyNow(item)}>Buy now</button>
-                      </div>
+                      {item.stockStatus && (
+                        <div className="col-lg-6 col-md-6 col-sm-6 col-6">
+                          <button className="mv_buy_now" onClick={() => handleBuyNow(item)}>Buy now</button>
+                        </div>
+                      )}
                       <div className="col-lg-6 col-md-6 col-sm-6 col-6">
                         {item.stockStatus ? (
                           <Link to={`/layout/Cart`}>

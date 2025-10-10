@@ -21,7 +21,7 @@ export const GetSubCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get SubCateData " , error.message)
+        // alert("Get SubCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -44,7 +44,7 @@ export const GetSubCateDataByCategoryId = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get SubCateData By CategoryId " , error.message)
+        // alert("Get SubCateData By CategoryId " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -75,7 +75,7 @@ export const CreateSubCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get CreateSubCateData " , error.message)
+        // alert("Get CreateSubCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -106,7 +106,7 @@ export const EditSubCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditSubCateData " , error.message)
+        // alert("Get EditSubCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -136,7 +136,7 @@ export const EditStatusSubCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditStatusSubCateData " , error.message)
+        // alert("Get EditStatusSubCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -165,7 +165,7 @@ export const DeleteSubCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteSubCateData " , error.message)
+        // alert("Get DeleteSubCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

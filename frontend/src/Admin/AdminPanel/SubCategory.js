@@ -199,11 +199,23 @@ const EditSubCateFormik = useFormik({
     initialValues:editCateVal,
     validationSchema:SubCateSchema,
     onSubmit:(values , action)=>{
+        const isSearching = !!searchInput.trim();
+        const currentFilteredLength = (filteredData?.filter((element) => {
+            return element?.subCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.mainCategoryData[0]?.mainCategoryName?.toLowerCase().includes(searchInput?.toLowerCase()) ||
+                   element?.categoryData[0]?.categoryName?.toLowerCase().includes(searchInput?.toLowerCase())
+        })?.length) || 0;
+        const targetPage = !isSearching ? currentPage : currentPage;
+
         dispatch(EditSubCateData({values, id:editData?._id}))
         .then((response)=>{
             if(response?.meta?.requestStatus === "fulfilled"){
                 setEditPopup(false)
-                dispatch(GetSubCateData())
+                dispatch(GetSubCateData()).then(() => {
+                    if (!isSearching) {
+                        setCurrentPage(targetPage);
+                    }
+                })
             }
         })
         action.resetForm()
@@ -353,9 +365,13 @@ const handleDelete = () => {
 
 const handleStatusChange = (e, id) => {
     const status = e.target.checked
+    const currentPageBeforeStatusChange = currentPage;
+    
     dispatch(EditStatusSubCateData({status , id}))
     .then(()=>{
-        dispatch(GetSubCateData())
+        dispatch(GetSubCateData()).then(() => {
+            setCurrentPage(currentPageBeforeStatusChange);
+        })
     })
     .catch((error)=>{
         alert(error)

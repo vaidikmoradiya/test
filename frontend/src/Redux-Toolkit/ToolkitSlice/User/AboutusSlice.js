@@ -19,7 +19,7 @@ export const getallAboutUs = createAsyncThunk(
         return response?.data;
       } catch (error) {
         console.error("Get All FAQ's Error:", error.message);
-        alert("GetAll FAQ's", error.message);
+        // alert("GetAll FAQ's", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -54,7 +54,7 @@ export const getallAboutUs = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Create createAboutus Error:", error.message);
-        alert("Create createAboutus", error.message);
+        // alert("Create createAboutus", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -122,7 +122,7 @@ export const getallAboutUs = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get DeleteAboutusData " , error.message)
+          // alert("Get DeleteAboutusData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }

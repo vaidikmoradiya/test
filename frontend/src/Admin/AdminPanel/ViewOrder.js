@@ -35,12 +35,12 @@ useEffect(() => {
                         <div className='ds_vieworder_manage'>
                             <div className='d-flex justify-content-between' style={{ borderBottom: '0.6px solid rgba(20, 20, 20, 0.2)' }}>
                                 <div>
-                                    <p>Order ID : <span className='fw-bolder' >#{item._id}</span></p>
+                                    <p>Order ID : <span className='fw-bolder' >#...{item._id.slice(-4)}</span></p>
                                 </div>
                                 <div className='d-flex'>
                                     <p className='mb-0 d-flex'>{new Date(item.createdAt).toLocaleDateString()} <span className='ds_view_border'></span></p>
-                                    <p className='mb-0 d-flex ms-2'>{item.products.length} Items<span className='ds_view_border'></span></p>
-                                    <p className='mb-0 d-flex ms-2'>Txn ID : <span className='fw-bolder ms-1' > </span></p>
+                                    <p className='mb-0 d-flex ms-2'>{item.products. length} Items<span className='ds_view_border'></span></p>
+                                    <p className='mb-0 d-flex ms-2'>Txn ID : <span className='fw-bolder ms-1' > {item.paymentDetail?.receipt ? item.paymentDetail.receipt.replace('receipt_', '') : ''}</span></p>
                                 </div>
                             </div>
                             <table className='w-100 ds_vieworder_table mt-sm-5 mt-4'>
@@ -76,7 +76,7 @@ useEffect(() => {
                 <div className="col-xl-4 col-lg-12 mt-xl-2 mt-4">
                     <div className='ds_view_box h-100'>
                         <h6 className='ds_600 ds_vieworder_title'>Summary</h6>
-                        <p className='mt-3 mb-0' style={{ color: '#14141499' }}>Order ID : <span className='ds_600' style={{ color: '#141414' }}>#{item._id}</span> </p>
+                        <p className='mt-3 mb-0' style={{ color: '#14141499' }}>Order ID : <span className='ds_600' style={{ color: '#141414' }}>#...{item._id.slice(-4)}</span> </p>
                         <p className='mt-2 mb-0' style={{ color: '#14141499' }}>Order Date : <span className='ds_600' style={{ color: '#141414' }}>{new Date(item.createdAt).toLocaleDateString()}</span> </p>
                         <p className='mt-2 mb-0' style={{ color: '#14141499' }}>Order Total : <span className='ds_600' style={{ color: '#141414' }}>₹{item.totalAmount}</span> </p>
 

@@ -9,8 +9,8 @@ exports.userRegister = async (req, res) => {
         const { firstName, mobileNo, lastName, email, password, role } = req.body;
 
         // Check if user already exists
-        const existingUser = await user.findOne({email});
-        console.log('user',existingUser)
+        const existingUser = await user.findOne({ email });
+        console.log('user', existingUser)
         if (existingUser) {
             return res.status(400).json({ status: false, message: 'User already exists' });
         }
@@ -39,10 +39,10 @@ exports.userRegister = async (req, res) => {
         }
 
         await sendOtpEmail(email, otp);
-        return res.status(200).json({ 
-            status: true, 
-            message: 'OTP sent to email', 
-            data: { email: tempUser?.email , id : tempUser?._id} 
+        return res.status(200).json({
+            status: true,
+            message: 'OTP sent to email',
+            data: { email: tempUser?.email, id: tempUser?._id }
         });
 
     } catch (error) {
@@ -52,7 +52,7 @@ exports.userRegister = async (req, res) => {
 }
 
 const sendOtpEmail = async (toEmail, otp) => {
-console.log(toEmail, otp)
+    console.log(toEmail, otp)
     try {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -152,7 +152,7 @@ exports.resendOtp = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { email, password, isAdmin } = req.body; // Add isAdmin flag
+        const { email, password, isAdmin,rememberMe } = req.body; // Add isAdmin flag
 
         const checkEmail = await user.findOne({ email });
 
@@ -161,7 +161,7 @@ exports.login = async (req, res) => {
         }
 
         // Check if user is verified
-        if (!checkEmail.isVerified  && !isAdmin) {
+        if (!checkEmail.isVerified && !isAdmin) {
             return res.status(400).json({ status: false, message: "Please verify your email first" });
         }
 
@@ -179,23 +179,84 @@ exports.login = async (req, res) => {
             return res.status(400).json({ status: false, message: "Password does not match" });
         }
 
-        const token = jwt.sign({ _id: checkEmail._id }, process.env.SECRET_KEY, { expiresIn: "1d" });
+        // const token = jwt.sign({ _id: checkEmail._id }, process.env.SECRET_KEY, { expiresIn: "1d" });
+        let accessToken = await jwt.sign(
+            { _id: checkEmail._id },
+            process.env.SECRET_KEY,
+            { expiresIn: "1d" }
+        );
+
+        let refreshToken
+        if (rememberMe) {
+            refreshToken = jwt.sign(
+                { _id: checkEmail._id },
+                process.env.REFRESH_SECRET_KEY,
+                { expiresIn: '15d' }
+            );
+            checkEmail.refreshToken = refreshToken;
+            await checkEmail.save();
+        }
+
 
         // Optionally omit password from the returned user object
         const { password: _, ...userWithoutPassword } = checkEmail.toObject();
 
-        return res.status(200).json({
-            status: true,
-            message: "User login successful",
-            user: userWithoutPassword,
-            token
-        });
-
+        return res.status(200)
+            .cookie("accessToken", accessToken, { httpOnly: true, secure: false, sameSite: "Lax", maxAge: 1 * 24 * 60 * 60 * 1000 })
+            .cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, sameSite: "Lax", maxAge: 15 * 24 * 60 * 60 * 1000 })
+            .json({
+                status: true,
+                message: "User login successful",
+                user: userWithoutPassword,
+                token: accessToken,
+            });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ status: false, message: "Server error", error: error.message });
     }
 };
+   
+  exports.refreshAccessToken = async (req, res) => {
+    try {
+      const { refreshToken } = req.cookies;
+   
+      if (!refreshToken) return res.status(404).json({ message: 'No Refresh Token' });
+   
+      // Verify token
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY);
+      const existingUser = await user.findById(decoded._id);
+   
+      console.log("---------------", existingUser, decoded)
+   
+      const accessToken = await jwt.sign(
+        { _id: existingUser._id },
+        process.env.SECRET_KEY,
+        { expiresIn: '1d' }
+      );
+   
+      const refreshToken1 = await jwt.sign(
+        { _id: existingUser._id },
+        process.env.REFRESH_SECRET_KEY,
+        { expiresIn: '15d' }
+      );
+   
+      existingUser.refreshToken = refreshToken1;
+      await existingUser.save({ validateBeforeSave: false });
+   
+      return res.status(200)
+      .cookie("accessToken", accessToken, { httpOnly: true, secure: false, sameSite: "Lax", maxAge: 1 * 24 * 60 * 60 * 1000 })
+      .cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, sameSite: "Lax", maxAge: 15 * 24 * 60 * 60 * 1000 })
+        .json({
+          status: 200,
+          message: "User Login SuccessFully...",
+          user: existingUser,
+          token: accessToken
+        });
+    } catch (err) {
+      return res.status(403).json({ message: 'Refresh Failed', error: err.message });
+    }
+  };
+   
 
 exports.forgotPassword = async (req, res) => {
     try {
@@ -257,58 +318,58 @@ exports.socialLogin = async (req, res) => {
     console.log('user', req.body);
     const { firstName, email } = req.body;
     if (!firstName || !email) {
-      return res.status(400).json({ error: 'firstName  email are required' });
+        return res.status(400).json({ error: 'firstName  email are required' });
     }
     const existingUser = await user.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      if (!process.env.SECRET_KEY) {
-        console.error('JWT_SECRET is not configured');
-        return res.status(500).json({ error: 'Server configuration error' });
-      }
-   
-      const token = jwt.sign(
-        {
-          id: existingUser._id,
-          email: existingUser.email
-        },
-        process.env.SECRET_KEY,
-        {
-          issuer: 'your-app-name',
-          audience: 'your-app-users'
+        if (!process.env.SECRET_KEY) {
+            console.error('JWT_SECRET is not configured');
+            return res.status(500).json({ error: 'Server configuration error' });
         }
-      );
-   
-      // Update last login time
-      existingUser.lastLogin = new Date();
-      await existingUser.save();
-   
-      res.json({
-        status: true,
-        message: "User login successful",
-        token,
-        user: {
-          id: existingUser._id,
-          email: existingUser.email,
-          lastLogin: existingUser.lastLogin,
-          role: existingUser.role
-        }
-      });
+
+        const token = jwt.sign(
+            {
+                id: existingUser._id,
+                email: existingUser.email
+            },
+            process.env.SECRET_KEY,
+            {
+                issuer: 'your-app-name',
+                audience: 'your-app-users'
+            }
+        );
+
+        // Update last login time
+        existingUser.lastLogin = new Date();
+        await existingUser.save();
+
+        res.json({
+            status: true,
+            message: "User login successful",
+            token,
+            user: {
+                id: existingUser._id,
+                email: existingUser.email,
+                lastLogin: existingUser.lastLogin,
+                role: existingUser.role
+            }
+        });
     }
     else {
         const otp = Math.floor(100000 + Math.random() * 900000);
         const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-      const userData = new user({
-        firstName,
-        email: email.toLowerCase(),
-        otp,
-        otpExpiry
-      });
-      const otpData = await sendOtpEmail(userData.email,otp);
-      await userData.save();
-      res.status(201).json({
-        message: 'User registered successfully',
-        user: { firstName: userData.firstName, email: userData.email, id: userData._id },
-        otpData
-      });
+        const userData = new user({
+            firstName,
+            email: email.toLowerCase(),
+            otp,
+            otpExpiry
+        });
+        const otpData = await sendOtpEmail(userData.email, otp);
+        await userData.save();
+        res.status(201).json({
+            message: 'User registered successfully',
+            user: { firstName: userData.firstName, email: userData.email, id: userData._id },
+            otpData
+        });
     }
-  }
+}

@@ -21,7 +21,7 @@ export const GetExpenceData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetExpenceData " , error.message)
+        // alert("Get GetExpenceData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -46,7 +46,7 @@ export const CreateExpence = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get CreateExpence Error:", error.message);
-         alert(error?.response?.data?.message)
+        //  alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -70,7 +70,7 @@ export const EditExpence = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get EditExpence Error:", error.message);
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -91,7 +91,7 @@ export const DeleteExpence = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get DeleteExpence Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

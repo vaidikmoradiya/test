@@ -296,7 +296,12 @@ const Trackorder = () => {
                         </div>
                         <div className='mv_track_order_info'>
                           <p className='mb-2 mv_track_order_heading'>Transaction ID : </p>
-                          <p className='mb-2 mv_track_order_text'>{item?.paymentDetail?.receipt}</p>
+                          <p className='mb-2 mv_track_order_text'>
+                            {item?.paymentDetail?.receipt ? 
+                              item.paymentDetail.receipt.replace('receipt_', ''): 
+                              ''
+                            }
+                          </p>
                         </div>
                       <div className="mv_track_payment_detail"><span></span></div>
                       <div className="mv_track_payment_transaction"><span></span></div>

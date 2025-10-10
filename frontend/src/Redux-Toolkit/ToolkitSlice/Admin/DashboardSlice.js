@@ -21,7 +21,7 @@ export const GetDashboardData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetDashboardData " , error.message)
+        // alert("Get GetDashboardData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -48,7 +48,7 @@ export const GetOrderSummaryData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetOrderSummaryData " , error.message)
+        // alert("Get GetOrderSummaryData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -75,7 +75,7 @@ export const GetIncomeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetIncomeData " , error.message)
+        // alert("Get GetIncomeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -102,7 +102,7 @@ export const GetRevenuebyLocation = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetRevenuebyLocation " , error.message)
+        // alert("Get GetRevenuebyLocation " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

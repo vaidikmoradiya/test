@@ -22,7 +22,7 @@ export const createReasonCancellation = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Create Reason Error:", error.message);
-      alert("CreateReason", error.message);
+      // alert("CreateReason", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -42,7 +42,7 @@ export const getAllReasonCancellation = createAsyncThunk(
       return response?.data;
     } catch (error) {
       console.error("Get All Reason Error:", error.message);
-      alert("GetAllReason", error.message);
+      // alert("GetAllReason", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -65,7 +65,7 @@ export const EditReasonCancellation = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("EditReason Cancellation Error:", error.message);
-      alert("Edit ReasonCancellation", error.message);
+      // alert("Edit ReasonCancellation", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -88,7 +88,7 @@ export const EditStatusReasonCancellation = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get EditStatusReasonCancellation Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

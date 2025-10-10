@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 
 
@@ -7,11 +8,12 @@ export const LoginUser = createAsyncThunk(
   'loginuser',
   async (values, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${url}/login`, {
+      const response = await axiosInstance.post(`${url}/login`, {
         email: values?.email,
         password: values?.password,
+        rememberMe: values?.rememberMe === true,
         isAdmin: false // Add this flag for user login
-      });
+      }, { withCredentials: true });
       localStorage.setItem("token", response?.data?.token);
       localStorage.setItem("UserId", response?.data?.user?._id);
       return response.data;
@@ -28,7 +30,7 @@ export const LoginUser = createAsyncThunk(
     'googleuser',
     async (values, { rejectWithValue }) => {
       try {
-        const response = await axios.post(`${url}/sociallogin`, {
+        const response = await axiosInstance.post(`${url}/sociallogin`, {
             firstName:values?.fullName,
             email:values?.email
         });
@@ -49,7 +51,7 @@ export const LoginUser = createAsyncThunk(
     'forgetpass',
     async (values, { rejectWithValue }) => {
       try {
-        const response = await axios.post(`${url}/forgotPassword`, {
+        const response = await axiosInstance.post(`${url}/forgotPassword`, {
             email: values?.email
         });
         return response.data;
@@ -66,7 +68,7 @@ export const LoginUser = createAsyncThunk(
     'resetpassword',
     async (values, { rejectWithValue }) => {
       try {
-        const response = await axios.post(`${url}/resetPassword`, {
+        const response = await axiosInstance.post(`${url}/resetPassword`, {
             email: values?.email,
             newPassword: values?.password,
             confirmPassword: values?.newpassword
@@ -90,7 +92,7 @@ export const LoginUser = createAsyncThunk(
           return rejectWithValue({ message: "No authentication token found" });
         }
 
-        const response = await axios.post(`${url}/changePassword`, {
+        const response = await axiosInstance.post(`${url}/changePassword`, {
           currentPassword: values.oldPassword,
           newPassword: values.newPassword,
           confirmPassword: values.confirmPassword

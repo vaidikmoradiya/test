@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 
 // import axios from "axios";
@@ -8,7 +9,7 @@ export const register = createAsyncThunk('register',
     async ( value , { rejectWithValue }) => {
         try {
             console.log('valuedaaata',value)
-            const response = await axios.post(`${url}/register`,{
+            const response = await axiosInstance.post(`${url}/register`,{
                 firstName: value.firstname,
                 lastName: value.lastname,
                 email: value.email,
@@ -27,7 +28,7 @@ export const register = createAsyncThunk('register',
 export const verifyOtp = createAsyncThunk('verifyOtp',
     async ({ email, otp }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${url}/verifyOtp`, {
+            const response = await axiosInstance.post(`${url}/verifyOtp`, {
                 email,
                 otp
             });
@@ -43,7 +44,7 @@ export const verifyOtp = createAsyncThunk('verifyOtp',
 export const resendOtp = createAsyncThunk('resendOtp',
     async (email, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${url}/resendOtp`, { email });
+            const response = await axiosInstance.post(`${url}/resendOtp`, { email });
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data || { message: 'Failed to resend OTP' });
@@ -54,7 +55,7 @@ export const resendOtp = createAsyncThunk('resendOtp',
 export const forgotPassword = createAsyncThunk('forgotPassword',
     async (email, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${url}/forgotPassword`, {
+            const response = await axiosInstance.post(`${url}/forgotPassword`, {
                 email
             });
             return response.data;

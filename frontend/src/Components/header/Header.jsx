@@ -572,21 +572,36 @@ const Header = () => {
                                         {/* <Link to='/'>
                                             <img src={require("../../assets/wishlist.png")} height={20} width={20} alt="" />
                                         </Link> */}
-                                        <Link to='/layout/Cart' className='mv_cart_link'>
-                                            <div className='d-flex align-items-center'>
-                                                <div className='position-relative'>
-                                                    <img src={require("../../assets/Cart.png")} height={22} width={22} alt="" />
-                                                    {cartData && cartData.length > 0 && (
-                                                        <span className='s_cart'>
-                                                            {cartData.length}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <p className='mb-0 ms-3 mv_cart_text'>Cart</p>
-                                                </div>
-                                            </div>
-                                        </Link>
+                                        {
+                                            tokan ? (
+                                                <Link to='/layout/Cart' className='mv_cart_link'>
+                                                    <div className='d-flex align-items-center'>
+                                                        <div className='position-relative'>
+                                                            <img src={require("../../assets/Cart.png")} height={22} width={22} alt="" />
+                                                            {cartData && cartData.length > 0 && (
+                                                                <span className='s_cart'>
+                                                                    {cartData.length}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <p className='mb-0 ms-3 mv_cart_text'>Cart</p>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            ) : (
+                                                <Link to={'/signin'} className='mv_cart_link'>
+                                                    <div className='d-flex align-items-center'>
+                                                        <div className='position-relative'>
+                                                            <img src={require("../../assets/Cart.png")} height={22} width={22} alt="" />
+                                                        </div>
+                                                        <div>
+                                                            <p className='mb-0 ms-3 mv_cart_text'>Cart</p>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+                                            )
+                                        }
                                         <div className='d-flex align-items-center'>
                                             {
                                                 tokan ? (
@@ -627,11 +642,9 @@ const Header = () => {
                         <Row className='m-0'>
                             <Col className='p-0'>
                                 <div className='VK_header_nav d-flex overflow-hidden' ref={navMenuRef}>
-                                    {IsScroll && (
-                                        <button className='border-0' onClick={() => handleNavScroll('left')}>
-                                            <FaAngleLeft />
-                                        </button>
-                                    )}
+                                    <button className='border-0' onClick={() => handleNavScroll('left')}>
+                                        <FaAngleLeft />
+                                    </button>
                                     <ul className='w-100 VK_sub_scroll_bar list-unstyled justify-content-between m-0 p-0 d-flex flex-nowrap overflow-auto white_space'
                                         ref={navListRef}
                                         onScroll={checkScroll}>
@@ -685,11 +698,9 @@ const Header = () => {
                                             </li>
                                         ))}
                                     </ul>
-                                    {IsScroll && (
-                                        <button className='border-0' onClick={() => handleNavScroll('right')}>
-                                            <FaAngleRight />
-                                        </button>
-                                    )}
+                                    <button className='border-0' onClick={() => handleNavScroll('right')}>
+                                        <FaAngleRight />
+                                    </button>
                                 </div>
                             </Col>
                         </Row>

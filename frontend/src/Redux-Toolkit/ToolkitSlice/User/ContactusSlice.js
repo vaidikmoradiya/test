@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance';
 const url = "http://localhost:5000/api";
 
 const API_URL = 'http://localhost:5000/api'; // Adjust this to match your backend URL
@@ -9,7 +10,7 @@ export const createContact = createAsyncThunk(
     'contact/create',
     async (contactData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/createContact`, contactData, {
+            const response = await axiosInstance.post(`${API_URL}/createContact`, contactData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -25,7 +26,7 @@ export const GetContactusData = createAsyncThunk(
     'getcontactusdata',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axios.get(`${url}/getAllContact`, {
+        const response = await axiosInstance.get(`${url}/getAllContact`, {
           headers: {
               Authorization: `Bearer ${token}`,
           }
@@ -39,7 +40,7 @@ export const GetContactusData = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get GetContactusData " , error.message)
+          // alert("Get GetContactusData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
@@ -52,7 +53,7 @@ export const GetContactusData = createAsyncThunk(
     'getsinglecontactusdata',
     async (editid, { rejectWithValue }) => {
       try {
-        const response = await axios.get(`${url}/getContactById/${editid}`, {
+        const response = await axiosInstance.get(`${url}/getContactById/${editid}`, {
           headers: {
               Authorization: `Bearer ${token}`,
           }
@@ -66,7 +67,7 @@ export const GetContactusData = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get GetSingleContactUsData " , error.message)
+          // alert("Get GetSingleContactUsData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
@@ -80,7 +81,7 @@ export const GetContactusData = createAsyncThunk(
     async (deleteId, { rejectWithValue }) => {
       // console.log(values , id);
       try {
-        const response = await axios.delete(`${url}/deleteContact/${deleteId}`,
+        const response = await axiosInstance.delete(`${url}/deleteContact/${deleteId}`,
           {
           headers: {
               Authorization: `Bearer ${token}`,
@@ -95,7 +96,7 @@ export const GetContactusData = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get DeleteContactUsData " , error.message)
+          // alert("Get DeleteContactUsData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }

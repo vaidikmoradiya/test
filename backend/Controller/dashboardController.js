@@ -80,7 +80,19 @@ exports.getBestSellerProducts = async (req, res) => {
         }
       },
       { $unwind: { path: "$subCategoryData", preserveNullAndEmptyArrays: true } },
- 
+
+      // Filter out products where main category, category, or subcategory is inactive
+      {
+        $match: {
+          $and: [
+            { "mainCategoryData.status": true },
+            { "categoryData.status": true },
+            { "subCategoryData.status": true },
+            { "productDetails.status": true }
+          ]
+        }
+      },
+
       // Sort by total ordered
       { $sort: { totalOrdered: -1 } },
  

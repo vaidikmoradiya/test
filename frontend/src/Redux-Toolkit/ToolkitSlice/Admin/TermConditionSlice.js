@@ -23,7 +23,7 @@ export const createTermCondition = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Create Term & Condition Error:", error.message);
-      alert("Create Term & Condition", error.message);
+      // alert("Create Term & Condition", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -48,7 +48,7 @@ export const EditTermCondition = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Edit Term & Condition Error:", error.message);
-        alert("Edit Term & Condition Error: " + error.message);
+        // alert("Edit Term & Condition Error: " + error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -68,7 +68,7 @@ export const getAllTermCondition = createAsyncThunk(
         return response?.data;
       } catch (error) {
         console.error("Get All Term & Condition Error:", error.message);
-        alert("GetAll Term & Condition", error.message);
+        // alert("GetAll Term & Condition", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );

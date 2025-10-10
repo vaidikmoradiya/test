@@ -36,7 +36,7 @@ export const ForgetPass = createAsyncThunk(
         return response.data;
       } catch (error) {
         console.error("ForgetPass Error:", error.message);
-        alert("ForgetPass", error.message);
+        // alert("ForgetPass", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -56,7 +56,7 @@ export const VerifyOtp = createAsyncThunk(
         return response.data;
       } catch (error) {
         console.error("VerifyOtp Error:", error.message);
-        alert("VerifyOtp Invalid Otp" , error.message)
+        // alert("VerifyOtp Invalid Otp" , error.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -75,7 +75,7 @@ export const ResendOtp = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("ResendOtp Error:", error.message);
-      alert("ResendOtp Invalid Otp" , error.message)
+      // alert("ResendOtp Invalid Otp" , error.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -96,7 +96,7 @@ export const ResetPass = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("ResetPass Error:", error.message);
-      alert("ResetPass Invalid Otp" , error.message)
+      // alert("ResetPass Invalid Otp" , error.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

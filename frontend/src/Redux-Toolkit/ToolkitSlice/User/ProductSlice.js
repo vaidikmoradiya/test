@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("login")
 
@@ -8,7 +9,7 @@ export const GetAllProduct = createAsyncThunk(
   async (activeOnly = false, { rejectWithValue }) => {
     try {
       const endpoint = activeOnly ? `${url}/getAllProduct?active=true` : `${url}/getAllProduct`;
-      const response = await axios.get(endpoint, {
+      const response = await axiosInstance.get(endpoint, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -22,7 +23,7 @@ export const GetAllProduct = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetAllProduct " , error.message)
+        // alert("Get GetAllProduct " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -65,7 +66,7 @@ export const CreateProduct = createAsyncThunk(
         formData.append(`data[${id}]`, JSON.stringify(item)); 
       });
       console.log('formData',formData)
-      const response = await axios.post(`${url}/createProduct`, formData, {
+      const response = await axiosInstance.post(`${url}/createProduct`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -80,7 +81,7 @@ export const CreateProduct = createAsyncThunk(
         return data;
       }
       else{
-        alert("Get CreateProduct ", error.message)
+        // alert("Get CreateProduct ", error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -93,7 +94,7 @@ export const GetSingleProductData = createAsyncThunk(
   'getsingleproductdata',
   async (editid, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getProductById/${editid}`, {
+      const response = await axiosInstance.get(`${url}/getProductById/${editid}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -107,7 +108,7 @@ export const GetSingleProductData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetSingleProductData " , error.message)
+        // alert("Get GetSingleProductData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -160,7 +161,7 @@ export const EditProduct = createAsyncThunk(
         return data;
       }
       else{
-        alert("Get EditProduct ", error.message)
+        // alert("Get EditProduct ", error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -189,7 +190,7 @@ export const EditStatusProductData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditStatusProductData " , error.message)
+        // alert("Get EditStatusProductData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -218,7 +219,7 @@ export const DeleteProductData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteProductData " , error.message)
+        // alert("Get DeleteProductData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

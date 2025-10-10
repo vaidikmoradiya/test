@@ -24,7 +24,7 @@ export const createFaq = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Create FAQ's Error:", error.message);
-      alert("Create FAQ's", error.message);
+      // alert("Create FAQ's", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -52,7 +52,7 @@ export const EditFaq = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Edit FAQ's Error:", error.message);
-      alert("Edit FAQ's", error.message);
+      // alert("Edit FAQ's", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -76,7 +76,7 @@ export const getAllFaq = createAsyncThunk(
       return response?.data;
     } catch (error) {
       console.error("Get All FAQ's Error:", error.message);
-      alert("GetAll FAQ's", error.message);
+      // alert("GetAll FAQ's", error.message);
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

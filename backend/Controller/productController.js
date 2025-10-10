@@ -162,6 +162,16 @@ exports.getAllProduct = async (req, res) => {
                     as: "sizeData"
                 }
             },
+            // Filter out products where main category, category, or subcategory is inactive
+            {
+                $match: {
+                    $and: [
+                        { "mainCategoryData.status": true },
+                        { "categoryData.status": true },
+                        { "subCategoryData.status": true }
+                    ]
+                }
+            },
             // Join stocks and compute availability status based on total quantity
             {
                 $lookup: {
@@ -248,6 +258,17 @@ exports.getProductById = async (req, res) => {
                     localField: "sizeNameId",
                     foreignField: "_id",
                     as: "sizeData"
+                }
+            },
+            // Filter out products where main category, category, or subcategory is inactive
+            {
+                $match: {
+                    $and: [
+                        { "mainCategoryData.status": true },
+                        { "categoryData.status": true },
+                        { "subCategoryData.status": true },
+                        { "status": true }
+                    ]
                 }
             }
         ]);

@@ -395,7 +395,7 @@ const handleFilterReset = () => {
                                 </td> */}
                                 <td>
                                     <div className='sp_table_action d-flex'>
-                                        <div onClick={() => {navigate("/admin/editStock"); localStorage.setItem("Editid" , item._id)}}> <img src={editImg} alt="edit" /> </div>
+                                        {/* <div onClick={() => {navigate("/admin/editStock"); localStorage.setItem("Editid" , item._id)}}> <img src={editImg} alt="edit" /> </div> */}
                                         <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
                                     </div>
                                 </td>

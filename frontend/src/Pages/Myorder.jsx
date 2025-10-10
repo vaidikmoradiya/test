@@ -526,7 +526,7 @@ const Myorder = () => {
   }, [showEditModal, showReviewModal, showCardModal, showNewModal, showAddressModal, showDeleteModal, showErrorModal]);
 
   return (
-    <div className='mv_profile_main_card'>
+    <div className=''>
 
         {/* Edit Profile Modal */}
         {showEditModal && (
@@ -878,7 +878,8 @@ const Myorder = () => {
                               </div>
                               {(() => {
                                 const sortedOrders = Array.isArray(allorder) ? [...allorder].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
-                                const visibleOrders = sortedOrders.filter(order => {
+                                const userOrders = sortedOrders.filter(order => order.userId === userid);
+                                const visibleOrders = userOrders.filter(order => {
                                   if (orderFilter === 'All Orders') return true;
                                   return order.orderStatus === orderFilter;
                                 });
@@ -900,7 +901,14 @@ const Myorder = () => {
                                     <div className="row">
                                       <div className="col-xxl-1 col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3">
                                         <div>
-                                          <p className="mv_order_status">{item.orderStatus}</p>
+                                          <p className="mv_order_status">{(() => {
+                                            const hardStatuses = ['Return Pending', 'Return Accepted', 'Return Rejected', 'Cancelled'];
+                                            if (hardStatuses.includes(item.orderStatus)) {
+                                              return item.orderStatus;
+                                            }
+                                            // Fall back to progressive status (e.g., Order Confirmed, Shipped, Out for Delivery, Delivered)
+                                            return item.progressiveStatus || item.orderStatus;
+                                          })()}</p>
                                         </div>
                                       </div>
                                       <div className="col-xxl-9 col-xl-8 col-lg-8 col-md-8 col-sm-6 col-6">

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("token")
 
@@ -7,7 +8,7 @@ export const GetAllOrderData = createAsyncThunk(
   'getallorderdata',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getAllOrder`, {
+      const response = await axiosInstance.get(`${url}/getAllOrder`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -21,7 +22,7 @@ export const GetAllOrderData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetAllOrderData " , error.message)
+        // alert("Get GetAllOrderData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -34,7 +35,7 @@ export const GetOrderData = createAsyncThunk(
   'getorderdata',
   async (editid, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getOrderById/${editid}`, {
+      const response = await axiosInstance.get(`${url}/getOrderById/${editid}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -48,7 +49,7 @@ export const GetOrderData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetOrderData " , error.message)
+        // alert("Get GetOrderData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -62,7 +63,7 @@ export const DeleteOrderData = createAsyncThunk(
   async (deleteId, { rejectWithValue }) => {
     // console.log(values , id);
     try {
-      const response = await axios.delete(`${url}/deleteOrder/${deleteId}`,
+      const response = await axiosInstance.delete(`${url}/deleteOrder/${deleteId}`,
         {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +78,7 @@ export const DeleteOrderData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteOrderData " , error.message)
+        // alert("Get DeleteOrderData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -92,7 +93,7 @@ export const CreateOrderData = createAsyncThunk(
     console.log(value);
     try {
       const user = localStorage.getItem('UserId');
-      const response = await axios.post(`${url}/createOrder`,
+      const response = await axiosInstance.post(`${url}/createOrder`,
         {
           userId: user,
           addressId: value.addressId,

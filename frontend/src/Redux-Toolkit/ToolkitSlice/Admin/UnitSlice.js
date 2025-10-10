@@ -21,7 +21,7 @@ export const GetUnitData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get UnitData " , error.message)
+        // alert("Get UnitData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -51,7 +51,7 @@ export const CreateUnitData = createAsyncThunk(
          return data;
       }
       else{
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -81,7 +81,7 @@ export const EditUnitData = createAsyncThunk(
          return data;
       }
       else{
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -110,7 +110,7 @@ export const EditUnitStatusData = createAsyncThunk(
          return data;
       }
       else{
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -137,7 +137,7 @@ export const DeleteUnitData = createAsyncThunk(
          return data;
       }
       else{
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

@@ -21,7 +21,7 @@ export const GetSizeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetSizeData " , error.message)
+        // alert("Get GetSizeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -48,7 +48,7 @@ export const GetSingleSizeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetSingleSizeData " , error.message)
+        // alert("Get GetSingleSizeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -84,7 +84,7 @@ export const CreateSizeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get CreateSizeData " , error.message)
+        // alert("Get CreateSizeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -120,7 +120,7 @@ export const EditSizeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditSizeData " , error.message)
+        // alert("Get EditSizeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -147,7 +147,7 @@ export const DeleteSizeData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteSizeData " , error.message)
+        // alert("Get DeleteSizeData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

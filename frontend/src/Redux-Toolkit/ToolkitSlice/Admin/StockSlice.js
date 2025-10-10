@@ -21,7 +21,7 @@ export const GetAllStock = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetAllStock " , error.message)
+        // alert("Get GetAllStock " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -55,7 +55,7 @@ export const CreateStock = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get CreateStock " , error.message)
+        // alert("Get CreateStock " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -82,7 +82,7 @@ export const GetSingleStockData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetSingleStockData " , error.message)
+        // alert("Get GetSingleStockData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -116,7 +116,7 @@ export const EditStockData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditStockData " , error.message)
+        // alert("Get EditStockData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -144,7 +144,7 @@ export const DeleteStockData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteStockData " , error.message)
+        // alert("Get DeleteStockData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

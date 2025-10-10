@@ -137,6 +137,7 @@ function Productlist() {
 
     // Define sort options
     const sortOptions = [
+        { method: 'default', display: 'Default' },
         { method: 'price-low-high', display: 'Price: Low to High' },
         { method: 'price-high-low', display: 'Price: High to Low' },
         { method: 'discount-low-high', display: 'Discount: Low to High' },
@@ -202,7 +203,7 @@ function Productlist() {
                     </div>
                     <div className="row mv_product_main_mar">
                         {(() => {
-                            const baseList = (subcategoryId || categoryId) ? filteredProducts : ProductData;
+                            const baseList = sortedProducts.length > 0 ? sortedProducts : ((subcategoryId || categoryId) ? filteredProducts : ProductData);
                             const productsToShow = showAll ? baseList : baseList?.slice(0, 8);
 
                             if (!baseList || baseList.length === 0) {
@@ -251,7 +252,7 @@ function Productlist() {
                             ));
                         })()}
                         {(() => {
-                            const baseList = (subcategoryId || categoryId) ? filteredProducts : ProductData;
+                            const baseList = sortedProducts.length > 0 ? sortedProducts : ((subcategoryId || categoryId) ? filteredProducts : ProductData);
                             return (baseList?.length || 0) > 8 && (
                                 <div className='col-12 d-flex justify-content-center mt-3'>
                                     {!showAll ? (

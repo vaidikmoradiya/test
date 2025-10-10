@@ -15,7 +15,7 @@ export const GetActiveCateData = createAsyncThunk(
         let data = [];
         return data;
       } else {
-        alert("Get GetActiveCateData ", error.message)
+        // alert("Get GetActiveCateData ", error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -42,7 +42,7 @@ export const GetCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetCateData " , error.message)
+        // alert("Get GetCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -83,7 +83,7 @@ export const CreateCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get CreateCateData " , error.message)
+        // alert("Get CreateCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -122,7 +122,7 @@ export const EditCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditCateData " , error.message)
+        // alert("Get EditCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -152,7 +152,7 @@ export const EditStatusCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get EditStatusCateData " , error.message)
+        // alert("Get EditStatusCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -181,7 +181,7 @@ export const DeleteCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteCateData " , error.message)
+        // alert("Get DeleteCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

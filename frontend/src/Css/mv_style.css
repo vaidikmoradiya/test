@@ -2522,7 +2522,7 @@
     padding: 40px 0px;
 }
 .mv_profile_card{
-    padding-bottom: 60px;
+    padding-bottom: 50px;
 }
 .mv_profile_card_row{
     box-shadow: -4px 4px 14px 0px #0000000F;
@@ -3411,6 +3411,11 @@
         width: 105px;
     }
 }
+@media (max-width: 768px){
+    .mv_profile_label {
+        min-width: 40px;
+    }
+}
 @media (max-width: 767px) {
     .mv_profile_card_left {
         justify-content: start;
@@ -3426,10 +3431,10 @@
 
 @media (max-width: 575px){
     .mv_profile_main_card{
-        padding: 20px 0px;
+        padding: 30px 0px;
     }
     .mv_profile_card {
-        padding: 30px 0px;
+        padding: 0px 0px 30px 0px;
     }
     .mv_order_card{
         width: 100%;

@@ -22,7 +22,7 @@ export const GetSingleUserData = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get GetSingleUserData " , error.message)
+          // alert("Get GetSingleUserData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
@@ -62,7 +62,7 @@ export const EditUserData = createAsyncThunk(
            return data;
         }
         else{
-          alert("Get EditUserData " , error.message)
+          // alert("Get EditUserData " , error.message)
         }
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
@@ -91,7 +91,7 @@ export const ChangePassData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get ChangePassData " , error.message)
+        // alert("Get ChangePassData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

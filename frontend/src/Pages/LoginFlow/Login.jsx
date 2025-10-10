@@ -19,7 +19,7 @@ const Login = () => {
   const initialValues = {
     email: '',
     password: '',
-    remember: false,
+    rememberMe: false,
   };
 
   const validationSchema = Yup.object({
@@ -192,7 +192,9 @@ const Login = () => {
                 <label>
                   <input
                     type="checkbox"
-                    {...LoginFormik.getFieldProps('remember')}
+                    name="rememberMe"
+                    checked={LoginFormik.values.rememberMe}
+                    onChange={LoginFormik.handleChange}
                     className="me-2"
                   />Remember Me
                 </label>

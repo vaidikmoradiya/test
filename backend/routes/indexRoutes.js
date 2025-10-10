@@ -1,5 +1,5 @@
 const express = require('express');
-const { login, userRegister, verifyOtp, resendOtp, forgotPassword, resetPassword, socialLogin } = require('../Auth/login');
+const { login, userRegister, verifyOtp, resendOtp, forgotPassword, resetPassword, socialLogin, refreshAccessToken } = require('../Auth/login');
 const { getAllUser, getUserById, updateUserById, deleteUserById, changePassword } = require('../Controller/userController');
 const { auth } = require('../helper/AuthToken');
 const upload = require('../helper/imageUplode');
@@ -41,6 +41,7 @@ indexRoute.post('/login', login);
 indexRoute.post('/forgotPassword', forgotPassword);
 indexRoute.post('/resetPassword', resetPassword);
 indexRoute.post('/sociallogin',socialLogin);
+indexRoute.get('/refresh-token', refreshAccessToken);
  
 //Role Routes
 indexRoute.post('/createRole', auth(['Admin', 'User']), createRole);

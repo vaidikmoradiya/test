@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 
 export const GetUserData = createAsyncThunk(
@@ -7,7 +8,7 @@ export const GetUserData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${url}/getAllUsers`, {
+      const response = await axiosInstance.get(`${url}/getAllUsers`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -23,7 +24,7 @@ export const GetUserData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetUserData " , error.message)
+        // alert("Get GetUserData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -46,7 +47,7 @@ export const updateUserData = createAsyncThunk(
     console.log('useruser',value);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(`${url}/updateUserById/`+value.id,formData, {
+      const response = await axiosInstance.put(`${url}/updateUserById/`+value.id,formData, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -60,7 +61,7 @@ export const updateUserData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetUserData " , error.message)
+        // alert("Get GetUserData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -74,7 +75,7 @@ export const DeleteUserData = createAsyncThunk(
   async (deleteId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.delete(`${url}/deleteUserById/${deleteId}`, {
+      const response = await axiosInstance.delete(`${url}/deleteUserById/${deleteId}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -88,7 +89,7 @@ export const DeleteUserData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteUserData " , error.message)
+        // alert("Get DeleteUserData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

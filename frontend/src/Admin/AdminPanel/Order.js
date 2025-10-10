@@ -49,7 +49,7 @@ useEffect(() => {
 
 // Filter OrderData based on search and filters, then set filteredData
 useEffect(() => {
-    let filtered = OrderData || [];
+    let filtered = (OrderData || []).slice();
 
     // Search filter (on multiple fields)
     if (searchInput && searchInput.trim() !== "") {
@@ -79,6 +79,8 @@ useEffect(() => {
             element?.totalAmount >= filterPriceRange[0] && element?.totalAmount <= filterPriceRange[1]
         );
     }
+    // Sort by newest first to keep latest orders at the top and stable on refresh
+    filtered = filtered.sort((a, b) => new Date(b?.createdAt) - new Date(a?.createdAt));
     setFilteredData(filtered);
 }, [OrderData, searchInput, filterOrderStatus, filterPriceRange, filterDate]);
 
@@ -89,17 +91,10 @@ useEffect(() => {
     setData(filteredData?.slice(startIndex, endIndex) || []);
 }, [currentPage, filteredData]);
 
-// Auto-jump to last page when order list grows and no search is active
+// Keep currentPage stable on data changes; default remains 1
 useEffect(() => {
-    const isSearching = !!searchInput.trim() || !!filterDate;
-    const newCount = (OrderData?.length) || 0;
-    const prevCount = prevTotalCountRef.current;
-    if (!isSearching && newCount > prevCount) {
-        const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
-        setCurrentPage(targetPage);
-    }
-    prevTotalCountRef.current = newCount;
-}, [OrderData?.length, searchInput, filterDate]);
+    prevTotalCountRef.current = (OrderData?.length) || 0;
+}, [OrderData?.length]);
 
 var itemPerPage = 10;
 var totalPages = Math.ceil(filteredData?.length / itemPerPage);
@@ -368,11 +363,21 @@ const STEP = 5;
                                 <td>{new Date(order?.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                 <td>₹{order?.totalAmount}</td>
                                 <td>
-                                    <div className={
-                                        order?.orderStatus === 'Delivered' ? 'ds_order_deli' :
-                                        order?.orderStatus === 'Pending' ? 'ds_order_pen' :
+                                    {(() => {
+                                        const hardStatuses = ['Return Pending', 'Return Accepted', 'Return Rejected', 'Cancelled'];
+                                        const displayStatus = hardStatuses.includes(order?.orderStatus)
+                                            ? order?.orderStatus
+                                            : (order?.progressiveStatus || order?.orderStatus);
+                                        return (
+                                            <div className={
+                                                order?.orderStatus === 'Delivered' ? 'ds_order_deli' :
+                                                order?.orderStatus === 'Pending' ? 'ds_order_pen' :
                                                 'ds_order_can'
-                                    }>{order?.orderStatus}</div>
+                                            }>
+                                                {displayStatus}
+                                            </div>
+                                        );
+                                    })()}
                                 </td>
                                 <td>
                                     <div className='sp_table_action d-flex'>

@@ -70,14 +70,14 @@ function Topselling() {
                     </div>
                     <div className="row mv_product_main_mar">
                         {TopsellingData?.map((item, index) => (
-                            <div key={index} className="col-lg-3 col-md-4 col-sm-6">
+                            <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div className="mv_main_card">
                                     <Link to={`/layout/Detailpage/${item._id}`} className='mv_product_img text-decoration-none'>
                                         <img src={`${Back_URL}${item?.productDetails?.productImage[0]}`} className='' />
                                     </Link>
                                     <Link to={`/layout/Detailpage/${item._id}`} className='mv_name_dis text-decoration-none'>
                                         <div>
-                                            <p className='mv_pro_name'>{item.productDetails.productName}</p>
+                                            <p className='mv_pro_name mv_pro_big_name'>{item.productDetails.productName}</p>
                                         </div>
                                         {item.productDetails.discount && (
                                             <div>

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("token")
 
@@ -7,7 +8,7 @@ export const GetAllCancelOrder = createAsyncThunk(
   'getallcancelorder',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getAllcancleorder`, {
+      const response = await axiosInstance.get(`${url}/getAllcancleorder`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -21,7 +22,7 @@ export const GetAllCancelOrder = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetAllCancelOrder " , error.message)
+        // alert("Get GetAllCancelOrder " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -35,7 +36,7 @@ export const cancleOrder = createAsyncThunk(
   async ( value , { rejectWithValue }) => {
     try {
       const Userid = localStorage.getItem('UserId');
-      const response = await axios.post(`${url}/createCancleOrder`, {
+      const response = await axiosInstance.post(`${url}/createCancleOrder`, {
           userId: Userid,
           orderId: value.orderId,
           reason: value.reason,
@@ -54,7 +55,7 @@ export const cancleOrder = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get cancleOrder " , error.message)
+        // alert("Get cancleOrder " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

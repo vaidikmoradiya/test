@@ -21,7 +21,7 @@ export const GetFaqCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetFaqCateData " , error.message)
+        // alert("Get GetFaqCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -45,7 +45,7 @@ export const CreateFaqCate = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get CreateFaqCate Error:", error.message);
-         alert(error?.response?.data?.message)
+        //  alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -68,7 +68,7 @@ export const EditFaqCate = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get EditFaqCate Error:", error.message);
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -91,7 +91,7 @@ export const EditStatusFaqCate = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get EditStatusFaqCate Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -112,7 +112,7 @@ export const DeleteFaqCate = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get DeleteFaqCate Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

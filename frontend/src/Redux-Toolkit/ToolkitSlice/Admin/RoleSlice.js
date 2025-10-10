@@ -21,7 +21,7 @@ export const GetRoleData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get RoleData " , error.message)
+        // alert("Get RoleData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -46,7 +46,7 @@ export const CreateRole = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("CreateRole Error:", error.message);
-        alert("CreateRole", error.message);
+        // alert("CreateRole", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -69,7 +69,7 @@ export const EditRole = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("EditRole Error:", error.message);
-        alert("EditRole", error.message);
+        // alert("EditRole", error.message);
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );

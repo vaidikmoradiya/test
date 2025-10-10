@@ -21,7 +21,7 @@ export const GetMainCateData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get MainCateData " , error.message)
+        // alert("Get MainCateData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -45,7 +45,7 @@ export const CreateMainCate = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get CreateMainCate Error:", error.message);
-         alert(error?.response?.data?.message)
+        //  alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -68,7 +68,7 @@ export const EditMainCate = createAsyncThunk(
         return response?.data?.data;
       } catch (error) {
         console.error("Get EditMainCate Error:", error.message);
-        alert(error?.response?.data?.message)
+        // alert(error?.response?.data?.message)
         return rejectWithValue(
           error.response?.data || { message: "Unexpected error occurred" }
         );
@@ -91,7 +91,7 @@ export const EditStatusMainCate = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get EditMainCate Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );
@@ -112,7 +112,7 @@ export const DeleteMainCate = createAsyncThunk(
       return response?.data?.data;
     } catch (error) {
       console.error("Get DeleteMainCate Error:", error.message);
-      alert(error?.response?.data?.message)
+      // alert(error?.response?.data?.message)
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
       );

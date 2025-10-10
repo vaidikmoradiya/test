@@ -697,7 +697,7 @@ const Cart = () => {
                     </div>
                     <div className="row mv_product_main_mar">
                         {TopsellingData?.map((item, index) => (
-                            <div key={index} className="col-lg-3 col-md-4 col-sm-6">
+                            <div key={index} className="col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <div className="mv_main_card">
                                     <div
                                         className='mv_product_img text-decoration-none'
@@ -712,7 +712,7 @@ const Cart = () => {
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div>
-                                            <p className='mv_pro_name'>{item.productDetails?.productName}</p>
+                                            <p className='mv_pro_name mv_pro_big_name'>{item.productDetails?.productName}</p>
                                         </div>
                                         {item.productDetails.discount && (
                                             <div>

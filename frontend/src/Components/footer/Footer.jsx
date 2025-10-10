@@ -15,9 +15,15 @@ const Footer = () => {
                 <Row className='m-0 justify-content-between'>
                     <Col xl={3} lg={3} md={12} className='px-2 text-white my-sm-4 my-2 mb-4'>
                         <div className='text-white'>
-                            <h2 className='fw-bolder'>
-                                Logo
-                            </h2>
+                            <Link 
+                                to="/layout/home" 
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            >
+                                <h2 className='fw-bolder' style={{ cursor: 'pointer' }}>
+                                    Logo
+                                </h2>
+                            </Link>
                             <p className='VK_light_color mb-0'>
                                 Lorem ipsum dolor sit amet consectetur. Amet viverra nec netus donec. Et ut cursus nisl tincidunt egestas morbi aliquet.
                             </p>

@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("token")
 
@@ -7,7 +8,7 @@ export const GetProductById = createAsyncThunk(
   'getproductbyid',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${url}/getProductById/${id}`, {
+      const response = await axiosInstance.get(`${url}/getProductById/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -21,7 +22,7 @@ export const GetProductById = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetProductById " , error.message)
+        // alert("Get GetProductById " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

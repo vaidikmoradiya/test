@@ -29,6 +29,8 @@ const Products = () => {
     const [searchInput, setSearchInput] = useState("")
     const [deleteId, setDeleteId] = useState(null)
     const prevTotalCountRef = useRef(0);
+    const skipAutoJumpRef = useRef(false);
+    const initialLoadRef = useRef(true);
 
     // Filter state variables
     const [filterMainCategory, setFilterMainCategory] = useState("")
@@ -52,6 +54,22 @@ const Products = () => {
     useEffect(() => {
         dispatch(GetAllProduct())
     }, [])
+
+    // Restore pagination page only when returning from edit (refresh opens page 1)
+    useEffect(() => {
+        const cameFromEdit = sessionStorage.getItem('ProductsReturnFromEdit');
+        const storedPage = sessionStorage.getItem('ProductsCurrentPage');
+        if (cameFromEdit && storedPage) {
+            const parsed = parseInt(storedPage, 10);
+            const total = Math.max(1, Math.ceil(((ProductData?.length) || 0) / itemPerPage));
+            const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+            skipAutoJumpRef.current = true;
+            initialLoadRef.current = false;
+            setCurrentPage(clampedPage);
+            sessionStorage.removeItem('ProductsCurrentPage');
+            sessionStorage.removeItem('ProductsReturnFromEdit');
+        }
+    }, [ProductData?.length]);
 
     // Filter ProductData based on search and filters, then set filteredData
     useEffect(() => {
@@ -106,14 +124,27 @@ const Products = () => {
         setData(filteredData?.slice(startIndex, endIndex) || []);
     }, [currentPage, filteredData]);
 
-    // Auto-jump to last page when product list grows and no search is active
+    // Auto-jump to last page only when explicitly requested (e.g., after Add)
     useEffect(() => {
         const isSearching = !!searchInput.trim();
         const newCount = (ProductData?.length) || 0;
         const prevCount = prevTotalCountRef.current;
-        if (!isSearching && newCount > prevCount) {
+        if (skipAutoJumpRef.current) {
+            prevTotalCountRef.current = newCount;
+            skipAutoJumpRef.current = false;
+            return;
+        }
+        // Skip auto-jump on initial load (e.g., page refresh)
+        if (initialLoadRef.current) {
+            prevTotalCountRef.current = newCount;
+            initialLoadRef.current = false;
+            return;
+        }
+        const shouldJumpLast = sessionStorage.getItem('ProductsJumpLastOnce') === '1';
+        if (!isSearching && shouldJumpLast) {
             const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
             setCurrentPage(targetPage);
+            sessionStorage.removeItem('ProductsJumpLastOnce');
         }
         prevTotalCountRef.current = newCount;
     }, [ProductData?.length, searchInput]);
@@ -439,7 +470,7 @@ const Products = () => {
                                 <td>
                                     <div className='sp_table_action d-flex'>
                                         <div onClick={() => {navigate('/admin/viewproduct'); localStorage.setItem("Getid" , item._id)}}><img src={eye} alt='view' /></div>
-                                        <div onClick={() => {navigate('/admin/editproduct'); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt='edit' /></div>
+                                        <div onClick={() => {navigate('/admin/editproduct'); localStorage.setItem("Editid" , item._id); sessionStorage.setItem("ProductsReturnFromEdit", '1'); sessionStorage.setItem("ProductsCurrentPage", currentPage)}}><img src={editImg} alt='edit' /></div>
                                         <div onClick={() => {setDeletePopup(true); setDeleteId(item?._id)}}><img src={deleteImg} alt='delete' /></div>
                                     </div>
                                 </td>

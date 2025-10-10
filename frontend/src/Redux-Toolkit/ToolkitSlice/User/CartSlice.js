@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("token")
 
@@ -17,7 +18,7 @@ export const Createcart = createAsyncThunk(
       
       if (existingItem) {
         // If product exists, update its quantity
-        const response = await axios.put(`${url}/updateCart/${existingItem._id}`, 
+        const response = await axiosInstance.put(`${url}/updateCart/${existingItem._id}`, 
           {
             qty: existingItem.qty + 1
           },
@@ -30,7 +31,7 @@ export const Createcart = createAsyncThunk(
         return response?.data?.data;
       } else {
         // If product doesn't exist, add new item
-        const response = await axios.post(`${url}/createCart`, 
+        const response = await axiosInstance.post(`${url}/createCart`, 
           {
             productId: value.id,
             userId: cartid,
@@ -52,7 +53,7 @@ export const Createcart = createAsyncThunk(
         return data;
       }
       else{
-        alert("Get Createcart " , error.message)
+        // alert("Get Createcart " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -67,7 +68,7 @@ export const GetCartByuser = createAsyncThunk(
     try {
      
       const cartid = localStorage.getItem('UserId')
-      const response = await axios.get(`${url}/getCartByuser/${cartid}`, {
+      const response = await axiosInstance.get(`${url}/getCartByuser/${cartid}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
@@ -83,7 +84,7 @@ export const GetCartByuser = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetCartByuser " , error.message)
+        // alert("Get GetCartByuser " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -96,7 +97,7 @@ export const UpdateCartQuantity = createAsyncThunk(
   'updatecartquantity',
   async ({ itemId, qty }, { rejectWithValue  , dispatch}) => {
     try {
-      const response = await axios.put(`${url}/updateCart/${itemId}`, 
+      const response = await axiosInstance.put(`${url}/updateCart/${itemId}`, 
         {
          
           qty: qty
@@ -122,7 +123,7 @@ export const DeleteCartItem = createAsyncThunk(
   'deletecartitem',
   async (itemId, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.delete(`${url}/deleteCart/${itemId}`, {
+      const response = await axiosInstance.delete(`${url}/deleteCart/${itemId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
@@ -143,7 +144,7 @@ export const ClearAllCart = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {
     try {
       const userId = localStorage.getItem('UserId');
-      const response = await axios.delete(`${url}/clearAllCart/${userId}`, {
+      const response = await axiosInstance.delete(`${url}/clearAllCart/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         }

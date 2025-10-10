@@ -11,7 +11,7 @@ exports.auth = (roles = []) => {
                     : authorization;
 
                 if (!token) {
-                    return res.status(404).json({ status: 404, success: false, message: "Token Is Required" })
+                    return res.status(401).json({ status: 401, success: false, message: "Token Is Required" })
                 }
 
                 console.log('token', process.env.SECRET_KEY)
@@ -27,7 +27,7 @@ exports.auth = (roles = []) => {
                 req.user = checkUser;
 
                 if (!checkUser) {
-                    return res.status(404).json({ status: 404, success: false, message: "User Not Found" })
+                    return res.status(401).json({ status: 401, success: false, message: "User Not Found" })
                 }
 
                 // if (!roles.includes(checkUser.role)) {
@@ -38,11 +38,11 @@ exports.auth = (roles = []) => {
 
             } catch (error) {
                 console.log(error);
-                return res.status(500).json({ status: 500, success: false, message: error.message })
+                return res.status(401).json({ status: 401, success: false, message: error.message })
             }
         }
         else {
-            return res.status(500).json({ status: 500, success: false, message: "Authorization Token Is Require" })
+            return res.status(401).json({ status: 401, success: false, message: "Authorization Token Is Require" })
         }
     }
 } 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import axiosInstance from "../../../utils/axiosInstance";
 const url = "http://localhost:5000/api";
 const token = localStorage.getItem("token")
 
@@ -22,7 +23,7 @@ export const GetAllReview = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetAllReview " , error.message)
+        // alert("Get GetAllReview " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -49,7 +50,7 @@ export const GetSingleReviewData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get GetSingleReviewData " , error.message)
+        // alert("Get GetSingleReviewData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -78,7 +79,7 @@ export const CreateReview = createAsyncThunk(
         });
       }
       
-      const response = await axios.post(`${url}/createReview`, formData, {
+      const response = await axiosInstance.post(`${url}/createReview`, formData, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
@@ -93,7 +94,7 @@ export const CreateReview = createAsyncThunk(
          return data;
       }
       else{
-        alert("CreateReview " , error.message)
+        // alert("CreateReview " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }
@@ -123,7 +124,7 @@ export const DeleteReviewData = createAsyncThunk(
          return data;
       }
       else{
-        alert("Get DeleteReviewData " , error.message)
+        // alert("Get DeleteReviewData " , error.message)
       }
       return rejectWithValue(
         error.response?.data || { message: "Unexpected error occurred" }

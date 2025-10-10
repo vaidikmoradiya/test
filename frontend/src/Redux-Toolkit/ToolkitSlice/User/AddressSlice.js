@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import axiosInstance from '../../../utils/axiosInstance';
 
 const API_URL = 'http://localhost:5000/api'; // Adjust this to match your backend URL
 const token = localStorage.getItem('token')
@@ -10,7 +11,7 @@ export const createaddress = createAsyncThunk(
         try {
             const user = localStorage.getItem("UserId");
             console.log(user);
-            const response = await axios.post(`${API_URL}/createAddress`, 
+            const response = await axiosInstance.post(`${API_URL}/createAddress`, 
                 {
                     userId: user,
                     orderId: value.orderId,
@@ -39,7 +40,7 @@ export const getalladdress = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const user = localStorage.getItem("UserId");
-            const response = await axios.get(`${API_URL}/getAddressByUserId/${user}`, {
+            const response = await axiosInstance.get(`${API_URL}/getAddressByUserId/${user}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -55,7 +56,7 @@ export const getAllAddresses = createAsyncThunk(
     "address/getAll",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${API_URL}/getAllAddress`, {
+            const response = await axiosInstance.get(`${API_URL}/getAllAddress`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -71,7 +72,7 @@ export const updateAddress = createAsyncThunk(
     'address/update',
     async ({ id, data }, { rejectWithValue }) => {
         try {
-            const response = await axios.put(`${API_URL}/updateAddress/${id}`, data, {
+            const response = await axiosInstance.put(`${API_URL}/updateAddress/${id}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -87,7 +88,7 @@ export const deleteAddress = createAsyncThunk(
     'address/delete',
     async (id, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`${API_URL}/deleteAddress/${id}`, {
+            const response = await axiosInstance.delete(`${API_URL}/deleteAddress/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

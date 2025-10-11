@@ -69,6 +69,11 @@ const Deliveredorder = () => {
     setOtpRequested(true);
   };
 
+  // Function to check if OTP is complete
+  const isOtpComplete = (otpArray) => {
+    return otpArray && otpArray.length === 6 && otpArray.every(digit => digit !== '');
+  };
+
   // New modal component for return product request success
   function MvReturnRequestSuccessModal({ onClose }) {
     return (
@@ -246,7 +251,15 @@ const Deliveredorder = () => {
                 returnReason: Yup.string().required('Reason is required'),
                 mobile: Yup.string()
                   .matches(/^\+?\d{12}$/, 'Mobile No must be a valid international number'),
-                // OTP is not required for requesting OTP, only for confirm
+                otp: Yup.array()
+                  .of(Yup.string())
+                  .test('otp-complete', 'Please enter complete OTP', function(value) {
+                    // Only validate OTP when otpRequested is true
+                    if (otpRequested) {
+                      return value && value.every(digit => digit !== '') && value.length === 6;
+                    }
+                    return true; // Skip validation when OTP is not requested yet
+                  })
               })}
               onSubmit={(values, { setSubmitting }) => {
                 if (!otpRequested) {
@@ -364,7 +377,14 @@ const Deliveredorder = () => {
                       <>
                         <div style={{display: 'flex', width: '100%', gap: 12, marginBottom: 12}}>
                           <button type="button" className="mv_return_modal_cancel" style={{flex: 1}} onClick={handleCloseModal}>Cancel</button>
-                          <button type="submit" className="mv_return_modal_submit" style={{flex: 1}} disabled={isSubmitting}>Confirm Return</button>
+                          <button 
+                            type="submit" 
+                            className="mv_return_modal_submit" 
+                            style={{flex: 1}} 
+                            disabled={isSubmitting || !isOtpComplete(values.otp)}
+                          >
+                            Confirm Return
+                          </button>
                         </div>
                         <div style={{textAlign: 'center', width: '100%', color: '#23243599', fontSize: 16}}>
                           Didn't received code? <span style={{color: '#232435', textDecoration: 'underline', cursor: 'pointer'}} onClick={handleRequestOtp}>Resend</span>

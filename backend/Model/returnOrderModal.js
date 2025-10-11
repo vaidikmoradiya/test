@@ -18,7 +18,7 @@ const returnOrderSchema = mongoose.Schema({
     },
     status:{
         type:String,
-        enum:['Accept','Reject']
+        enum:['Accept','Reject','Refund']
     },
 },{
     timestamps:true,

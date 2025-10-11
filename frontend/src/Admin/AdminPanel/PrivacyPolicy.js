@@ -25,6 +25,9 @@ const PrivacyPolicy = () => {
     var itemPerPage = 10;
     const prevTotalCountRef = useRef(0);
 
+    const skipAutoJumpRef = useRef(false);
+    const initialLoadRef = useRef(true);
+
     const dispatch = useDispatch();
     const getPrivacyPolicy = useSelector((state) => state?.privacyPolicy?.allPrivacyPolicy);
     const loading = useSelector((state) => state?.privacyPolicy?.loading);
@@ -39,14 +42,43 @@ const PrivacyPolicy = () => {
         setCurrentPage(1)
     }, [searchInput])
 
+    // Restore pagination page only when returning from edit (refresh opens page 1)
+    useEffect(() => {
+        const cameFromEdit = sessionStorage.getItem('PrivacyPolicyReturnFromEdit');
+        const storedPage = sessionStorage.getItem('PrivacyPolicyCurrentPage');
+        if (cameFromEdit && storedPage) {
+            const parsed = parseInt(storedPage, 10);
+            const total = Math.max(1, Math.ceil(((getPrivacyPolicy?.length) || 0) / itemPerPage));
+            const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+            skipAutoJumpRef.current = true;
+            initialLoadRef.current = false;
+            setCurrentPage(clampedPage);
+            sessionStorage.removeItem('PrivacyPolicyCurrentPage');
+            sessionStorage.removeItem('PrivacyPolicyReturnFromEdit');
+        }
+    }, [getPrivacyPolicy?.length]);
+
     // Auto-jump to last page when privacy policies grow and no search is active
     useEffect(() => {
         const isSearching = !!searchInput.trim();
         const newCount = (getPrivacyPolicy?.length) || 0;
         const prevCount = prevTotalCountRef.current;
-        if (!isSearching && newCount > prevCount) {
+        if (skipAutoJumpRef.current) {
+            prevTotalCountRef.current = newCount;
+            skipAutoJumpRef.current = false;
+            return;
+        }
+        // Skip auto-jump on initial load (e.g., page refresh)
+        if (initialLoadRef.current) {
+            prevTotalCountRef.current = newCount;
+            initialLoadRef.current = false;
+            return;
+        }
+        const shouldJumpLast = sessionStorage.getItem('StockJumpLastOnce') === '1';
+        if (!isSearching && shouldJumpLast) {
             const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
             setCurrentPage(targetPage);
+            sessionStorage.removeItem('StockJumpLastOnce');
         }
         prevTotalCountRef.current = newCount;
     }, [getPrivacyPolicy?.length, searchInput]);

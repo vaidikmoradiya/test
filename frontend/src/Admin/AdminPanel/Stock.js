@@ -22,6 +22,8 @@ const [deleteId, setDeleteId] = useState(null)
 const itemPerPage = 10;
 const dispatch = useDispatch()
 const prevTotalCountRef = useRef(0);
+const skipAutoJumpRef = useRef(false);
+const initialLoadRef = useRef(true);
 
 const StockData = useSelector((state) => state.stock.StockData)
 console.log("StockData",StockData);
@@ -43,6 +45,22 @@ const [tempFilterStatus, setTempFilterStatus] = useState("");
 useEffect(() => {
     dispatch(GetAllStock())
 }, [])
+
+// Restore pagination page only when returning from edit (refresh opens page 1)
+useEffect(() => {
+    const cameFromEdit = sessionStorage.getItem('StockReturnFromEdit');
+    const storedPage = sessionStorage.getItem('StockCurrentPage');
+    if (cameFromEdit && storedPage) {
+        const parsed = parseInt(storedPage, 10);
+        const total = Math.max(1, Math.ceil(((StockData?.length) || 0) / itemPerPage));
+        const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+        skipAutoJumpRef.current = true;
+        initialLoadRef.current = false;
+        setCurrentPage(clampedPage);
+        sessionStorage.removeItem('StockCurrentPage');
+        sessionStorage.removeItem('StockReturnFromEdit');
+    }
+}, [StockData?.length]);
 
 // Filtering logic
 useEffect(() => {
@@ -93,14 +111,27 @@ useEffect(() => {
     setData(filteredData?.slice(startIndex, endIndex) || []);
 }, [currentPage, filteredData]);
 
-// Auto-jump to last page when stock list grows and no search is active
+// Auto-jump to last page only when explicitly requested (e.g., after Add)
 useEffect(() => {
     const isSearching = !!searchInput.trim();
     const newCount = (StockData?.length) || 0;
     const prevCount = prevTotalCountRef.current;
-    if (!isSearching && newCount > prevCount) {
+    if (skipAutoJumpRef.current) {
+        prevTotalCountRef.current = newCount;
+        skipAutoJumpRef.current = false;
+        return;
+    }
+    // Skip auto-jump on initial load (e.g., page refresh)
+    if (initialLoadRef.current) {
+        prevTotalCountRef.current = newCount;
+        initialLoadRef.current = false;
+        return;
+    }
+    const shouldJumpLast = sessionStorage.getItem('StockJumpLastOnce') === '1';
+    if (!isSearching && shouldJumpLast) {
         const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
         setCurrentPage(targetPage);
+        sessionStorage.removeItem('StockJumpLastOnce');
     }
     prevTotalCountRef.current = newCount;
 }, [StockData?.length, searchInput]);
@@ -356,7 +387,7 @@ const handleFilterReset = () => {
                         <img src={search} alt="" className='ds_page_icon' />
                    </div>
                    <button onClick={()=> setShow(true)} className='ds_category_filter mt-3'><FaFilter className='me-1' /> Filter</button>
-                   <div onClick={() =>navigate("/admin/addStock")} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
+                   <div onClick={() => {navigate("/admin/addStock"); sessionStorage.setItem('StockJumpLastOnce', '1');}} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
                 </div>
         </div>
 

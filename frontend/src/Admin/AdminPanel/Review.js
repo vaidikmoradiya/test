@@ -24,11 +24,29 @@ const Review = () => {
     const ReviewData = useSelector((state) => state.review.allReviewData)
     console.log("ReviewData", ReviewData);
     const prevTotalCountRef = useRef(0);
+    const skipAutoJumpRef = useRef(false);
+    const initialLoadRef = useRef(true);
     const Back_URL = 'http://localhost:5000/'
 
     useEffect(() => {
         dispatch(GetAllReview())
     }, [])
+
+    // Restore pagination page only when returning from view (refresh opens page 1)
+    useEffect(() => {
+        const cameFromView = sessionStorage.getItem('ReviewReturnFromView');
+        const storedPage = sessionStorage.getItem('ReviewCurrentPage');
+        if (cameFromView && storedPage) {
+            const parsed = parseInt(storedPage, 10);
+            const total = Math.max(1, Math.ceil(((ReviewData?.length) || 0) / itemPerPage));
+            const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+            skipAutoJumpRef.current = true;
+            initialLoadRef.current = false;
+            setCurrentPage(clampedPage);
+            sessionStorage.removeItem('ReviewCurrentPage');
+            sessionStorage.removeItem('ReviewReturnFromView');
+        }
+    }, [ReviewData?.length]);
     
     useEffect(() => {
         const filtered = ReviewData?.filter(element => {
@@ -63,14 +81,27 @@ const Review = () => {
         }
     };
     
-    // Auto-jump to last page when reviews grow and no search is active
+    // Auto-jump to last page only when explicitly requested (e.g., after Add)
     useEffect(() => {
         const isSearching = !!searchInput.trim();
         const newCount = (ReviewData?.length) || 0;
         const prevCount = prevTotalCountRef.current;
-        if (!isSearching && newCount > prevCount) {
+        if (skipAutoJumpRef.current) {
+            prevTotalCountRef.current = newCount;
+            skipAutoJumpRef.current = false;
+            return;
+        }
+        // Skip auto-jump on initial load (e.g., page refresh)
+        if (initialLoadRef.current) {
+            prevTotalCountRef.current = newCount;
+            initialLoadRef.current = false;
+            return;
+        }
+        const shouldJumpLast = sessionStorage.getItem('ReviewJumpLastOnce') === '1';
+        if (!isSearching && shouldJumpLast) {
             const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
             setCurrentPage(targetPage);
+            sessionStorage.removeItem('ReviewJumpLastOnce');
         }
         prevTotalCountRef.current = newCount;
     }, [ReviewData?.length, searchInput]);
@@ -222,7 +253,7 @@ const Review = () => {
                                <td>{item.description && item.description.length > 50 ? `${item.description.slice(0, 50)}...` : item.description || ''}</td>
                                <td>
                                    <div className='sp_table_action d-flex'>
-                                       <div onClick={()=> {navigate("/admin/viewreview"); localStorage.setItem("Getid" , item._id);}}> <img src={eye} alt="view" /> </div>
+                                       <div onClick={() => {navigate("/admin/viewreview"); localStorage.setItem("Getid", item._id); sessionStorage.setItem("ReviewReturnFromView", '1'); sessionStorage.setItem("ReviewCurrentPage", currentPage)}}> <img src={eye} alt="view" /> </div>
                                        <div onClick={()=> {setDeletePopup(true); setDeleteId(item?._id)}}> <img src={deleteImg} alt="delete" /> </div>
                                    </div>
                                </td>

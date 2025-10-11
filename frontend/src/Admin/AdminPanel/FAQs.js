@@ -33,6 +33,9 @@ const FAQs = () => {
     const faqCateData = useSelector((state)=> state?.faqcategory?.getFaqCategoryData)
     // console.log("faqCateData",faqCateData);
     
+    const skipAutoJumpRef = useRef(false);
+    const initialLoadRef = useRef(true);
+
     useEffect(() => {
      dispatch(getAllFaq());
      dispatch(GetFaqCateData())
@@ -44,15 +47,44 @@ const FAQs = () => {
         setCurrentPage(1)
     }, [searchInput])
 
+    // Restore pagination page only when returning from edit (refresh opens page 1)
+    useEffect(() => {
+        const cameFromEdit = sessionStorage.getItem('FaqsReturnFromEdit');
+        const storedPage = sessionStorage.getItem('FaqsCurrentPage');
+        if (cameFromEdit && storedPage) {
+            const parsed = parseInt(storedPage, 10);
+            const total = Math.max(1, Math.ceil(((getFaq?.length) || 0) / itemPerPage));
+            const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+            skipAutoJumpRef.current = true;
+            initialLoadRef.current = false;
+            setCurrentPage(clampedPage);
+            sessionStorage.removeItem('FaqsCurrentPage');
+            sessionStorage.removeItem('FaqsReturnFromEdit');
+        }
+    }, [getFaq?.length]);
+
     // Auto-jump to last page when FAQs grow and no search is active
     useEffect(() => {
         const isSearching = !!searchInput.trim();
         const newCount = (getFaq?.length) || 0;
         const prevCount = prevTotalCountRef.current;
-        if (!isSearching && newCount > prevCount) {
-            const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
-            setCurrentPage(targetPage);
-        }
+    if (skipAutoJumpRef.current) {
+        prevTotalCountRef.current = newCount;
+        skipAutoJumpRef.current = false;
+        return;
+    }
+    // Skip auto-jump on initial load (e.g., page refresh)
+    if (initialLoadRef.current) {
+        prevTotalCountRef.current = newCount;
+        initialLoadRef.current = false;
+        return;
+    }
+    const shouldJumpLast = sessionStorage.getItem('StockJumpLastOnce') === '1';
+    if (!isSearching && shouldJumpLast) {
+        const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
+        setCurrentPage(targetPage);
+        sessionStorage.removeItem('StockJumpLastOnce');
+    }
         prevTotalCountRef.current = newCount;
     }, [getFaq?.length, searchInput]);
 

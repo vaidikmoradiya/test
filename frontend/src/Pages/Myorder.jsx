@@ -902,7 +902,8 @@ const Myorder = () => {
                                       <div className="col-xxl-1 col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3">
                                         <div>
                                           <p className="mv_order_status">{(() => {
-                                            const hardStatuses = ['Return Pending', 'Return Accepted', 'Return Rejected', 'Cancelled'];
+                                            const hardStatuses = ['Return Pending', 'Return Accepted', 'Return Refunded', 'Return Rejected', 'Cancelled'];
+                                            {console.log('item.orderStatus',item.orderStatus)}
                                             if (hardStatuses.includes(item.orderStatus)) {
                                               return item.orderStatus;
                                             }

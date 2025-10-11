@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import { GetReturnOrderData } from '../../Redux-Toolkit/ToolkitSlice/Admin/ReturnOrderSlice';
+import { EditReturnOrder, GetReturnOrderData } from '../../Redux-Toolkit/ToolkitSlice/Admin/ReturnOrderSlice';
 
 const ViewStatus = () => {
 
@@ -75,6 +75,22 @@ const filteredData = returnOrderData?.filter(item => {
     }
 
     return true;
+})?.sort((a, b) => {
+    // Sort by status first (Accept/Reject items first, then others)
+    const statusA = returnOrderStatus[a._id];
+    const statusB = returnOrderStatus[b._id];
+    
+    // If both have status, sort by creation date (newest first)
+    if (statusA && statusB) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+    
+    // If only one has status, prioritize it
+    if (statusA && !statusB) return -1;
+    if (!statusA && statusB) return 1;
+    
+    // If neither has status, sort by creation date (newest first)
+    return new Date(b.createdAt) - new Date(a.createdAt);
 });
 
 const itemPerPage = 10;
@@ -246,7 +262,13 @@ const handleClearFilter = () => {
                            <td>
                                <div className='d-flex'>
                                    {returnOrderStatus[item._id] === "Accept" && (
-                                       <span className='ds_returnorder_btn me-2'>Accept</span>
+                                       <span onClick={()=>{
+                                           dispatch(EditReturnOrder({ id: item._id, status: "Refund" }));
+                                           // Refresh data after status change
+                                           setTimeout(() => {
+                                               dispatch(GetReturnOrderData());
+                                           }, 1000);
+                                       }} className='ds_returnorder_btn me-2'>Refund</span>
                                    )}
                                    {returnOrderStatus[item._id] === "Reject" && (
                                        <span className='ds_returnorder_btn2'>Reject</span>

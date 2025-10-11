@@ -33,7 +33,7 @@ const orderSchema = mongoose.Schema({
     },
     orderStatus:{
         type:String,
-        enum: ["Delivered","Pending","Cancelled","Return Pending" , "Return Accepted" , "Return Rejected"]
+        enum: ["Delivered","Pending","Cancelled","Return Pending" , "Return Accepted" , "Return Rejected","Return Refunded"]
     },
     otp:{
         type:Number, 

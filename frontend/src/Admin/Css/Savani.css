@@ -448,6 +448,7 @@ input[type="date"]:focus-visible{
     justify-content: center;
     align-items: center;
     border: none;
+    cursor: pointer;
 }
 .ds_returnorder_btn2{
     background: #F93A3A33;
@@ -460,6 +461,7 @@ input[type="date"]:focus-visible{
     justify-content: center;
     align-items: center;
     border: none;
+    cursor: pointer;
 }
 .ds_view_cal{
     position: absolute;

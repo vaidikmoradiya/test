@@ -247,7 +247,7 @@ exports.getAllOrder = async (req, res) => {
       // Determine progressive status
       let progressiveStatus = 'Order Confirmed';
       
-      if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected') {
+      if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded') {
         if (daysSinceOrder >= 1) {
           progressiveStatus = 'Shipped';
         }

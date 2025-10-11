@@ -27,6 +27,8 @@ const [filterSubCategory, setFilterSubCategory] = useState("");
 const [filterSizeName, setFilterSizeName] = useState("");
 const [deleteId, setdeleteId] = useState(null)
 const prevTotalCountRef = useRef(0);
+const skipAutoJumpRef = useRef(false);
+const initialLoadRef = useRef(true);
 
 const sizeData = useSelector((state) => state.size.getsizeData)
 console.log("sizeData", sizeData);
@@ -34,6 +36,22 @@ console.log("sizeData", sizeData);
 useEffect(()=>{
     dispatch(GetSizeData())
 },[])
+
+// Restore pagination page only when returning from edit (refresh opens page 1)
+useEffect(() => {
+    const cameFromEdit = sessionStorage.getItem('SizeReturnFromEdit');
+    const storedPage = sessionStorage.getItem('SizeCurrentPage');
+    if (cameFromEdit && storedPage) {
+        const parsed = parseInt(storedPage, 10);
+        const total = Math.max(1, Math.ceil(((sizeData?.length) || 0) / itemPerPage));
+        const clampedPage = Math.min(Math.max(1, isNaN(parsed) ? 1 : parsed), total);
+        skipAutoJumpRef.current = true;
+        initialLoadRef.current = false;
+        setCurrentPage(clampedPage);
+        sessionStorage.removeItem('SizeCurrentPage');
+        sessionStorage.removeItem('SizeReturnFromEdit');
+    }
+}, [sizeData?.length]);
 
 useEffect(() => {
     setFilteredData(sizeData || []);
@@ -64,14 +82,27 @@ useEffect(() => {
     setTotalPages(Math.ceil(filtered?.length / itemPerPage) || 1);
 }, [currentPage, filteredData, searchInput]);
 
-// Auto-jump to last page when list grows and no search is active
+// Auto-jump to last page only when explicitly requested (e.g., after Add)
 useEffect(() => {
     const isSearching = !!searchInput.trim();
     const newCount = sizeData?.length || 0;
     const prevCount = prevTotalCountRef.current;
-    if (!isSearching && newCount > prevCount) {
+    if (skipAutoJumpRef.current) {
+        prevTotalCountRef.current = newCount;
+        skipAutoJumpRef.current = false;
+        return;
+    }
+    // Skip auto-jump on initial load (e.g., page refresh)
+    if (initialLoadRef.current) {
+        prevTotalCountRef.current = newCount;
+        initialLoadRef.current = false;
+        return;
+    }
+    const shouldJumpLast = sessionStorage.getItem('SizeJumpLastOnce') === '1';
+    if (!isSearching && shouldJumpLast) {
         const targetPage = Math.max(1, Math.ceil(newCount / itemPerPage));
         setCurrentPage(targetPage);
+        sessionStorage.removeItem('SizeJumpLastOnce');
     }
     prevTotalCountRef.current = newCount;
 }, [sizeData?.length, searchInput]);
@@ -214,7 +245,7 @@ const handleDeleteUnit = () => {
                         <img src={search} alt="" className='ds_page_icon' />
                    </div>
                    <button onClick={()=> setShow(true)} className='ds_category_filter mt-3'><FaFilter className='me-1' /> Filter</button>
-                   <div onClick={()=> navigate("/admin/addsize")} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
+                   <div onClick={() => {navigate("/admin/addsize"); sessionStorage.setItem('SizeJumpLastOnce', '1');}} className="sp_Add_btn ds_cursor ds_btn_manage mt-3"><span>+ Add</span></div>
                 </div>
         </div>
         
@@ -249,7 +280,7 @@ const handleDeleteUnit = () => {
                                 <td>{item.unitId?.unitName}</td>
                                 <td>
                                     <div className='sp_table_action d-flex'>
-                                        <div onClick={()=> {navigate("/admin/editsize"); localStorage.setItem("Editid" , item._id)}}><img src={editImg} alt="edit" /></div>
+                                        <div onClick={() => {navigate("/admin/editsize"); localStorage.setItem("Editid", item._id); sessionStorage.setItem("SizeReturnFromEdit", '1'); sessionStorage.setItem("SizeCurrentPage", currentPage)}}><img src={editImg} alt="edit" /></div>
                                         <div onClick={()=> {setDeletePopup(true); setdeleteId(item?._id)}}><img src={deleteImg} alt="delete" /></div>
                                     </div>
                                 </td>

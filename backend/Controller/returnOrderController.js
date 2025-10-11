@@ -104,6 +104,9 @@ exports.updateRetrunOrder = async (req, res) => {
             if(status === "Accept"){
                 orderData.orderStatus = "Return Accepted"
             }
+            else if(status === "Refund"){
+                orderData.orderStatus = "Return Refunded"
+            }
             else{
                 orderData.orderStatus ="Return Rejected"
             }
@@ -178,6 +181,7 @@ exports.getAllReturnOrder = async (req, res) => {
                     orderId: { $first: "$orderId" },
                     reason: { $first: "$reason" },
                     description: { $first: "$description" },
+                    status: { $first: "$status" },
                     userData: { $first: "$userData" },
                     createdAt: { $first: "$createdAt" },
                     orderData: {
@@ -275,6 +279,7 @@ exports.getReturnOrderById = async (req, res) => {
                     orderId: { $first: "$orderId" },
                     reason: { $first: "$reason" },
                     description: { $first: "$description" },
+                    status: { $first: "$status" },
                     userData: { $first: "$userData" },
                     orderData: {
                         $push: {

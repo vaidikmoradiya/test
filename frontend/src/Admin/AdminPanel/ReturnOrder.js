@@ -52,7 +52,7 @@ const ReturnOrder = () => {
             return name.includes(searchInput.toLowerCase()) && !isAlreadyHandled;
         });
         setData(filtered?.slice(startIndex, endIndex));
-    }, [currentPage, returnOrderData, searchInput]);
+    }, [currentPage, returnOrderData, searchInput, returnOrderStatus, clickedButtons]);
 
     // Auto-jump to last page when return orders grow and no search is active
     useEffect(() => {

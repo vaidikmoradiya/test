@@ -235,7 +235,9 @@ exports.getAllOrder = async (req, res) => {
     }
 
     // Process each order to add progressive status and expected delivery date
-    const processedOrders = orderData.map(order => {
+    const processedOrders = [];
+    
+    for (const order of orderData) {
       const orderDate = new Date(order.createdAt);
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Reset time to start of day
@@ -246,8 +248,9 @@ exports.getAllOrder = async (req, res) => {
       
       // Determine progressive status
       let progressiveStatus = 'Order Confirmed';
+      let shouldUpdateStatus = false;
       
-      if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded') {
+      if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded' && order.orderStatus !== 'Cancelled') {
         if (daysSinceOrder >= 1) {
           progressiveStatus = 'Shipped';
         }
@@ -256,10 +259,17 @@ exports.getAllOrder = async (req, res) => {
         }
         if (daysSinceOrder >= 3) {
           progressiveStatus = 'Delivered';
-          order.orderStatus = 'Delivered'; // Update actual order status
+          if (order.orderStatus !== 'Delivered') {
+            order.orderStatus = 'Delivered'; // Update actual order status
+            shouldUpdateStatus = true;
+          }
         }
       }
-     
+      
+      // Update database if status needs to be changed
+      if (shouldUpdateStatus) {
+        await orderModal.findByIdAndUpdate(order._id, { orderStatus: 'Delivered' });
+      }
      
       
       // Calculate expected delivery date (order date + 3 days)
@@ -281,8 +291,8 @@ exports.getAllOrder = async (req, res) => {
       // Add progressive status to order level
       order.progressiveStatus = progressiveStatus;
       
-      return order;
-    });
+      processedOrders.push(order);
+    }
 
     return res.status(200).json({
       status: true,
@@ -406,16 +416,27 @@ exports.getOrderById = async (req, res) => {
         
         // Determine progressive status
         let progressiveStatus = 'Order Confirmed';
+        let shouldUpdateStatus = false;
         
-        if (daysSinceOrder >= 1) {
-          progressiveStatus = 'Shipped';
+        if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded' && order.orderStatus !== 'Cancelled') {
+          if (daysSinceOrder >= 1) {
+            progressiveStatus = 'Shipped';
+          }
+          if (daysSinceOrder >= 2) {
+            progressiveStatus = 'Out for Delivery';
+          }
+          if (daysSinceOrder >= 3) {
+            progressiveStatus = 'Delivered';
+            if (order.orderStatus !== 'Delivered') {
+              order.orderStatus = 'Delivered'; // Update actual order status
+              shouldUpdateStatus = true;
+            }
+          }
         }
-        if (daysSinceOrder >= 2) {
-          progressiveStatus = 'Out for Delivery';
-        }
-        if (daysSinceOrder >= 3) {
-          progressiveStatus = 'Delivered';
-          order.orderStatus = 'Delivered'; // Update actual order status
+        
+        // Update database if status needs to be changed
+        if (shouldUpdateStatus) {
+          await orderModal.findByIdAndUpdate(id, { orderStatus: 'Delivered' });
         }
         
         // Calculate expected delivery date (order date + 3 days)

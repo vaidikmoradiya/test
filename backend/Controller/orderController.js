@@ -249,6 +249,7 @@ exports.getAllOrder = async (req, res) => {
       // Determine progressive status
       let progressiveStatus = 'Order Confirmed';
       let shouldUpdateStatus = false;
+      let nextStatusToPersist = order.orderStatus;
       
       if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded' && order.orderStatus !== 'Cancelled') {
         if (daysSinceOrder >= 1) {
@@ -259,16 +260,19 @@ exports.getAllOrder = async (req, res) => {
         }
         if (daysSinceOrder >= 3) {
           progressiveStatus = 'Delivered';
-          if (order.orderStatus !== 'Delivered') {
-            order.orderStatus = 'Delivered'; // Update actual order status
-            shouldUpdateStatus = true;
-          }
+        }
+
+        // Persist any change in progressive status to DB
+        if (progressiveStatus !== order.orderStatus) {
+          order.orderStatus = progressiveStatus;
+          nextStatusToPersist = progressiveStatus;
+          shouldUpdateStatus = true;
         }
       }
       
       // Update database if status needs to be changed
       if (shouldUpdateStatus) {
-        await orderModal.findByIdAndUpdate(order._id, { orderStatus: 'Delivered' });
+        await orderModal.findByIdAndUpdate(order._id, { orderStatus: nextStatusToPersist });
       }
      
       
@@ -417,6 +421,7 @@ exports.getOrderById = async (req, res) => {
         // Determine progressive status
         let progressiveStatus = 'Order Confirmed';
         let shouldUpdateStatus = false;
+        let nextStatusToPersist = order.orderStatus;
         
         if (order.orderStatus !== 'Return Pending' && order.orderStatus !== 'Return Accepted' && order.orderStatus !== 'Return Rejected' && order.orderStatus !== 'Return Refunded' && order.orderStatus !== 'Cancelled') {
           if (daysSinceOrder >= 1) {
@@ -427,16 +432,19 @@ exports.getOrderById = async (req, res) => {
           }
           if (daysSinceOrder >= 3) {
             progressiveStatus = 'Delivered';
-            if (order.orderStatus !== 'Delivered') {
-              order.orderStatus = 'Delivered'; // Update actual order status
-              shouldUpdateStatus = true;
-            }
+          }
+
+          // Persist any change in progressive status to DB
+          if (progressiveStatus !== order.orderStatus) {
+            order.orderStatus = progressiveStatus;
+            nextStatusToPersist = progressiveStatus;
+            shouldUpdateStatus = true;
           }
         }
         
         // Update database if status needs to be changed
         if (shouldUpdateStatus) {
-          await orderModal.findByIdAndUpdate(id, { orderStatus: 'Delivered' });
+          await orderModal.findByIdAndUpdate(id, { orderStatus: nextStatusToPersist });
         }
         
         // Calculate expected delivery date (order date + 3 days)

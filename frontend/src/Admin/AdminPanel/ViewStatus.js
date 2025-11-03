@@ -53,6 +53,12 @@ useEffect(() => {
 
 // Filter the data based on filter values (applied filters only)
 const filteredData = returnOrderData?.filter(item => {
+    // Only show orders that have been accepted or rejected
+    const status = returnOrderStatus[item._id];
+    if (status !== "Accept" && status !== "Reject") {
+        return false;
+    }
+
     // Filter by product name
     if (filterProductName && item.orderData && item.orderData.length > 0) {
         const productMatch = item.orderData.some(order => 
